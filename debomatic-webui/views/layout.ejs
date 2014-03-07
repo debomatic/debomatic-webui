@@ -3,8 +3,34 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src='//code.jquery.com/jquery-1.7.2.min.js'></script>
+    <script src='//localhost:3000/socket.io/socket.io.js'></script>
+    <script>
+         function get_path(path) {
+                info = path.split('/');
+                if (info.length == 1) {
+                    socket.emit("get-distribution", path);
+                }
+            }
+            var socket = io.connect('//localhost:3000');
+
+            socket.on('distributions', function(distributions) {
+                $('#distributions').html('');
+                distributions.forEach(function (name){
+                    $('#distributions').append('<li><a href="#' + name + '">' + name + '</li>');
+                });
+            });
+            
+            socket.on('error', function() { console.error(arguments) });
+            
+            $(window).on('hashchange', function() {
+                get_path(window.location.hash.replace('#',''));
+            });
+    </script>
   </head>
   <body>
+       <ul id='messages'></ul>
+       <ul id="distributions"></ul>
     <%- body %>
   </body>
 </html>
