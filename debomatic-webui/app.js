@@ -6,7 +6,7 @@
 var express = require('express')
   , routes = require('./routes')
   , config = require('./config.js')
-  , send = require('./send.js')()
+  , send = require('./send.js')
   , fs = require('fs')
 
 var app = module.exports = express.createServer();
@@ -36,10 +36,9 @@ var io = require('socket.io').listen(app);
 app.get('/', routes.index);
 
 io.sockets.on('connection', function(socket) {
-    send.distributions(io.sockets);
-    socket.on('get-distribution', function(from, distro) {
-        console.log(from + " " + distro)
-        send.distribution(from, distro);
+    send.distributions(socket);
+    socket.on('get-packages', function(distro) {
+        send.packages_list(socket, distro);
     });
 });
 

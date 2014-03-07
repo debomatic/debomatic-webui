@@ -9,7 +9,7 @@
          function get_path(path) {
                 info = path.split('/');
                 if (info.length == 1) {
-                    socket.emit("get-distribution", path);
+                    socket.emit("get-packages", path);
                 }
             }
             var socket = io.connect('//localhost:3000');
@@ -19,6 +19,11 @@
                 distributions.forEach(function (name){
                     $('#distributions').append('<li><a href="#' + name + '">' + name + '</li>');
                 });
+            });
+            
+            socket.on('packages', function(packages) {
+                console.log("HHHH");
+                console.log(packages);
             });
             
             socket.on('error', function() { console.error(arguments) });
