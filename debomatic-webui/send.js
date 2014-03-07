@@ -56,11 +56,27 @@ debomatic_sender = {
     package: function (socket, package_info) {
         package_path = path.join(BASE_DIR, package_info.distribution, 'pool', package_info.package + "_" + package_info.version);
         get_files_list(package_path, false, function(files) {
-            result = []
+            package_info.files = []
+            package_info.debs = []
+            package_info.archives = []
             files.forEach(function (f) {
-                result.push(f);
+                extension = f.split('.').pop();
+                if (extension == "deb" || extension == "ddeb")
+                    package_info.debs.push(f);
+                else if (f.indexOf('.tar') >= 0) {
+                    archive = {}
+                    archive.name = f
+                    archive.path = path.join(package_path, f)
+                    package_info.archives.push(archive)
+                }
+                else {
+                    file = {}
+                    file.name = f
+                    file.path = path.join(package_path, f)
+                    file.label = extension
+                    package_info.files.push(file)
+                }
             });
-            package_info.files = result;
             socket.emit('package-files', package_info);
         });
     }

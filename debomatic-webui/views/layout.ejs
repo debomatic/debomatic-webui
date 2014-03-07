@@ -42,7 +42,7 @@
                 package = data.package
                 version = data.version
                 data.files.forEach(function (f){
-                    $('#files').append('<li><a href="#' + distro + "/" + package + "/" +version +'/'+ f +'">'+ f + '</li>');
+                    $('#files').append('<li><a href="#' + distro + "/" + package + "/" +version +'/'+ f.name +'">'+ f.label + '</li>');
                 });
             });
             
