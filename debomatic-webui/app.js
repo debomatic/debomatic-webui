@@ -4,12 +4,14 @@
  */
 
 var express = require('express')
-  , routes = require('./routes');
+  , routes = require('./routes')
+  , config = require('./config.js')
+  , send = require('./send.js')()
+  , fs = require('fs')
 
 var app = module.exports = express.createServer();
 
 // Configuration
-
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
@@ -28,10 +30,23 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-// Routes
+var io = require('socket.io').listen(app);
 
+// Routes
 app.get('/', routes.index);
 
-app.listen(3000, function(){
+io.sockets.on('connection', function(socket) {
+    send.distributions(io.sockets);
+    socket.on('get-distribution', function(from, distro) {
+        console.log(from + " " + distro)
+        send.distribution(from, distro);
+    });
+});
+
+fs.watch(config.debomatic_path, { persistent: true }, function (event, fileName) {
+    send.distributions(io.sockets);
+});
+
+var server = app.listen(config.port, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
