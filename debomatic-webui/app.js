@@ -20,6 +20,8 @@ app.configure(function(){
   app.use(require('stylus').middleware({ src: __dirname + '/public' }));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
+  app.use(config.debomatic_webpath, express.directory(config.debomatic_path));
+  app.use(config.debomatic_webpath, express.static(config.debomatic_path));
 });
 
 app.configure('development', function(){
