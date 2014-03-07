@@ -6,5 +6,7 @@
       "express": "2.5.8"
     , "stylus": ">= 0.0.1"
     , "ejs": ">= 0.0.1"
+    , "socket.io": "*"
+    , "node-fs": "*"
   }
 }
