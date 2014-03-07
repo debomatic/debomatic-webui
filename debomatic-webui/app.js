@@ -37,8 +37,11 @@ app.get('/', routes.index);
 
 io.sockets.on('connection', function(socket) {
     send.distributions(socket);
-    socket.on('get-packages', function(distro) {
+    socket.on('get-packages-list', function(distro) {
         send.packages_list(socket, distro);
+    });
+    socket.on('get-package', function(package_info) {
+        send.package(socket, package_info);
     });
 });
 

@@ -8,8 +8,15 @@
     <script>
          function get_path(path) {
                 info = path.split('/');
-                if (info.length == 1) {
-                    socket.emit("get-packages", path);
+                if (info.length >= 1) {
+                    socket.emit("get-packages-list", info[0]);
+                }
+                if (info.length >= 3){
+                    data = {}
+                    data.distribution = info[0];
+                    data.package = info[1];
+                    data.version = info[2];
+                    socket.emit("get-package", data);
                 }
             }
             var socket = io.connect('//localhost:3000');
@@ -21,9 +28,22 @@
                 });
             });
             
-            socket.on('packages', function(packages) {
-                console.log("HHHH");
-                console.log(packages);
+            socket.on('packages', function(data) {
+                $('#packages').html('');
+                distro = data.distribution
+                data.packages.forEach(function (p){
+                    $('#packages').append('<li><a href="#' + distro + "/" + p.name + "/" + p.version +'">' + p.name + " [" + p.version + "]" + '</li>');
+                });
+            });
+            
+            socket.on('package-files', function(data) {
+                $('#files').html('');
+                distro = data.distribution
+                package = data.package
+                version = data.version
+                data.files.forEach(function (f){
+                    $('#files').append('<li><a href="#' + distro + "/" + package + "/" +version +'/'+ f +'">'+ f + '</li>');
+                });
             });
             
             socket.on('error', function() { console.error(arguments) });
@@ -31,11 +51,17 @@
             $(window).on('hashchange', function() {
                 get_path(window.location.hash.replace('#',''));
             });
+            
+            $(window).on('load', function (){
+                get_path(window.location.hash.replace('#',''));
+            });
     </script>
   </head>
   <body>
        <ul id='messages'></ul>
        <ul id="distributions"></ul>
+       <ul id="packages"></ul>
+       <ul id="files"></ul>
     <%- body %>
   </body>
 </html>
