@@ -39,7 +39,7 @@
                         $('#files').html('');
                         data.package.files.forEach(function(f){
                             p = data.package
-                            $('#files').append('<li><a href="#' + data.distribution.name + '/' + p.name + '/'+ p.version + '/' + f.name + '">' + f.label + '</a></li>')
+                            $('#files').append('<li><a href="#' + data.distribution.name + '/' + p.name + '/'+ p.version + '/' + f.name + '">' + f.name + '</a></li>')
                         })
                     }
                 }

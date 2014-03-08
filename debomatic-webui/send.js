@@ -47,7 +47,7 @@ function get_files_list_from_pacakge(package_path, callback) {
                 package_info.archives.push(file)
             }
             else {
-                file.label = file.extension
+                file.name = file.extension
                 package_info.files.push(file)
             }
         });
