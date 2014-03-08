@@ -6,42 +6,68 @@
     <script src='//code.jquery.com/jquery-1.7.2.min.js'></script>
     <script src='//localhost:3000/socket.io/socket.io.js'></script>
     <script>
-         function get_path(path) {
-                info = path.split('/');
-                data = {}
-                if (info.length >= 1) {
-                    data.distribution = {}
-                    data.distribution.name = info[0];
-                }
-                if (info.length >= 3){
-                    data.package = {}
-                    data.package.name = info[1];
-                    data.package.version = info[2];
-                }
-                socket.emit('get-view', data);
+        function get_path(path) {
+            info = path.split('/');
+            data = {}
+            if (info.length >= 1) {
+                data.distribution = {}
+                data.distribution.name = info[0];
             }
-            var socket = io.connect('//localhost:3000');
+            if (info.length >= 3){
+                data.package = {}
+                data.package.name = info[1];
+                data.package.version = info[2];
+            }
+            if (info.length == 4) {
+                data.file = info[3]
+                socket.emit('get-file', data)
+            }
+            else
+                socket.emit('get-view', data);
+        }
+        
+        function set_up_view(data) {
+            if (data) {
+                if (data.distribution) {
+                    if (data.distribution.name && data.distribution.packages) {
+                        $('#packages').html('')
+                        data.distribution.packages.forEach(function(p){
+                            div = $('#packages').append('<li><a href="#' + data.distribution.name + '/' + p.name + '/'+ p.version + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
+                        })
+                    }
+                    if (data.package) {
+                        $('#files').html('');
+                        data.package.files.forEach(function(f){
+                            p = data.package
+                            $('#files').append('<li><a href="#' + data.distribution.name + '/' + p.name + '/'+ p.version + '/' + f.name + '">' + f.label + '</a></li>')
+                        })
+                    }
+                }
+            }
+        }
+        var socket = io.connect('//localhost:3000');
 
-            socket.on('distributions', function(distributions) {
-                $('#distributions').html('');
-                distributions.forEach(function (name){
-                    $('#distributions').append('<li><a href="#' + name + '">' + name + '</li>');
-                });
+        socket.on('distributions', function(distributions) {
+            $('#distributions').html('');
+            distributions.forEach(function (name){
+                $('#distributions').append('<li><a href="#' + name + '">' + name + '</li>');
             });
+        });
 
-            socket.on('view', function(data){
-                console.log(data)
-            });
+        socket.on('view', function(data){
+            console.log(data)
+            set_up_view(data)
+        });
             
-            socket.on('error', function() { console.error(arguments) });
-            
-            $(window).on('hashchange', function() {
-                get_path(window.location.hash.replace('#',''));
-            });
-            
-            $(window).on('load', function (){
-                get_path(window.location.hash.replace('#',''));
-            });
+        socket.on('error', function() { console.error(arguments) });
+        
+        $(window).on('hashchange', function() {
+            get_path(window.location.hash.replace('#',''));
+        });
+        
+        $(window).on('load', function (){
+            get_path(window.location.hash.replace('#',''));
+        });
     </script>
   </head>
   <body>
