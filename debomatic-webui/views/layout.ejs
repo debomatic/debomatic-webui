@@ -16,6 +16,29 @@
     <script src='/javascripts/main.js'></script>
   </head>
   <body>
-    <%- body %>
+    <div class="container-fluid">
+
+      <header >
+        <h1><%= title %></h1>
+        <p class="lead"><%= description %></p>
+      </header>
+
+      <nav id="distributions" class="navbar navbar-inverse" role="navigation">
+        <div class="navbar-header">
+            <span class="navbar-brand" href="#">Distrbutions</span>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav"></ul>
+        </div>
+      </nav>
+
+      <%- body %>
+
+      <footer>
+        <%= footer %>
+      </footer>
+
+    </div> <!-- .container-fluild -->
+
   </body>
 </html>

@@ -1,55 +1,41 @@
-<div class="container-fluid">
-  <header >
-    <h1><%= title %></h1>
-    <p class="lead"><%= description %></p>
-  </header>
+<nav>
+  <ol class="breadcrumb">
+  </ol>
+</nav>
 
-  <nav id="distributions" class="navbar navbar-inverse" role="navigation">
-    <div class="navbar-header">
-        <span class="navbar-brand" href="#">Distrbutions</span>
-    </div>
-    <div class="collapse navbar-collapse">
-      <ul class="nav navbar-nav"></ul>
-    </div>
-  </nav>
-  <nav>
-    <ol class="breadcrumb">
-    </ol>
-  </nav>
-    <article class="row">
-      <aside class="col-md-3">
-        <nav id="packages">
-          <h2>Packages</h2>
+<article class="row">
+  <aside class="col-md-3">
+    <nav id="packages">
+      <h2>Packages</h2>
+      <ul class="nav nav-pills nav-stacked"></ul>
+    </nav>
+    
+    <div id="sticky" >
+      <section id="files">
+        <h3 class="title">Files</h3>
+        <nav id="logs">
           <ul class="nav nav-pills nav-stacked"></ul>
         </nav>
-        
-        <div id="sticky" >
-          <section id="files">
-            <h3 class="title">Files</h3>
-            <nav id="logs">
-              <ul class="nav nav-pills nav-stacked"></ul>
-            </nav>
-            <nav id="archives">
-              <h4>Archives</h4>
-              <ul></ul>
-            </nav>
-            <nav id="debs">
-              <h4>Debs</h4>
-              <ul></ul>
-            </nav>
-        </section>
-      </div>
+        <nav id="archives">
+          <h4>Archives</h4>
+          <ul></ul>
+        </nav>
+        <nav id="debs">
+          <h4>Debs</h4>
+          <ul></ul>
+        </nav>
+    </section>
+  </div>
 
-      </aside>
+  </aside>
 
-      <section class="col-md-9">
-        <header>
-          <h1 id="title"></h1>
-        </header>
-        <div id="file">
-          <pre></pre>
-        </div>
-      </section>
-    </article>
-  <footer><%= footer %></footer>
-</div>
+  <section class="col-md-9">
+    <header>
+      <h1 id="title"></h1>
+    </header>
+    <div id="file">
+      <pre></pre>
+    </div>
+  </section>
+</article>
+
