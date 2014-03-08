@@ -28,7 +28,7 @@ function __get_files_list(dir, onlyDirectories, callback) {
     });
 }
 
-function __get_files_list_from_pacakge(package_path, callback) {
+function __get_files_list_from_package(package_path, callback) {
     package_info = {}
     __get_files_list(package_path, false, function(files) {
         package_info.files = []
@@ -56,12 +56,10 @@ function __get_files_list_from_pacakge(package_path, callback) {
 }
 
 function __send_package_files_list (socket, data) {
-    if (!data.package || ! data.distribution)
-        return
     distro_path = path.join(BASE_DIR, data.distribution.name, 'pool');
     p = data.package.name + "_" + data.package.version
     package_path = path.join(distro_path, p)
-    __get_files_list_from_pacakge(package_path, function(package_files){
+    __get_files_list_from_package(package_path, function(package_files){
         data.package.files = package_files.files
         data.package.debs = package_files.debs
         data.package.archives = package_files.archives
@@ -70,8 +68,6 @@ function __send_package_files_list (socket, data) {
 }
 
 function __send_distribution_packages (socket, data) {
-    if (!data.distribution || ! data.distribution.name)
-        return;
     distro_path = path.join(BASE_DIR, data.distribution.name, 'pool');
     __get_files_list(distro_path, true, function (packages) {
         data.distribution.packages = []
