@@ -39,6 +39,7 @@ var io = require('socket.io').listen(app);
 
 // Routes
 app.get('/', routes.index);
+app.get('/distribution', routes.distribution)
 
 function watch_path_onsocket(event_name, socket, data, watch_path, updater) {
   name = "watcher-" + event_name

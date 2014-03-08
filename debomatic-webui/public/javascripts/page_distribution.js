@@ -139,15 +139,6 @@ var Page_Distrubion = {
     }
   },
   
-  navbar: {
-    update: function (distributions) {
-      $('#distributions ul').html('');
-      distributions.forEach(function (name){
-        $('#distributions ul').append('<li id="distribution-' + name +'"><a href="#' + name + '">' + name + '</li>');
-      });
-    },
-  },
-
   select: function(data) {
       if (! data)
         data = Utils.from_hash_to_data()

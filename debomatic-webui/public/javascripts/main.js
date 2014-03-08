@@ -1,13 +1,16 @@
 var socket = io.connect('//localhost:3000');
 
+// update distributions
+socket.on('distributions', function(distributions) {
+    $('#distributions ul').html('');
+    distributions.forEach(function (name){
+      $('#distributions ul').append('<li id="distribution-' + name +'"><a href="/distribution#' + name + '">' + name + '</li>');
+    });
+});
 
-if (window.location.pathname == '/') {
+if (window.location.pathname == '/distribution') {
 
   var old_data = Utils.from_hash_to_data()
-
-  socket.on('distributions', function(distributions) {
-    Page_Distrubion.navbar.update(distributions)
-  });
 
   socket.on('distribution_packages', function(data){
     Page_Distrubion.packages.set(data)
