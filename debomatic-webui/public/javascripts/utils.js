@@ -18,6 +18,7 @@ var Utils = {
     if (info.length >= 4) {
       data.file = {}
       data.file.name = info[3]
+      data.file.orig_name = data.package.orig_name + '.' + data.file.name
     }
     return data
   },
