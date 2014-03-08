@@ -91,7 +91,7 @@ debomatic_sender = {
                     });
             }
             else {
-                socket.emit(data)
+                socket.emit('view', data)
             }
         });
     }
