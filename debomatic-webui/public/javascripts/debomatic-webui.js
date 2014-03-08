@@ -5,6 +5,7 @@ function get_path(path) {
     data.distribution = {}
     data.distribution.name = info[0];
     socket.emit("get_distribution_packages", data)
+    select_navbar_voice(data)
   }
   if (info.length >= 3){
     data.package = {}
@@ -18,6 +19,11 @@ function get_path(path) {
     socket.emit("get_file", data)
   }
   update_breadcrumb(path)
+}
+
+function select_navbar_voice(data) {
+  $('#distributions li').removeClass('active')
+  $('#distribution-' + data.distribution.name).addClass('active')
 }
 
 function build_hash(data) {
@@ -45,7 +51,6 @@ function update_breadcrumb(hash) {
       new_html += '<li><a href="' + new_hash + '">' + info[i] + '</a>'
     new_hash += '/'
   }
-  console.log(new_html)
   $('.breadcrumb').html(new_html)
 }
 
@@ -54,7 +59,7 @@ var socket = io.connect('//localhost:3000');
 socket.on('distributions', function(distributions) {
   $('#distributions ul').html('');
   distributions.forEach(function (name){
-    $('#distributions ul').append('<li><a href="#' + name + '">' + name + '</li>');
+    $('#distributions ul').append('<li id="distribution-' + name +'"><a href="#' + name + '">' + name + '</li>');
   });
 });
 
@@ -88,7 +93,8 @@ socket.on('package_file_list', function(data){
 })
 
 socket.on('file', function (data) {
-  $("#file").html(data.file.content)
+  $('#file .title').html(data.file.orig_name)
+  $("#file pre").html(data.file.content)
 })
 
 socket.on('file_newcontent', function(data) {
