@@ -190,8 +190,10 @@ var Page_Distrubion = {
       {
         Page_Distrubion.file.clean()
         Page_Distrubion.files.get(data)
-        // I will always get dataestamp from package
-        window.location.hash += '/datestamp'
+        if (Utils.check_data_package(data)) {
+          // I will always get dataestamp from package
+          window.location.hash += '/datestamp'
+        }
       }
       else if (
         ! Utils.check_data_file(old_data) ||
