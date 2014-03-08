@@ -9,6 +9,7 @@ var express = require('express')
   , send = require('./send.js')
   , fs = require('fs')
   , path = require('path')
+  , utils = require('./utils.js')
 
 var app = module.exports = express.createServer();
 
@@ -38,7 +39,7 @@ var io = require('socket.io').listen(app);
 // Routes
 app.get('/', routes.index);
 
-function watcher_on_socket(event_name, socket, data, watch_path, updater) {
+function watch_dir(event_name, socket, data, watch_path, updater) {
     name = "watcher-" + event_name
     socket.get(name, function (err, watcher) {
         if (watcher)
@@ -53,33 +54,31 @@ function watcher_on_socket(event_name, socket, data, watch_path, updater) {
     })
 }
 
-function check_data_distribution(data) {
-    return data && data.distribution && data.distribution.name
-}
-
-function check_data_package(data) {
-    return check_data_distribution(data) && data.package && data.package.name && data.package.version
-}
-
 io.sockets.on('connection', function(socket) {
     send.distributions(socket);
     
     // send distribution packages
     socket.on('get_distribution_packages', function (data) {
-        if (! check_data_distribution(data))
+        if (! utils.check_data_distribution(data))
             return
         distribution_path = path.join(config.debomatic_path, data.distribution.name, 'pool')
-        watcher_on_socket('get_distribution_packages', socket, data, distribution_path, send.distribution_packages)
+        watch_dir('get_distribution_packages', socket, data, distribution_path, send.distribution_packages)
         send.distribution_packages(socket, data);
     })
     
     socket.on('get_package_file_list', function(data) {
-        if (! check_data_package(data))
+        if (! utils.check_data_package(data))
             return
-        package_path = path.join(config.debomatic_path, data.distribution.name, 'pool', data.package.name + "_" + data.package.version)
-        watcher_on_socket('get_package_file_list', socket, data, package_path, send.package_file_list)
+        package_path = utils.get_package_path(data)
+        watch_dir('get_package_file_list', socket, data, package_path, send.package_file_list)
         send.package_file_list(socket, data)
         
+    })
+    
+    socket.on('get_file', function (data){
+        if (! utils.check_data_file(data))
+            return
+        send.file(socket, data)
     })
 });
 

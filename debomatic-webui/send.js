@@ -1,8 +1,7 @@
 var fs = require('fs')
   , path = require('path')
   , config = require('./config.js')
-
-var BASE_DIR = config.debomatic_path;
+  , utils = require('./utils.js')
 
 function __get_files_list(dir, onlyDirectories, callback) {
     fs.readdir(dir, function(err, files){
@@ -56,9 +55,7 @@ function __get_files_list_from_package(package_path, callback) {
 }
 
 function __send_package_files_list (socket, data) {
-    distro_path = path.join(BASE_DIR, data.distribution.name, 'pool');
-    p = data.package.name + "_" + data.package.version
-    package_path = path.join(distro_path, p)
+    package_path = utils.get_package_path(data)
     __get_files_list_from_package(package_path, function(package_files){
         data.package.files = package_files.files
         data.package.debs = package_files.debs
@@ -68,7 +65,7 @@ function __send_package_files_list (socket, data) {
 }
 
 function __send_distribution_packages (socket, data) {
-    distro_path = path.join(BASE_DIR, data.distribution.name, 'pool');
+    distro_path = utils.get_distribution_pool_path(data)
     __get_files_list(distro_path, true, function (packages) {
         data.distribution.packages = []
         packages.forEach( function (p) {
@@ -76,7 +73,7 @@ function __send_distribution_packages (socket, data) {
             info = p.split('_')
             pack.name = info[0]
             pack.version = info[1]
-            if(data.package &&
+            if( data.package &&
                 pack.name == data.package.name &&
                 pack.version == data.package.version ) {
                     pack.selected = true;
@@ -87,10 +84,19 @@ function __send_distribution_packages (socket, data) {
     });
 }
 
+function __send_file (socket, data) {
+    file_path = utils.get_file_path(data)
+    fs.readFile(file_path, 'utf8', function (err, content) {
+      if (err) return;
+      data.file.content = content
+      socket.emit('file', data)
+    });
+}
+
 debomatic_sender = {
 
     distributions: function(socket) {
-        __get_files_list(BASE_DIR, true, function(distros){
+        __get_files_list(config.debomatic_path, true, function(distros){
             socket.emit('distributions', distros);
         });
     },
@@ -101,6 +107,10 @@ debomatic_sender = {
 
     distribution_packages: function(socket, data) {
         __send_distribution_packages(socket, data)
+    },
+    
+    file: function(socket, data) {
+        __send_file(socket, data)
     }
 }
 
