@@ -43,11 +43,17 @@ app.get('/', routes.index);
 function watch_path_onsocket(event_name, socket, data, watch_path, updater) {
     name = "watcher-" + event_name
     socket.get(name, function (err, watcher) {
-        if (watcher)
-            watcher.close()
+        if (watcher) {
+            try {
+                watcher.unwatch()
+            } catch (errorWatchingDirectory) {
+                watcher.close()
+            }
+        }
         try {
             fs.stat(watch_path, function(err, stats) {
-                watcher = null
+                if (err)
+                    return
                 if (stats.isDirectory()) {
                     watcher = fs.watch(watch_path, {persistent: true}, function (event, fileName) {
                     if(event == 'rename')
@@ -61,8 +67,8 @@ function watch_path_onsocket(event_name, socket, data, watch_path, updater) {
                         updater(socket, data)
                     })
                 }
+                socket.set(name, watcher)
             })
-            socket.set(name, watcher)
         } catch (err_watch) {}
     })
 }
