@@ -40,9 +40,12 @@ function __get_files_list_from_package(data, callback) {
       file.name = f.split('_')[0]
       file.label = f.replace(file.name + '_', '')
       file.extension = f.split('.').pop();
-      if (file.extension == "deb" || file.extension == "ddeb")
+      if (file.extension == "deb" || file.extension == "ddeb") {
+        file.label = file.extension
         data.package.debs.push(file);
+      }
       else if (f.indexOf('.tar') >= 0 || file.extension == "changes" || file.extension == "dsc") {
+        file.name = f.replace(data.package.name + '_' + data.package.version, '')
         data.package.archives.push(file)
       }
       else {
@@ -84,6 +87,7 @@ function __send_file (socket, data) {
   file_path = utils.get_file_path(data)
   fs.readFile(file_path, 'utf8', function (err, content) {
     if (err) return;
+    data.file.orig_name = file_path.split('/').pop()
     data.file.content = content
     socket.emit('file', data)
   });
