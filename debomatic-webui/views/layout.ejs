@@ -8,16 +8,15 @@
     <script>
          function get_path(path) {
                 info = path.split('/');
+                data = {}
                 if (info.length >= 1) {
-                    socket.emit("get-packages-list", info[0]);
+                    data.distribution = info[0];
                 }
                 if (info.length >= 3){
-                    data = {}
-                    data.distribution = info[0];
                     data.package = info[1];
                     data.version = info[2];
-                    socket.emit("get-package", data);
                 }
+                socket.emit('get-view', data);
             }
             var socket = io.connect('//localhost:3000');
 

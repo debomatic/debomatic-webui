@@ -36,11 +36,11 @@ debomatic_sender = {
         });
     },
 
-    packages_list: function(socket, distro) {
-        distro_path = path.join(BASE_DIR, distro, 'pool');
+    packages_list: function(socket, data) {
+        distro_path = path.join(BASE_DIR, data.distribution, 'pool');
         get_files_list(distro_path, true, function (packages) {
             result = {}
-            result.distribution = distro;
+            result.distribution = data.distribution;
             result.packages = []
             packages.forEach( function (p) {
                 pack = {}
