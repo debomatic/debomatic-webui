@@ -4,7 +4,7 @@ var fs = require('fs')
 
 var BASE_DIR = config.debomatic_path;
 
-function get_files_list(dir, onlyDirectories, callback) {
+function __get_files_list(dir, onlyDirectories, callback) {
     fs.readdir(dir, function(err, files){
         result = [];
         if (err) { 
@@ -28,15 +28,15 @@ function get_files_list(dir, onlyDirectories, callback) {
     });
 }
 
-function get_files_list_from_pacakge(package_path, callback) {
+function __get_files_list_from_pacakge(package_path, callback) {
     package_info = {}
-    get_files_list(package_path, false, function(files) {
+    __get_files_list(package_path, false, function(files) {
         package_info.files = []
         package_info.debs = []
         package_info.archives = []
         files.forEach(function (f) {
             file = {}
-            file.path = path.join(pack_path, f).replace(config.debomatic_path, config.debomatic_webpath)
+            file.path = path.join(package_path, f).replace(config.debomatic_path, config.debomatic_webpath)
             file.orig_name = f
             file.name = f.split('_')[0]
             file.label = f.replace(file.name + '_', '')
@@ -55,44 +55,56 @@ function get_files_list_from_pacakge(package_path, callback) {
     });
 }
 
+function __send_package_files_list (socket, data) {
+    if (!data.package || ! data.distribution)
+        return
+    distro_path = path.join(BASE_DIR, data.distribution.name, 'pool');
+    p = data.package.name + "_" + data.package.version
+    package_path = path.join(distro_path, p)
+    __get_files_list_from_pacakge(package_path, function(package_files){
+        data.package.files = package_files.files
+        data.package.debs = package_files.debs
+        data.package.archives = package_files.archives
+        socket.emit('package_file_list', data)
+    });
+}
+
+function __send_distribution_packages (socket, data) {
+    if (!data.distribution || ! data.distribution.name)
+        return;
+    distro_path = path.join(BASE_DIR, data.distribution.name, 'pool');
+    __get_files_list(distro_path, true, function (packages) {
+        data.distribution.packages = []
+        packages.forEach( function (p) {
+            pack = {}
+            info = p.split('_')
+            pack.name = info[0]
+            pack.version = info[1]
+            if(data.package &&
+                pack.name == data.package.name &&
+                pack.version == data.package.version ) {
+                    pack.selected = true;
+            }
+            data.distribution.packages.push(pack)
+        });
+        socket.emit("distribution_packages", data)
+    });
+}
+
 debomatic_sender = {
 
     distributions: function(socket) {
-        get_files_list(BASE_DIR, true, function(distros){
+        __get_files_list(BASE_DIR, true, function(distros){
             socket.emit('distributions', distros);
         });
     },
 
-    view: function (socket, data) {
-        distro_path = path.join(BASE_DIR, data.distribution.name, 'pool');
-        get_files_list(distro_path, true, function (packages) {
-            data.distribution.packages = []
-            packages.forEach( function (p) {
-                pack = {}
-                info = p.split('_')
-                pack.name = info[0]
-                pack.version = info[1]
-                if(data.package &&
-                    pack.name == data.package.name &&
-                    pack.version == data.package.version ) {
-                        pack.selected = true;
-                }
-                data.distribution.packages.push(pack)
-            });
-            if (data.package) {
-                p = data.package.name + "_" + data.package.version
-                    package_path = path.join(distro_path, p)
-                    get_files_list_from_pacakge(package_path, function(package_files){
-                        data.package.files = package_files.files
-                        data.package.debs = package_files.debs
-                        data.package.archives = package_files.archives
-                        socket.emit('view', data)
-                    });
-            }
-            else {
-                socket.emit('view', data)
-            }
-        });
+    package_file_list: function(socket, data) {
+        __send_package_files_list(socket, data)
+    },
+
+    distribution_packages: function(socket, data) {
+        __send_distribution_packages(socket, data)
     }
 }
 

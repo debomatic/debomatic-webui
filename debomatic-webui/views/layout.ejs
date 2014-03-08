@@ -12,39 +12,20 @@
             if (info.length >= 1) {
                 data.distribution = {}
                 data.distribution.name = info[0];
+                socket.emit("get_distribution_packages", data)
             }
             if (info.length >= 3){
                 data.package = {}
                 data.package.name = info[1];
                 data.package.version = info[2];
+                socket.emit("get_package_file_list", data)
             }
-            if (info.length == 4) {
+            if (info.length >= 4) {
                 data.file = info[3]
-                socket.emit('get-file', data)
+                socket.emit("get_file", data)
             }
-            else
-                socket.emit('get-view', data);
         }
         
-        function set_up_view(data) {
-            if (data) {
-                if (data.distribution) {
-                    if (data.distribution.name && data.distribution.packages) {
-                        $('#packages').html('')
-                        data.distribution.packages.forEach(function(p){
-                            div = $('#packages').append('<li><a href="#' + data.distribution.name + '/' + p.name + '/'+ p.version + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
-                        })
-                    }
-                    if (data.package) {
-                        $('#files').html('');
-                        data.package.files.forEach(function(f){
-                            p = data.package
-                            $('#files').append('<li><a href="#' + data.distribution.name + '/' + p.name + '/'+ p.version + '/' + f.name + '">' + f.name + '</a></li>')
-                        })
-                    }
-                }
-            }
-        }
         var socket = io.connect('//localhost:3000');
 
         socket.on('distributions', function(distributions) {
@@ -54,10 +35,20 @@
             });
         });
 
-        socket.on('view', function(data){
-            console.log(data)
-            set_up_view(data)
-        });
+        socket.on('distribution_packages', function(data){
+            $('#packages').html('')
+            data.distribution.packages.forEach(function(p){
+                div = $('#packages').append('<li><a href="#' + data.distribution.name + '/' + p.name + '/'+ p.version + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
+            })
+        })
+        
+        socket.on('package_file_list', function(data){
+            $('#files').html('');
+            data.package.files.forEach(function(f){
+                p = data.package
+                $('#files').append('<li><a href="#' + data.distribution.name + '/' + p.name + '/'+ p.version + '/' + f.name + '">' + f.name + '</a></li>')
+            })
+        })
             
         socket.on('error', function() { console.error(arguments) });
         
