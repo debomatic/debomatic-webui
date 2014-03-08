@@ -17,6 +17,7 @@ function get_path(path) {
     data.file.name = info[3]
     socket.emit("get_file", data)
   }
+  update_breadcrumb(path)
 }
 
 function build_hash(data) {
@@ -30,6 +31,22 @@ function build_hash(data) {
     }
   }
   return hash
+}
+
+function update_breadcrumb(hash) {
+  new_html = ''
+  new_hash = '#'
+  info = hash.split('/')
+  for (var i = 0; i < info.length ; i++) {
+    new_hash += info[i]
+    if (i == (info.length - 1))
+      new_html += '<li class="active">' + info[i] + '</li>'
+    else
+      new_html += '<li><a href="' + new_hash + '">' + info[i] + '</a>'
+    new_hash += '/'
+  }
+  console.log(new_html)
+  $('.breadcrumb').html(new_html)
 }
 
 var socket = io.connect('//localhost:3000');
@@ -56,7 +73,15 @@ socket.on('package_file_list', function(data){
   tmp = data
   data.package.files.forEach(function(f){
     tmp.file = f
-    $('#files ul').append('<li><a href="'+ build_hash(tmp) + '">' + f.name + '</a></li>')
+    $('#files ul').append('<li><a name="'+ f.orig_name +'" href="'+ build_hash(tmp) + '">' + f.name + '</a></li>')
+  })
+  
+  data.package.debs.forEach(function(f){
+    $('#debs ul').append('<li><a name="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a> <span>.' + f.label + '</span></li>')
+  })
+  
+  data.package.archives.forEach(function(f){
+    $('#archives ul').append('<li><a name="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a></li>')
   })
 })
 
