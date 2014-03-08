@@ -10,7 +10,7 @@ function __check_data_package(data) {
 }
 
 function __check_data_file(data) {
-  return __check_data_package(data) && data.file.name
+  return __check_data_package(data) && data.file && data.file.name
 }
 
 function __get_distribution_pool_path(data) {
