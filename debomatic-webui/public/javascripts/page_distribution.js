@@ -1,4 +1,4 @@
-var Page = {
+var Page_Distrubion = {
 
   title: {
     set: function(data) {
@@ -27,7 +27,7 @@ var Page = {
         tmp.package = p
         $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_data_to_hash(tmp) + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
       })
-      Page.select()
+      Page_Distrubion.select()
     },
     
     clean: function () {
@@ -43,7 +43,7 @@ var Page = {
 
   files: {
     set: function (data) {
-      Page.files.clean()
+      Page_Distrubion.files.clean()
       tmp = data
       if (data.package.files) {
         selected_file = Utils.check_data_file(data)
@@ -51,12 +51,12 @@ var Page = {
           tmp.file = f
           file = $('<li id="file-'+ f.orig_name +'"><a title="'+ f.orig_name +'" href="'+ Utils.from_data_to_hash(tmp) + '">' + f.name + '</a></li>')
           file.on("click", function(){
-            Page.files.select(this)
+            Page_Distrubion.files.select(this)
           })
           $('#logs ul').append(file)
         })
         $('#logs').show()
-        Page.select()
+        Page_Distrubion.select()
       }
       
       if (data.package.debs) {
@@ -99,7 +99,7 @@ var Page = {
     set: function(data) {
       $("#file pre").html(data.file.content)
       $("#file").show()
-      Page.select()
+      Page_Distrubion.select()
     },
     clean: function() {
       $('#file pre').html('')
@@ -168,20 +168,20 @@ var Page = {
   },
   
   clean: function() {
-    Page.title.clean()
-    Page.packages.clean()
-    Page.files.clean()
-    Page.file.clean()
-    Page.select()
-    Page.breadcrumb.update()
+    Page_Distrubion.title.clean()
+    Page_Distrubion.packages.clean()
+    Page_Distrubion.files.clean()
+    Page_Distrubion.file.clean()
+    Page_Distrubion.select()
+    Page_Distrubion.breadcrumb.update()
   },
   
   update: function(data, old_data) {
     if (! old_data ) {
       if (! data )
-        Page.populate()
+        Page_Distrubion.populate()
       else
-        Page.populate(data)
+        Page_Distrubion.populate(data)
       return;
     }
     else {
@@ -189,16 +189,16 @@ var Page = {
           ! Utils.check_data_distribution(data) ||
           data.distribution.name != old_data.distribution.name) 
       {
-        Page.clean()
-        Page.populate(data)
+        Page_Distrubion.clean()
+        Page_Distrubion.populate(data)
       }
       else if (
         ! Utils.check_data_package(old_data) ||
         ! Utils.check_data_package(data) ||
         data.package.orig_name != old_data.package.orig_name )
       {
-        Page.file.clean()
-        Page.files.get(data)
+        Page_Distrubion.file.clean()
+        Page_Distrubion.files.get(data)
         // I will always get dataestamp from package
         window.location.hash += '/datestamp'
       }
@@ -208,23 +208,23 @@ var Page = {
         data.file.name != old_data.file.name
       )
       {
-        Page.file.get()
+        Page_Distrubion.file.get()
       }
-      Page.title.set(data)
-      Page.breadcrumb.update()
-      Page.select(data)
+      Page_Distrubion.title.set(data)
+      Page_Distrubion.breadcrumb.update()
+      Page_Distrubion.select(data)
     }
   },
   
   populate: function (data) {
-    Page.clean()
+    Page_Distrubion.clean()
     if (! data )
       data = Utils.from_hash_to_data()
-    Page.packages.get(data)
-    Page.files.get(data)
-    Page.file.get(data)
-    Page.select(data)
-    Page.breadcrumb.update()
-    Page.title.set(data)
+    Page_Distrubion.packages.get(data)
+    Page_Distrubion.files.get(data)
+    Page_Distrubion.file.get(data)
+    Page_Distrubion.select(data)
+    Page_Distrubion.breadcrumb.update()
+    Page_Distrubion.title.set(data)
   }
 }
