@@ -13,6 +13,7 @@ var Utils = {
       data.package = {}
       data.package.name = info[1];
       data.package.version = info[2];
+      data.package.orig_name = data.package.name + '_' + data.package.version
     }
     if (info.length >= 4) {
       data.file = {}
@@ -39,7 +40,7 @@ var Utils = {
   },
   
   check_data_package: function(data) {
-    return Utils.check_data_distribution(data) && data.package && data.package.name && data.package.version
+    return Utils.check_data_distribution(data) && data.package && data.package.name && data.package.version && data.package.orig_name
   },
   
   check_data_file: function(data) {
