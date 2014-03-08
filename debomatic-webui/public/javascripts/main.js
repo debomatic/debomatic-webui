@@ -62,4 +62,14 @@ $(window).on('hashchange', function() {
 
 $(window).on('load', function (){
   Page.update(old_data)
+  $(window).scroll(function() {
+    var offset = $("#file").offset();
+    if ($(window).scrollTop() > offset.top + 220) {
+      $("#sticky").stop().addClass('fixed');
+    } 
+    else {
+      $("#sticky").stop().removeClass('fixed');
+    }
+  });
+  
 });
