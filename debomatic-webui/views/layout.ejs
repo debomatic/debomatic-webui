@@ -21,7 +21,8 @@
                 socket.emit("get_package_file_list", data)
             }
             if (info.length >= 4) {
-                data.file = info[3]
+                data.file = {}
+                data.file.name = info[3]
                 socket.emit("get_file", data)
             }
         }
@@ -49,7 +50,16 @@
                 $('#files').append('<li><a href="#' + data.distribution.name + '/' + p.name + '/'+ p.version + '/' + f.name + '">' + f.name + '</a></li>')
             })
         })
-            
+        
+        socket.on('file', function (data) {
+            $("#file").html(data.file.content)
+        })
+        
+        socket.on('file_newcontent', function(data) {
+            new_html =  $("#file").html() + data.file.new_content
+            $("#file").html(new_html)
+        })
+        
         socket.on('error', function() { console.error(arguments) });
         
         $(window).on('hashchange', function() {
@@ -66,6 +76,7 @@
        <ul id="distributions"></ul>
        <ul id="packages"></ul>
        <ul id="files"></ul>
+       <pre id="file"></pre>
     <%- body %>
   </body>
 </html>

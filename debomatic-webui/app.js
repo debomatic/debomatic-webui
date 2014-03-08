@@ -10,6 +10,7 @@ var express = require('express')
   , fs = require('fs')
   , path = require('path')
   , utils = require('./utils.js')
+  , Tail = require('tail').Tail
 
 var app = module.exports = express.createServer();
 
@@ -39,15 +40,27 @@ var io = require('socket.io').listen(app);
 // Routes
 app.get('/', routes.index);
 
-function watch_dir(event_name, socket, data, watch_path, updater) {
+function watch_path_onsocket(event_name, socket, data, watch_path, updater) {
     name = "watcher-" + event_name
     socket.get(name, function (err, watcher) {
         if (watcher)
             watcher.close()
         try {
-            watcher = fs.watch(watch_path, {persistent: true}, function (event, fileName) {
-                if(event == 'rename')
-                    updater(socket, data)
+            fs.stat(watch_path, function(err, stats) {
+                watcher = null
+                if (stats.isDirectory()) {
+                    watcher = fs.watch(watch_path, {persistent: true}, function (event, fileName) {
+                    if(event == 'rename')
+                        updater(socket, data)
+                    })
+                }
+                else {
+                    watcher = new Tail(watch_path)
+                    watcher.on('line', function(new_content) {
+                        data.file.new_content = new_content + '\n'
+                        updater(socket, data)
+                    })
+                }
             })
             socket.set(name, watcher)
         } catch (err_watch) {}
@@ -62,7 +75,7 @@ io.sockets.on('connection', function(socket) {
         if (! utils.check_data_distribution(data))
             return
         distribution_path = path.join(config.debomatic_path, data.distribution.name, 'pool')
-        watch_dir('get_distribution_packages', socket, data, distribution_path, send.distribution_packages)
+        watch_path_onsocket('get_distribution_packages', socket, data, distribution_path, send.distribution_packages)
         send.distribution_packages(socket, data);
     })
     
@@ -70,7 +83,7 @@ io.sockets.on('connection', function(socket) {
         if (! utils.check_data_package(data))
             return
         package_path = utils.get_package_path(data)
-        watch_dir('get_package_file_list', socket, data, package_path, send.package_file_list)
+        watch_path_onsocket('get_package_file_list', socket, data, package_path, send.package_file_list)
         send.package_file_list(socket, data)
         
     })
@@ -78,6 +91,8 @@ io.sockets.on('connection', function(socket) {
     socket.on('get_file', function (data){
         if (! utils.check_data_file(data))
             return
+        file_path = utils.get_file_path(data)
+        watch_path_onsocket('get_file', socket, data, file_path, send.file_newcontent)
         send.file(socket, data)
     })
 });

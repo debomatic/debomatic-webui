@@ -111,6 +111,10 @@ debomatic_sender = {
     
     file: function(socket, data) {
         __send_file(socket, data)
+    },
+    
+    file_newcontent: function(socket, data) {
+        socket.emit('file_newcontent', data);
     }
 }
 
