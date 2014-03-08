@@ -52,7 +52,8 @@ io.sockets.on('connection', function(socket) {
                         packages_path = path.join(config.debomatic_path, data.distribution.name, 'pool')
                         try {
                             watchIncomingPackages = fs.watch(packages_path, { persistent: true}, function(event, fileName) {
-                                send.view(socket, data);
+                                if (event == 'rename')
+                                    send.view(socket, data);
                         });
                             watchers.push(watchIncomingPackages);
                         } catch (err) {}
@@ -61,7 +62,8 @@ io.sockets.on('connection', function(socket) {
                             pack_path = path.join(packages_path, data.package.name + '_' + data.package.version);
                             try {
                                 watchPackageFiles = fs.watch(pack_path, {persistent: true}, function (event, filename) {
-                                    send.view(socket, data);
+                                    if (event == 'rename')
+                                        send.view(socket, data);
                                 });
                                 watchers.push(watchPackageFiles)
                             } catch (err) {}
