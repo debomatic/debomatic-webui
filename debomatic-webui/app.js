@@ -23,8 +23,8 @@ app.configure(function(){
   app.use(require('stylus').middleware({ src: __dirname + '/public' }));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
-  app.use(config.debomatic_webpath, express.directory(config.debomatic_path));
-  app.use(config.debomatic_webpath, express.static(config.debomatic_path));
+  app.use(config.debomatic.webpath, express.directory(config.debomatic.path));
+  app.use(config.debomatic.webpath, express.static(config.debomatic.path));
 });
 
 app.configure('development', function(){
@@ -80,7 +80,7 @@ io.sockets.on('connection', function(socket) {
   socket.on('get_distribution_packages', function (data) {
     if (! utils.check_data_distribution(data))
       return
-    distribution_path = path.join(config.debomatic_path, data.distribution.name, 'pool')
+    distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool')
     watch_path_onsocket('get_distribution_packages', socket, data, distribution_path, send.distribution_packages)
     send.distribution_packages(socket, data);
   })
@@ -107,7 +107,7 @@ io.sockets.on('disconnect', function(socket){
 
 });
 
-fs.watch(config.debomatic_path, { persistent: true }, function (event, fileName) {
+fs.watch(config.debomatic.path, { persistent: true }, function (event, fileName) {
   send.distributions(io.sockets);
 });
 

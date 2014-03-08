@@ -14,7 +14,7 @@ function __check_data_file(data) {
 }
 
 function __get_distribution_pool_path(data) {
-  return path.join(config.debomatic_path, data.distribution.name, 'pool')
+  return path.join(config.debomatic.path, data.distribution.name, 'pool')
 }
 
 function __get_package_path(data) {

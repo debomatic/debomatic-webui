@@ -35,7 +35,7 @@ function __get_files_list_from_package(data, callback) {
     data.package.archives = []
     files.forEach(function (f) {
       file = {}
-      file.path = path.join(package_path, f).replace(config.debomatic_path, config.debomatic_webpath)
+      file.path = path.join(package_path, f).replace(config.debomatic.path, config.debomatic.webpath)
       file.orig_name = f
       file.name = f.split('_')[0]
       file.label = f.replace(file.name + '_', '')
@@ -89,10 +89,10 @@ function __send_file (socket, data) {
   });
 }
 
-debomatic_sender = {
+sender = {
 
   distributions: function(socket) {
-    __get_files_list(config.debomatic_path, true, function(distros){
+    __get_files_list(config.debomatic.path, true, function(distros){
       socket.emit('distributions', distros);
     });
   },
@@ -114,4 +114,4 @@ debomatic_sender = {
   }
 }
 
-module.exports = debomatic_sender
+module.exports = sender
