@@ -6,9 +6,9 @@ var Page = {
         data = Utils.from_hash_to_data()
       label = ''
       if (Utils.check_data_file(data))
-        label = data.package.name + '_' + data.package.version + '.' + data.file.name
+        label = data.package.orig_name + '.' + data.file.name
       else if (Utils.check_data_package(data))
-        label = data.package.name + '_' + data.package.version
+        label = data.package.orig_name
       else if (Utils.check_data_distribution(data))
         label = data.distribution.name
       $('#title').html(label)
@@ -25,7 +25,7 @@ var Page = {
       tmp.file = null
       data.distribution.packages.forEach(function(p){
         tmp.package = p
-        div = $('#packages ul').append('<li><a href="' + Utils.from_data_to_hash(tmp) + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
+        $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_data_to_hash(tmp) + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
       })
     },
     
@@ -45,21 +45,22 @@ var Page = {
       Page.files.clean()
       tmp = data
       if (data.package.files) {
+        selected_file = Utils.check_data_file(data)
         data.package.files.forEach(function(f){
           tmp.file = f
-          $('#logs ul').append('<li><a name="'+ f.orig_name +'" href="'+ Utils.from_data_to_hash(tmp) + '">' + f.name + '</a></li>')
+          $('#logs ul').append('<li id="file-'+ f.orig_name +'"><a title="'+ f.orig_name +'" href="'+ Utils.from_data_to_hash(tmp) + '">' + f.name + '</a></li>')
         })
       }
       
       if (data.package.debs) {
         data.package.debs.forEach(function(f){
-          $('#debs ul').append('<li><a name="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a> <span>.' + f.label + '</span></li>')
+          $('#debs ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a> <span>.' + f.label + '</span></li>')
         })
       }
       
       if (data.package.archives) {
         data.package.archives.forEach(function(f){
-          $('#archives ul').append('<li><a name="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a></li>')
+          $('#archives ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a></li>')
         })
       }
       $('#files').show()
@@ -164,8 +165,7 @@ var Page = {
       else if (
         ! Utils.check_data_package(old_data) ||
         ! Utils.check_data_package(data) ||
-        data.package.name != old_data.package.name ||
-        data.package.version != old_data.package.version )
+        data.package.orig_name != data.package.orig_name )
       {
         Page.file.clean()
         Page.files.get(data)
