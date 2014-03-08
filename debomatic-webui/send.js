@@ -27,12 +27,12 @@ function __get_files_list(dir, onlyDirectories, callback) {
     });
 }
 
-function __get_files_list_from_package(package_path, callback) {
-    package_info = {}
+function __get_files_list_from_package(data, callback) {
+    package_path = utils.get_package_path(data)
     __get_files_list(package_path, false, function(files) {
-        package_info.files = []
-        package_info.debs = []
-        package_info.archives = []
+        data.package.files = []
+        data.package.debs = []
+        data.package.archives = []
         files.forEach(function (f) {
             file = {}
             file.path = path.join(package_path, f).replace(config.debomatic_path, config.debomatic_webpath)
@@ -41,26 +41,22 @@ function __get_files_list_from_package(package_path, callback) {
             file.label = f.replace(file.name + '_', '')
             file.extension = f.split('.').pop();
             if (file.extension == "deb" || file.extension == "ddeb")
-                package_info.debs.push(file);
+                data.package.debs.push(file);
             else if (f.indexOf('.tar') >= 0 || file.extension == "changes" || file.extension == "dsc") {
-                package_info.archives.push(file)
+                data.package.archives.push(file)
             }
             else {
                 file.name = file.extension
-                package_info.files.push(file)
+                data.package.files.push(file)
             }
         });
-        callback(package_info);
+        callback(data);
     });
 }
 
 function __send_package_files_list (socket, data) {
-    package_path = utils.get_package_path(data)
-    __get_files_list_from_package(package_path, function(package_files){
-        data.package.files = package_files.files
-        data.package.debs = package_files.debs
-        data.package.archives = package_files.archives
-        socket.emit('package_file_list', data)
+    __get_files_list_from_package(data, function(new_data){
+        socket.emit('package_file_list', new_data)
     });
 }
 
