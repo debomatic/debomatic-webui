@@ -22,7 +22,7 @@ function __get_package_path(data) {
 }
 
 function __get_file_path(data) {
-    return path.join(__get_package_path(data), data.file.name)
+    return path.join(__get_package_path(data), data.package.name + '_' + data.package.version + '.' + data.file.name)
 }
 
 utils = {
