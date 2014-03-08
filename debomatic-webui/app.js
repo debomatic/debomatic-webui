@@ -8,6 +8,7 @@ var express = require('express')
   , config = require('./config.js')
   , send = require('./send.js')
   , fs = require('fs')
+  , path = require('path')
 
 var app = module.exports = express.createServer();
 
@@ -40,7 +41,46 @@ app.get('/', routes.index);
 io.sockets.on('connection', function(socket) {
     send.distributions(socket);
     socket.on('get-view', function(data) {
-            send.view(socket, data);
+        socket.get('view', function(err, view) {
+            if (!view || view != data) {
+                socket.get('watchers', function(err, watchers) {
+                    if (watchers) watchers.forEach(function(w){
+                        w.close()
+                    });
+                    watchers = []
+                    socket.set('view', data, function() {
+                        packages_path = path.join(config.debomatic_path, data.distribution.name, 'pool')
+                        try {
+                            watchIncomingPackages = fs.watch(packages_path, { persistent: true}, function(event, fileName) {
+                                send.view(socket, data);
+                        });
+                            watchers.push(watchIncomingPackages);
+                        } catch (err) {}
+
+                        if (data.package && data.package.name && data.package.version) {
+                            pack_path = path.join(packages_path, data.package.name + '_' + data.package.version);
+                            try {
+                                watchPackageFiles = fs.watch(pack_path, {persistent: true}, function (event, filename) {
+                                    send.view(socket, data);
+                                });
+                                watchers.push(watchPackageFiles)
+                            } catch (err) {}
+                        }
+                        socket.set('watchers', watchers);
+                    });
+                });
+                send.view(socket, data);
+            };
+        });
+    });
+});
+
+io.sockets.on('disconnect', function(socket){
+    socket.get('watchers', function(err, watchers) {
+        if (watchers) watchers.forEach(function(w){
+            w.close()
+        });
+        socket.set('watchers', []);
     });
 });
 
