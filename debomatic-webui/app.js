@@ -50,14 +50,15 @@ io.sockets.on('connection', function(socket) {
                     watchers = []
                     socket.set('view', data, function() {
                         packages_path = path.join(config.debomatic_path, data.distribution.name, 'pool')
+                        // watch on incoming packages
                         try {
                             watchIncomingPackages = fs.watch(packages_path, { persistent: true}, function(event, fileName) {
                                 if (event == 'rename')
                                     send.view(socket, data);
-                        });
+                            });
                             watchers.push(watchIncomingPackages);
                         } catch (err) {}
-
+                        // if user is viewing a package, watch package dir
                         if (data.package && data.package.name && data.package.version) {
                             pack_path = path.join(packages_path, data.package.name + '_' + data.package.version);
                             try {
