@@ -3,3 +3,8 @@
   width: 220px !important;
   top: 10px;
 }
+
+#header {
+  background: url('../images/debian-logo.gif') right no-repeat;
+  cursor: pointer;
+}
