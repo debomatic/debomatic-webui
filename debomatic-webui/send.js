@@ -35,20 +35,19 @@ function get_files_list_from_pacakge(package_path, callback) {
         package_info.debs = []
         package_info.archives = []
         files.forEach(function (f) {
-            extension = f.split('.').pop();
-            if (extension == "deb" || extension == "ddeb")
-                package_info.debs.push(f);
-            else if (f.indexOf('.tar') >= 0) {
-                archive = {}
-                archive.name = f
-                archive.path = path.join(package_path, f)
-                package_info.archives.push(archive)
+            file = {}
+            file.path = path.join(pack_path, f).replace(config.debomatic_path, config.debomatic_webpath)
+            file.orig_name = f
+            file.name = f.split('_')[0]
+            file.label = f.replace(file.name + '_', '')
+            file.extension = f.split('.').pop();
+            if (file.extension == "deb" || file.extension == "ddeb")
+                package_info.debs.push(file);
+            else if (f.indexOf('.tar') >= 0 || file.extension == "changes" || file.extension == "dsc") {
+                package_info.archives.push(file)
             }
             else {
-                file = {}
-                file.name = f
-                file.path = path.join(package_path, f)
-                file.label = extension
+                file.label = file.extension
                 package_info.files.push(file)
             }
         });
