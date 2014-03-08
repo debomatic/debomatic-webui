@@ -70,6 +70,8 @@ socket.on('distribution_packages', function(data){
 
 socket.on('package_file_list', function(data){
   $('#files ul').html('');
+  $('#debs ul').html('');
+  $('#archives ul').html('')
   tmp = data
   data.package.files.forEach(function(f){
     tmp.file = f
