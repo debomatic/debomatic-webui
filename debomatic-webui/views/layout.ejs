@@ -10,11 +10,13 @@
                 info = path.split('/');
                 data = {}
                 if (info.length >= 1) {
-                    data.distribution = info[0];
+                    data.distribution = {}
+                    data.distribution.name = info[0];
                 }
                 if (info.length >= 3){
-                    data.package = info[1];
-                    data.version = info[2];
+                    data.package = {}
+                    data.package.name = info[1];
+                    data.package.version = info[2];
                 }
                 socket.emit('get-view', data);
             }
@@ -26,23 +28,9 @@
                     $('#distributions').append('<li><a href="#' + name + '">' + name + '</li>');
                 });
             });
-            
-            socket.on('packages', function(data) {
-                $('#packages').html('');
-                distro = data.distribution
-                data.packages.forEach(function (p){
-                    $('#packages').append('<li><a href="#' + distro + "/" + p.name + "/" + p.version +'">' + p.name + " [" + p.version + "]" + '</li>');
-                });
-            });
-            
-            socket.on('package-files', function(data) {
-                $('#files').html('');
-                distro = data.distribution
-                package = data.package
-                version = data.version
-                data.files.forEach(function (f){
-                    $('#files').append('<li><a href="#' + distro + "/" + package + "/" +version +'/'+ f.name +'">'+ f.label + '</li>');
-                });
+
+            socket.on('view', function(data){
+                console.log(data)
             });
             
             socket.on('error', function() { console.error(arguments) });

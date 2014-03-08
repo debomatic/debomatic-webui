@@ -40,12 +40,7 @@ app.get('/', routes.index);
 io.sockets.on('connection', function(socket) {
     send.distributions(socket);
     socket.on('get-view', function(data) {
-        if (! data.package) {
-            send.packages_list(socket, data);
-        }
-        else {
-            send.package(socket, data);
-        }
+            send.view(socket, data);
     });
 });
 
