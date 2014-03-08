@@ -38,62 +38,54 @@ var io = require('socket.io').listen(app);
 // Routes
 app.get('/', routes.index);
 
+function watcher_on_socket(event_name, socket, data, watch_path, updater) {
+    name = "watcher-" + event_name
+    socket.get(name, function (err, watcher) {
+        if (watcher)
+            watcher.close()
+        try {
+            watcher = fs.watch(watch_path, {persistent: true}, function (event, fileName) {
+                if(event == 'rename')
+                    updater(socket, data)
+            })
+            socket.set(name, watcher)
+        } catch (err_watch) {}
+    })
+}
+
+function check_data_distribution(data) {
+    return data && data.distribution && data.distribution.name
+}
+
+function check_data_package(data) {
+    return check_data_distribution(data) && data.package && data.package.name && data.package.version
+}
+
 io.sockets.on('connection', function(socket) {
     send.distributions(socket);
     
     // send distribution packages
     socket.on('get_distribution_packages', function (data) {
-        if (!data)
+        if (! check_data_distribution(data))
             return
-        socket.get("watcher-distribution-packages", function(err, watcher){
-            if (watcher) 
-                watcher.close()
-            if (!data.distribution || !data.distribution.name)
-                return
-            packages_path = path.join(config.debomatic_path, data.distribution.name, 'pool')
-            // watch for incoming packages
-            try {
-                watcher = fs.watch(packages_path, { persistent: true}, function(event, fileName) {
-                    if (event == 'rename')
-                        send.distribution_packages(socket, data);
-                });
-                socket.set('watcher-distribution-packages', watcher);
-            } catch (err) {}
-        })
+        distribution_path = path.join(config.debomatic_path, data.distribution.name, 'pool')
+        watcher_on_socket('get_distribution_packages', socket, data, distribution_path, send.distribution_packages)
         send.distribution_packages(socket, data);
     })
     
     socket.on('get_package_file_list', function(data) {
-        if (!data)
+        if (! check_data_package(data))
             return
-        socket.get('wather-package-files-list', function (err, watcher) {
-            if (watcher)
-                watcher.close()
-            if (!data.distribution || !data.distribution.name ||
-                ! data.package ||
-                ! data.package.name || ! data.package.version)
-                return
-            package_path = path.join(config.debomatic_path, data.distribution.name, 'pool', data.package.name + "_" + data.package.version)
-            try {
-                watcher = fs.watch(package_path, { persistent: true}, function(event, fileName) {
-                    if (event == 'rename')
-                        send.package_file_list(socket, data);
-                });
-                socket.set('watcher-package-files-list', watcher);
-            } catch (err) {}
-        })
-        send.package_file_list(socket, data);
+        package_path = path.join(config.debomatic_path, data.distribution.name, 'pool', data.package.name + "_" + data.package.version)
+        watcher_on_socket('get_package_file_list', socket, data, package_path, send.package_file_list)
+        send.package_file_list(socket, data)
+        
     })
 });
 
 
 io.sockets.on('disconnect', function(socket){
-    socket.get('watchers', function(err, watchers) {
-        if (watchers) watchers.forEach(function(w){
-            w.close()
-        });
-        socket.set('watchers', []);
-    });
+
 });
 
 fs.watch(config.debomatic_path, { persistent: true }, function (event, fileName) {
