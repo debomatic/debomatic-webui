@@ -72,6 +72,7 @@ function __send_distribution_packages (socket, data) {
       info = p.split('_')
       pack.name = info[0]
       pack.version = info[1]
+      pack.orig_name = p
       if( data.package &&
         pack.name == data.package.name &&
         pack.version == data.package.version ) {
