@@ -108,6 +108,8 @@ var Page = {
     append: function(data) {
       new_html =  $("#file pre").html() + data.file.new_content
       $("#file pre").html(new_html)
+      // scroll down
+      $('body,html').animate({ scrollTop: $('#file pre').height() }, 500);
     },
     get: function(data) {
       if (! data)
