@@ -19,6 +19,19 @@ function get_path(path) {
   }
 }
 
+function build_hash(data) {
+  hash = "#"
+  if (data.distribution && data.distribution.name) {
+    hash = hash + data.distribution.name
+    if (data.package && data.package.name && data.package.version) {
+      hash = hash + '/' + data.package.name + "/" + data.package.version
+      if (data.file && data.file.name)
+      hash = hash + '/' + data.file.name
+    }
+  }
+  return hash
+}
+
 var socket = io.connect('//localhost:3000');
 
 socket.on('distributions', function(distributions) {
@@ -30,16 +43,20 @@ socket.on('distributions', function(distributions) {
 
 socket.on('distribution_packages', function(data){
   $('#packages ul').html('')
+  tmp = data
+  tmp.file = null
   data.distribution.packages.forEach(function(p){
-    div = $('#packages ul').append('<li><a href="#' + data.distribution.name + '/' + p.name + '/'+ p.version + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
+    tmp.package = p
+    div = $('#packages ul').append('<li><a href="' + build_hash(tmp) + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
   })
 })
 
 socket.on('package_file_list', function(data){
   $('#files ul').html('');
+  tmp = data
   data.package.files.forEach(function(f){
-    p = data.package
-    $('#files ul').append('<li><a href="#' + data.distribution.name + '/' + p.name + '/'+ p.version + '/' + f.name + '">' + f.name + '</a></li>')
+    tmp.file = f
+    $('#files ul').append('<li><a href="'+ build_hash(tmp) + '">' + f.name + '</a></li>')
   })
 })
 
