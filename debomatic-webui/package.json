@@ -8,5 +8,6 @@
     , "ejs": ">= 0.0.1"
     , "socket.io": "*"
     , "node-fs": "*"
+    , "node-tail": "*"
   }
 }
