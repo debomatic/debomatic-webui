@@ -59,7 +59,7 @@ var Page_Distrubion = {
     set: function (data) {
       Page_Distrubion.files.clean()
       tmp = data
-      if (data.package.files) {
+      if (data.package.files && data.package.files.length > 0) {
         selected_file = Utils.check_data_file(data)
         data.package.files.forEach(function(f){
           tmp.file = f
@@ -73,14 +73,14 @@ var Page_Distrubion = {
         Page_Distrubion.select()
       }
       
-      if (data.package.debs) {
+      if (data.package.debs && data.package.debs.length > 0) {
         data.package.debs.forEach(function(f){
           $('#debs ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a> <span>.' + f.label + '</span></li>')
         })
         $('#debs').show()
       }
       
-      if (data.package.archives) {
+      if (data.package.archives && data.package.archives.length > 0) {
         data.package.archives.forEach(function(f){
           $('#archives ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a></li>')
         })
