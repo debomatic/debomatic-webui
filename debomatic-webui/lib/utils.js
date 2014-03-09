@@ -37,13 +37,14 @@ function __get_files_list(dir, onlyDirectories, callback) {
     files.forEach( function(f) {
       try {
         complete_path = path.join(dir, f);
+        stat = fs.statSync(complete_path)
         if (onlyDirectories) {
-          if (fs.statSync(complete_path).isDirectory()) {
+          if (stat.isDirectory()) {
             result.push(f);
           }
         }
         else {
-          if (fs.statSync(complete_path).isFile()) {
+          if (stat.isFile()) {
             result.push(f);
           }
         }
