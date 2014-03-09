@@ -44,15 +44,6 @@ if (window.location.pathname == DISTRIBUTION_PAGE) {
   $(window).on('load', function (){
     __check_hash_has_sense()
     Page_Distrubion.update(old_data)
-    $(window).scroll(function() {
-      var offset = $("#file").offset();
-      if ($(window).scrollTop() > offset.top + 220) {
-        $("#sticky").stop().addClass('fixed');
-      } 
-      else {
-        $("#sticky").stop().removeClass('fixed');
-      }
-    });
   });
 }
 
