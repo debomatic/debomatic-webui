@@ -71,11 +71,7 @@ function __send_file (event_name, socket, data) {
   });
 }
 
-function __send_distributions(event_name, socket, data) {
-  utils.get_files_list(config.debomatic.path, true, function(distros){
-    socket.emit(event_name, distros);
-  });
-}
+
 
 function __handler_get_file (socket, data) {
   file_path = utils.get_file_path(data)
@@ -92,8 +88,8 @@ function __handler_file_newcontent(event_name, socket, data) {
 
 Client = function (socket) {
 
-  utils.generic_handler_watcher('distributions', socket, null, config.debomatic.path, __send_distributions)
-  
+  utils.send_distributions(socket)
+
   socket.on('get_distribution_packages', function (data) {
     if (! utils.check_data_distribution(data))
       return

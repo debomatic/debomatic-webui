@@ -47,6 +47,11 @@ io.sockets.on('disconnect', function(socket){
 
 });
 
+// watch for new distributions
+fs.watch(config.debomatic.path, { persistent: true }, function (event, fileName) {
+  utils.send_distributions(io.sockets);
+});
+
 var server = app.listen(config.port, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
