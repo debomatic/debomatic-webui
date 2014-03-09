@@ -156,7 +156,7 @@ var Page_Distrubion = {
       if (! hash )
         hash = window.location.hash
       hash = hash.replace('#', '')
-      new_html = ''
+      new_html = '<li><a href="/">home</a></li>'
       new_hash = '#'
       info = hash.split('/')
       for (var i = 0; i < info.length ; i++) {
