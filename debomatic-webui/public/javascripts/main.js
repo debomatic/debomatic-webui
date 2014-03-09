@@ -4,11 +4,11 @@ var socket = io.connect('//localhost:3000');
 socket.on('distributions', function(distributions) {
     $('#distributions ul').html('');
     distributions.forEach(function (name){
-      $('#distributions ul').append('<li id="distribution-' + name +'"><a href="/distribution#' + name + '">' + name + '</li>');
+      $('#distributions ul').append('<li id="distribution-' + name +'"><a href="'+ DISTRIBUTION_PAGE + '#'+ name + '">' + name + '</li>');
     });
 });
 
-if (window.location.pathname == '/distribution') {
+if (window.location.pathname == DISTRIBUTION_PAGE) {
 
   function __check_hash_has_sense() {
     info = window.location.hash.split('/')

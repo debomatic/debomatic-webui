@@ -11,12 +11,14 @@
     <script src='/socket.io/socket.io.js'></script>
     <script src="/libs/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
+    <script>
+    var AUTOSCROLL = <%= autoscroll %>
+    var DISTRIBUTION_PAGE = '<%= paths.distribution %>'
+    </script>
+
     <script src='/javascripts/utils.js'></script>
     <script src='/javascripts/page_distribution.js'></script>
     <script src='/javascripts/main.js'></script>
-    <script>
-    var AUTOSCROLL = <%= autoscroll %>
-    </script>
   </head>
   <body>
     <div class="container-fluid">

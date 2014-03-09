@@ -21,8 +21,8 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
-  app.use(config.debomatic.webpath, express.directory(config.debomatic.path));
-  app.use(config.debomatic.webpath, express.static(config.debomatic.path));
+  app.use(config.routes.debomatic, express.directory(config.debomatic.path));
+  app.use(config.routes.debomatic, express.static(config.debomatic.path));
 });
 
 app.configure('development', function(){
@@ -37,7 +37,7 @@ var io = require('socket.io').listen(app);
 
 // Routes
 app.get('/', routes.index);
-app.get('/distribution', routes.distribution)
+app.get(config.routes.distribution, routes.distribution)
 
 io.sockets.on('connection', function(socket) {
   send.distributions(socket);
