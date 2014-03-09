@@ -77,11 +77,6 @@ function __send_distributions(event_name, socket, data) {
   });
 }
 
-function __generic_handler(event_name, socket, data, watch_path, callback) {
-  utils.watch_path_onsocket(event_name, socket, data, config.debomatic.path, callback)
-  callback(event_name, socket, data)
-}
-
 function __handler_get_file (socket, data) {
   file_path = utils.get_file_path(data)
   utils.watch_path_onsocket('file_newcontent', socket, data, file_path, __handler_file_newcontent)
@@ -97,20 +92,20 @@ function __handler_file_newcontent(event_name, socket, data) {
 
 Client = function (socket) {
 
-  __generic_handler('distributions', socket, null, config.debomatic.path, __send_distributions)
+  utils.generic_handler_watcher('distributions', socket, null, config.debomatic.path, __send_distributions)
   
   socket.on('get_distribution_packages', function (data) {
     if (! utils.check_data_distribution(data))
       return
     distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool')
-    __generic_handler('distribution_packages', socket, data, distribution_path, __send_distribution_packages)
+    utils.generic_handler_watcher('distribution_packages', socket, data, distribution_path, __send_distribution_packages)
   })
   
   socket.on('get_package_files_list', function(data) {
     if (! utils.check_data_package(data))
       return
     package_path = utils.get_package_path(data)
-    __generic_handler('package_files_list', socket, data, package_path, __send_package_files_list)
+    utils.generic_handler_watcher('package_files_list', socket, data, package_path, __send_package_files_list)
   })
   
   socket.on('get_file', function (data){

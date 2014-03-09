@@ -86,6 +86,11 @@ function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
   })
 }
 
+function __generic_handler_watcher(event_name, socket, data, watch_path, callback) {
+  __watch_path_onsocket(event_name, socket, data, config.debomatic.path, callback)
+  callback(event_name, socket, data)
+}
+
 utils = {
   check_data_distribution: function(data) {
     return __check_data_distribution(data)
@@ -110,7 +115,11 @@ utils = {
   },
   watch_path_onsocket: function(event_name, socket, data, watch_path, updater) {
     return __watch_path_onsocket(event_name, socket, data, watch_path, updater)
+  },
+  generic_handler_watcher: function(event_name, socket, data, watch_path, callback) {
+    return __generic_handler_watcher(event_name, socket, data, watch_path, callback);
   }
+  
 }
 
 module.exports = utils
