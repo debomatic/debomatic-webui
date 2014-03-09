@@ -171,6 +171,20 @@ var Page_Distrubion = {
     }
   },
   
+  // stiky sidebar
+  sticky: function() {
+//    $(window).off("scroll")
+//    // back on top
+////    $("html, body").animate({scrollTop: 0}, 0);
+//    var offset = $("#sticky").offset();
+//    $(window).scroll(function() {
+//      if ($(window).scrollTop() > offset.top)
+//        $("#sticky").stop().addClass('fixed');
+//      else 
+//        $("#sticky").stop().removeClass('fixed');
+//    })
+  },
+  
   select: function(data) {
       Page_Distrubion.unselect()
       if (! data)
@@ -237,6 +251,7 @@ var Page_Distrubion = {
       Page_Distrubion.title.set(data)
       Page_Distrubion.breadcrumb.update()
       Page_Distrubion.select(data)
+      Page_Distrubion.sticky()
     }
   },
   
@@ -250,5 +265,6 @@ var Page_Distrubion = {
     Page_Distrubion.select(data)
     Page_Distrubion.breadcrumb.update()
     Page_Distrubion.title.set(data)
+    Page_Distrubion.sticky()
   }
 }
