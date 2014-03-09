@@ -9,6 +9,32 @@
   cursor: pointer;
 }
 
+footer {
+  height: 40px;
+}
+#wrapper {
+  padding-bottom: 40px;
+}
+
+
+footer {
+  position: fixed;
+  padding-top: 10px;
+  width: 100%;
+  bottom: 0;
+  background: #fafafa;
+  border-top: 1px solid #f0f0f0;
+}
+
+#status span {
+  font-weight: bold;
+}
+
+#status .packages {
+  display: inline;
+}
+
 aside .nav-pills li {
   line-height: 10px;
 }
+

@@ -23,7 +23,7 @@
     <script src='/javascripts/main.js'></script>
   </head>
   <body>
-    <div class="container-fluid">
+    <div id="wrapper" class="container-fluid">
 
       <header id="header" onclick="window.location.href='/'">
         <h1><%= title %></h1>
@@ -32,7 +32,7 @@
 
       <nav id="distributions" class="navbar navbar-inverse" role="navigation">
         <div class="navbar-header">
-            <span class="navbar-brand" href="#">Distrbutions</span>
+            <span class="navbar-brand" href="#">Distributions</span>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav"></ul>
@@ -41,11 +41,17 @@
 
       <%- body %>
 
-      <footer>
+    </div> <!-- #wrapper -->
+    
+    <footer class="container-fluid">
+      <small class="copyright pull-right text-muted">
         <%= footer %>
-      </footer>
-
-    </div> <!-- .container-fluild -->
+      </small>
+      <div id="status" class="clearfix">
+          <span>status:</span> <span class="idle text-muted">Idle</span>
+        <ul class="packages list-inline"></ul>
+      </div>
+    </footer>
 
   </body>
 </html>
