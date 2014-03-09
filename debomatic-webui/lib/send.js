@@ -12,17 +12,19 @@ function __get_files_list(dir, onlyDirectories, callback) {
       return;
     }
     files.forEach( function(f) {
-      complete_path = path.join(dir, f);
-      if (onlyDirectories) {
-        if (fs.statSync(complete_path).isDirectory()) {
-          result.push(f);
+      try {
+        complete_path = path.join(dir, f);
+        if (onlyDirectories) {
+          if (fs.statSync(complete_path).isDirectory()) {
+            result.push(f);
+          }
         }
-      }
-      else {
-        if (fs.statSync(complete_path).isFile()) {
-          result.push(f);
+        else {
+          if (fs.statSync(complete_path).isFile()) {
+            result.push(f);
+          }
         }
-      }
+      } catch (fs_error) {}
     });
     callback(result);
   });
