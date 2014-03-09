@@ -1,5 +1,3 @@
-var socket = io.connect('//localhost:3000');
-
 // update distributions
 socket.on('distributions', function(distributions) {
     $('#distributions ul').html('');

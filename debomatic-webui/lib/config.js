@@ -16,5 +16,7 @@ config.web.description = "This is a web interface for debomatic"
 config.web.footer = "Fork me on github.com"
 config.web.autoscroll = true
 config.web.paths = config.routes
+config.web.host = config.host
+config.web.port = ((config.port == 80) ? null : config.port)
 
 module.exports = config

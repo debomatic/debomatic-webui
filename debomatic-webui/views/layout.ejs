@@ -14,6 +14,8 @@
     <script>
     var AUTOSCROLL = <%= autoscroll %>
     var DISTRIBUTION_PAGE = '<%= paths.distribution %>'
+    var HOSTNAME = '<%= host %><% if (port) { %>:<%= port%><% } %>'
+    var socket = io.connect('//' + HOSTNAME);
     </script>
 
     <script src='/javascripts/utils.js'></script>
