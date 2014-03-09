@@ -7,7 +7,6 @@ var express = require('express')
   , routes = require('./routes')
   , fs = require('fs')
   , path = require('path')
-  , Tail = require('tail').Tail
   , config = require('./lib/config.js')
   , send = require('./lib/send.js')
   , utils = require('./lib/utils.js')
@@ -40,39 +39,6 @@ var io = require('socket.io').listen(app);
 app.get('/', routes.index);
 app.get('/distribution', routes.distribution)
 
-function watch_path_onsocket(event_name, socket, data, watch_path, updater) {
-  name = "watcher-" + event_name
-  socket.get(name, function (err, watcher) {
-    if (watcher) {
-      try {
-        watcher.unwatch()
-      } catch (errorWatchingDirectory) {
-        watcher.close()
-      }
-    }
-    try {
-      fs.stat(watch_path, function(err, stats) {
-        if (err)
-          return
-        if (stats.isDirectory()) {
-          watcher = fs.watch(watch_path, {persistent: true}, function (event, fileName) {
-          if(event == 'rename')
-            updater(socket, data)
-          })
-        }
-        else {
-          watcher = new Tail(watch_path)
-          watcher.on('line', function(new_content) {
-            data.file.new_content = new_content + '\n'
-            updater(socket, data)
-          })
-        }
-        socket.set(name, watcher)
-      })
-    } catch (err_watch) {}
-  })
-}
-
 io.sockets.on('connection', function(socket) {
   send.distributions(socket);
   
@@ -80,25 +46,19 @@ io.sockets.on('connection', function(socket) {
   socket.on('get_distribution_packages', function (data) {
     if (! utils.check_data_distribution(data))
       return
-    distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool')
-    watch_path_onsocket('get_distribution_packages', socket, data, distribution_path, send.distribution_packages)
     send.distribution_packages(socket, data);
   })
   
-  socket.on('get_package_file_list', function(data) {
+  socket.on('get_package_files_list', function(data) {
     if (! utils.check_data_package(data))
       return
-    package_path = utils.get_package_path(data)
-    watch_path_onsocket('get_package_file_list', socket, data, package_path, send.package_file_list)
-    send.package_file_list(socket, data)
+    send.package_files_list(socket, data)
     
   })
   
   socket.on('get_file', function (data){
     if (! utils.check_data_file(data))
       return
-    file_path = utils.get_file_path(data)
-    watch_path_onsocket('get_file', socket, data, file_path, send.file_newcontent)
     send.file(socket, data)
   })
 });

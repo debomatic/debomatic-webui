@@ -1,5 +1,6 @@
 var fs = require('fs')
   , path = require('path')
+  , Tail = require('tail').Tail
   , config = require('./config.js')
   , utils = require('./utils.js')
 
@@ -57,13 +58,13 @@ function __get_files_list_from_package(data, callback) {
   });
 }
 
-function __send_package_files_list (socket, data) {
+function __send_package_files_list (event_name, socket, data) {
   __get_files_list_from_package(data, function(new_data){
-    socket.emit('package_file_list', new_data)
+    socket.emit(event_name, new_data)
   });
 }
 
-function __send_distribution_packages (socket, data) {
+function __send_distribution_packages (event_name, socket, data) {
   distro_path = utils.get_distribution_pool_path(data)
   __get_files_list(distro_path, true, function (packages) {
     data.distribution.packages = []
@@ -80,18 +81,55 @@ function __send_distribution_packages (socket, data) {
       }
       data.distribution.packages.push(pack)
     });
-    socket.emit("distribution_packages", data)
+    socket.emit(event_name, data)
   });
 }
 
-function __send_file (socket, data) {
+function __send_file (event_name, socket, data) {
   file_path = utils.get_file_path(data)
   fs.readFile(file_path, 'utf8', function (err, content) {
     if (err) return;
     data.file.orig_name = file_path.split('/').pop()
     data.file.content = content
-    socket.emit('file', data)
+    socket.emit(event_name, data)
   });
+}
+
+function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
+  name = "watcher-" + event_name
+  socket.get(name, function (err, watcher) {
+    if (watcher) {
+      try {
+        watcher.unwatch()
+      } catch (errorWatchingDirectory) {
+        watcher.close()
+      }
+    }
+    try {
+      fs.stat(watch_path, function(err, stats) {
+        if (err)
+          return
+        if (stats.isDirectory()) {
+          watcher = fs.watch(watch_path, {persistent: true}, function (event, fileName) {
+          if(event == 'rename')
+            updater(event_name, socket, data)
+          })
+        }
+        else {
+          watcher = new Tail(watch_path)
+          watcher.on('line', function(new_content) {
+            data.file.new_content = new_content + '\n'
+            updater(event_name, socket, data)
+          })
+        }
+        socket.set(name, watcher)
+      })
+    } catch (err_watch) {}
+  })
+}
+
+function __file_newcontent(event_name, socket, data) {
+  socket.emit(event_name, data)
 }
 
 sender = {
@@ -102,21 +140,25 @@ sender = {
     });
   },
 
-  package_file_list: function(socket, data) {
-    __send_package_files_list(socket, data)
+  package_files_list: function(socket, data) {
+    event_name = 'package_files_list'
+    package_path = utils.get_package_path(data)
+    __watch_path_onsocket(event_name, socket, data, package_path, __send_package_files_list)
+    __send_package_files_list(event_name, socket, data)
   },
 
   distribution_packages: function(socket, data) {
-    __send_distribution_packages(socket, data)
+    event_name = 'distribution_packages'
+    distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool')
+    __watch_path_onsocket(event_name, socket, data, distribution_path, __send_distribution_packages)
+    __send_distribution_packages(event_name, socket, data)
   },
   
   file: function(socket, data) {
-    __send_file(socket, data)
+    file_path = utils.get_file_path(data)
+    __watch_path_onsocket('file_newcontent', socket, data, file_path, __file_newcontent)
+    __send_file('file', socket, data)
   },
-  
-  file_newcontent: function(socket, data) {
-    socket.emit('file_newcontent', data);
-  }
 }
 
 module.exports = sender

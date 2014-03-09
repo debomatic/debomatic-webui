@@ -87,7 +87,7 @@ var Page_Distrubion = {
       if (! data)
         data = Utils.from_hash_to_data()
       if (Utils.check_data_package(data))
-        socket.emit("get_package_file_list", data)
+        socket.emit("get_package_files_list", data)
     },
     select: function(file) {
       $("#logs li").removeClass('active')

@@ -16,7 +16,7 @@ if (window.location.pathname == '/distribution') {
     Page_Distrubion.packages.set(data)
   })
 
-  socket.on('package_file_list', function(data){
+  socket.on('package_files_list', function(data){
     Page_Distrubion.files.set(data)
   })
 
