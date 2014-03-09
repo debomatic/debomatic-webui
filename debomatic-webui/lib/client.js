@@ -4,35 +4,9 @@ var fs = require('fs')
   , config = require('./config.js')
   , utils = require('./utils.js')
 
-function __get_files_list(dir, onlyDirectories, callback) {
-  fs.readdir(dir, function(err, files){
-    result = [];
-    if (err) { 
-      console.error(err); 
-      return;
-    }
-    files.forEach( function(f) {
-      try {
-        complete_path = path.join(dir, f);
-        if (onlyDirectories) {
-          if (fs.statSync(complete_path).isDirectory()) {
-            result.push(f);
-          }
-        }
-        else {
-          if (fs.statSync(complete_path).isFile()) {
-            result.push(f);
-          }
-        }
-      } catch (fs_error) {}
-    });
-    callback(result);
-  });
-}
-
 function __get_files_list_from_package(data, callback) {
   package_path = utils.get_package_path(data)
-  __get_files_list(package_path, false, function(files) {
+  utils.get_files_list(package_path, false, function(files) {
     data.package.files = []
     data.package.debs = []
     data.package.archives = []
@@ -68,7 +42,7 @@ function __send_package_files_list (event_name, socket, data) {
 
 function __send_distribution_packages (event_name, socket, data) {
   distro_path = utils.get_distribution_pool_path(data)
-  __get_files_list(distro_path, true, function (packages) {
+  utils.get_files_list(distro_path, true, function (packages) {
     data.distribution.packages = []
     packages.forEach( function (p) {
       pack = {}
@@ -99,7 +73,7 @@ function __send_file (event_name, socket, data) {
 }
 
 function __send_distributions(event_name, socket, data) {
-  __get_files_list(config.debomatic.path, true, function(distros){
+  utils.get_files_list(config.debomatic.path, true, function(distros){
     socket.emit(event_name, distros);
   });
 }
@@ -136,8 +110,6 @@ function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
     } catch (err_watch) {}
   })
 }
-
-
 
 function __generic_handler(event_name, socket, data, watch_path, callback) {
   __watch_path_onsocket(event_name, socket, data, config.debomatic.path, callback)
