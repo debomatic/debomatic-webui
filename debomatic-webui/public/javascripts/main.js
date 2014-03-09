@@ -10,6 +10,12 @@ socket.on('distributions', function(distributions) {
 
 if (window.location.pathname == '/distribution') {
 
+  function __check_hash_has_sense() {
+    info = window.location.hash.split('/')
+    if (info.length == 2)
+      window.location.hash = info[0]
+  }
+
   var old_data = Utils.from_hash_to_data()
 
   socket.on('distribution_packages', function(data){
@@ -29,12 +35,14 @@ if (window.location.pathname == '/distribution') {
   })
 
   $(window).on('hashchange', function() {
+    __check_hash_has_sense()
     data = Utils.from_hash_to_data()
     Page_Distrubion.update(data, old_data)
     old_data = data
   });
 
   $(window).on('load', function (){
+    __check_hash_has_sense()
     Page_Distrubion.update(old_data)
     $(window).scroll(function() {
       var offset = $("#file").offset();
