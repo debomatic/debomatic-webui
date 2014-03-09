@@ -6,9 +6,13 @@ socket.on('distributions', function(distributions) {
     });
 });
 
+socket.on('error', function(data) { console.error(data) });
+
 if (window.location.pathname == DISTRIBUTION_PAGE) {
 
   function __check_hash_has_sense() {
+    if (! window.location.hash)
+      window.location.pathname = '/'
     info = window.location.hash.split('/')
     if (info.length == 2)
       window.location.hash = info[0]
@@ -44,5 +48,3 @@ if (window.location.pathname == DISTRIBUTION_PAGE) {
     Page_Distrubion.update(old_data)
   });
 }
-
-socket.on('error', function() { console.error(arguments) });
