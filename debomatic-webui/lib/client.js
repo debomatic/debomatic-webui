@@ -1,6 +1,5 @@
 var fs = require('fs')
   , path = require('path')
-  , Tail = require('tail').Tail
   , config = require('./config.js')
   , utils = require('./utils.js')
 
@@ -78,47 +77,14 @@ function __send_distributions(event_name, socket, data) {
   });
 }
 
-function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
-  name = "watcher-" + event_name
-  socket.get(name, function (err, watcher) {
-    if (watcher) {
-      try {
-        watcher.unwatch()
-      } catch (errorWatchingDirectory) {
-        watcher.close()
-      }
-    }
-    try {
-      fs.stat(watch_path, function(err, stats) {
-        if (err)
-          return
-        if (stats.isDirectory()) {
-          watcher = fs.watch(watch_path, {persistent: true}, function (event, fileName) {
-          if(event == 'rename')
-            updater(event_name, socket, data)
-          })
-        }
-        else {
-          watcher = new Tail(watch_path)
-          watcher.on('line', function(new_content) {
-            data.file.new_content = new_content + '\n'
-            updater(event_name, socket, data)
-          })
-        }
-        socket.set(name, watcher)
-      })
-    } catch (err_watch) {}
-  })
-}
-
 function __generic_handler(event_name, socket, data, watch_path, callback) {
-  __watch_path_onsocket(event_name, socket, data, config.debomatic.path, callback)
+  utils.watch_path_onsocket(event_name, socket, data, config.debomatic.path, callback)
   callback(event_name, socket, data)
 }
 
 function __handler_get_file (socket, data) {
   file_path = utils.get_file_path(data)
-  __watch_path_onsocket('file_newcontent', socket, data, file_path, __handler_file_newcontent)
+  utils.watch_path_onsocket('file_newcontent', socket, data, file_path, __handler_file_newcontent)
   __send_file('file', socket, data)
 }
 

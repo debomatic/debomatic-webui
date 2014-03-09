@@ -1,5 +1,6 @@
 var path = require('path')
   , fs = require('fs')
+  , Tail = require('tail').Tail
   , config = require('./config.js')
 
 function __check_data_distribution(data) {
@@ -52,6 +53,39 @@ function __get_files_list(dir, onlyDirectories, callback) {
   });
 }
 
+function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
+  name = "watcher-" + event_name
+  socket.get(name, function (err, watcher) {
+    if (watcher) {
+      try {
+        watcher.unwatch()
+      } catch (errorWatchingDirectory) {
+        watcher.close()
+      }
+    }
+    try {
+      fs.stat(watch_path, function(err, stats) {
+        if (err)
+          return
+        if (stats.isDirectory()) {
+          watcher = fs.watch(watch_path, {persistent: true}, function (event, fileName) {
+          if(event == 'rename')
+            updater(event_name, socket, data)
+          })
+        }
+        else {
+          watcher = new Tail(watch_path)
+          watcher.on('line', function(new_content) {
+            data.file.new_content = new_content + '\n'
+            updater(event_name, socket, data)
+          })
+        }
+        socket.set(name, watcher)
+      })
+    } catch (err_watch) {}
+  })
+}
+
 utils = {
   check_data_distribution: function(data) {
     return __check_data_distribution(data)
@@ -73,6 +107,9 @@ utils = {
   },
   get_files_list: function(dir, onlyDirectories, callback) {
     return __get_files_list(dir, onlyDirectories, callback)
+  },
+  watch_path_onsocket: function(event_name, socket, data, watch_path, updater) {
+    return __watch_path_onsocket(event_name, socket, data, watch_path, updater)
   }
 }
 
