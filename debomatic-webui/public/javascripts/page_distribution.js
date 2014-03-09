@@ -41,6 +41,17 @@ var Page_Distrubion = {
         new_data.distribution = data.distribution
         socket.emit("get_distribution_packages", new_data)
       }
+    },
+    select: function(data) {
+      Page_Distrubion.packages.unselect()
+      if (! data)
+        data = Utils.from_hash_to_data()
+      if (Utils.check_data_package(data)) {
+        $("#packages li[id='package-"+ data.package.orig_name + "']").addClass('active')
+      }
+    },
+    unselect: function() {
+      $('#packages li').removeClass('active')
     }
   },
 
@@ -96,9 +107,16 @@ var Page_Distrubion = {
         socket.emit("get_package_files_list", new_data)
       }
     },
-    select: function(file) {
-      $("#logs li").removeClass('active')
-      $(file).addClass('active')
+    select: function(data) {
+      Page_Distrubion.files.unselect()
+      if (! data)
+        data = Utils.from_hash_to_data()
+      if (Utils.check_data_file(data)) {
+        $("#logs li[id='file-" + data.file.orig_name + "']").addClass('active')
+      }
+    },
+    unselect: function() {
+        $('#logs li').removeClass('active');
     }
   },
   
@@ -154,22 +172,20 @@ var Page_Distrubion = {
   },
   
   select: function(data) {
+      Page_Distrubion.unselect()
       if (! data)
         data = Utils.from_hash_to_data()
       if (Utils.check_data_distribution(data)) {
-        $('#distributions li').removeClass('active')
         $("#distributions li[id='distribution-"  + data.distribution.name + "']").addClass('active')
-        
-        if (Utils.check_data_package(data)) {
-          $('#packages li').removeClass('active')
-          $("#packages li[id='package-"+ data.package.orig_name + "']").addClass('active')
-          
-          if (Utils.check_data_file(data)) {
-            $('#logs li').removeClass('active');
-            $("#logs li[id='file-" + data.file.orig_name + "']").addClass('active')
-          }
-        }
       }
+      Page_Distrubion.packages.select(data)
+      Page_Distrubion.files.select(data)
+  },
+  
+  unselect: function() {
+    $('#distributions li').removeClass('active')
+    Page_Distrubion.files.unselect()
+    Page_Distrubion.packages.unselect()
   },
   
   clean: function() {
@@ -177,7 +193,7 @@ var Page_Distrubion = {
     Page_Distrubion.packages.clean()
     Page_Distrubion.files.clean()
     Page_Distrubion.file.clean()
-    Page_Distrubion.select()
+    Page_Distrubion.unselect()
     Page_Distrubion.breadcrumb.update()
   },
   
@@ -203,6 +219,7 @@ var Page_Distrubion = {
         data.package.orig_name != old_data.package.orig_name )
       {
         Page_Distrubion.file.clean()
+        Page_Distrubion.files.clean()
         Page_Distrubion.files.get(data)
         if (Utils.check_data_package(data)) {
           // I will always get dataestamp from package
