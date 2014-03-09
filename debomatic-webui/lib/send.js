@@ -129,6 +129,9 @@ function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
 }
 
 function __file_newcontent(event_name, socket, data) {
+  if(! utils.check_data_file(data))
+    return
+  data.file.content = null
   socket.emit(event_name, data)
 }
 

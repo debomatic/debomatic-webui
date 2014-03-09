@@ -36,8 +36,11 @@ var Page_Distrubion = {
     get: function (data) {
       if (! data)
         data = Utils.from_hash_to_data()
-      if (Utils.check_data_distribution(data))
-        socket.emit("get_distribution_packages", data)
+      if (Utils.check_data_distribution(data)) {
+        new_data = {}
+        new_data.distribution = data.distribution
+        socket.emit("get_distribution_packages", new_data)
+      }
     }
   },
 
@@ -86,8 +89,12 @@ var Page_Distrubion = {
     get: function (data) {
       if (! data)
         data = Utils.from_hash_to_data()
-      if (Utils.check_data_package(data))
-        socket.emit("get_package_files_list", data)
+      if (Utils.check_data_package(data)) {
+        new_data = {}
+        new_data.distribution = data.distribution
+        new_data.package = data.package
+        socket.emit("get_package_files_list", new_data)
+      }
     },
     select: function(file) {
       $("#logs li").removeClass('active')
@@ -115,8 +122,14 @@ var Page_Distrubion = {
     get: function(data) {
       if (! data)
         data = Utils.from_hash_to_data()
-      if (Utils.check_data_file(data))
-        socket.emit("get_file", data)
+      if (Utils.check_data_file(data)) {
+        new_data = {}
+        new_data.distribution = data.distribution
+        new_data.package = data.package
+        new_data.file = data.file
+        new_data.file.content = null
+        socket.emit("get_file", new_data)
+      }
     }
   },
   
