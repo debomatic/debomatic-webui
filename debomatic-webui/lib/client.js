@@ -38,7 +38,7 @@ function __get_files_list_from_package(data, callback) {
     data.package.archives = []
     files.forEach(function (f) {
       file = {}
-      file.path = path.join(package_path, f).replace(config.debomatic.path, config.debomatic.webpath)
+      file.path = path.join(package_path, f).replace(config.debomatic.path, config.routes.debomatic)
       file.orig_name = f
       file.name = f.split('_')[0]
       file.label = f.replace(file.name + '_', '')
@@ -93,6 +93,7 @@ function __send_file (event_name, socket, data) {
     if (err) return;
     data.file.orig_name = file_path.split('/').pop()
     data.file.content = content
+    data.file.path = file_path.replace(config.debomatic.path, config.routes.debomatic)
     socket.emit(event_name, data)
   });
 }
