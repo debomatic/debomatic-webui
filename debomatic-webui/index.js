@@ -5,12 +5,12 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , config = require('./config.js')
-  , send = require('./send.js')
   , fs = require('fs')
   , path = require('path')
-  , utils = require('./utils.js')
   , Tail = require('tail').Tail
+  , config = require('./lib/config.js')
+  , send = require('./lib/send.js')
+  , utils = require('./lib/utils.js')
 
 var app = module.exports = express.createServer();
 

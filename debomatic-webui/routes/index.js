@@ -3,7 +3,7 @@
  * GET home page.
  */
 
-var config = require('../config.js')
+var config = require('../lib/config.js')
 
 exports.index = function(req, res){
   res.render('index', config.web)
