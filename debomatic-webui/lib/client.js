@@ -71,19 +71,13 @@ function __send_file (event_name, socket, data) {
   });
 }
 
-
-
 function __handler_get_file (socket, data) {
   file_path = utils.get_file_path(data)
-  utils.watch_path_onsocket('file_newcontent', socket, data, file_path, __handler_file_newcontent)
+  utils.watch_path_onsocket('file_newcontent', socket, data, file_path, function(event_name, socket, data) {
+    data.file.content = null
+    socket.emit(event_name, data)
+  })
   __send_file('file', socket, data)
-}
-
-function __handler_file_newcontent(event_name, socket, data) {
-  if(! utils.check_data_file(data))
-    return
-  data.file.content = null
-  socket.emit(event_name, data)
 }
 
 Client = function (socket) {
