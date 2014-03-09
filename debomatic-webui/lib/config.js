@@ -5,6 +5,7 @@ config.port = 3000
 
 config.debomatic = {}
 config.debomatic.path = '/srv/debomatic-amd64'
+config.debomatic.jsonfile = '/var/log/debomatic.json'
 
 config.routes = {}
 config.routes.debomatic = '/debomatic'

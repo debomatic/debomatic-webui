@@ -88,8 +88,6 @@ function __handler_file_newcontent(event_name, socket, data) {
 
 Client = function (socket) {
 
-  utils.send_distributions(socket)
-
   socket.on('get_distribution_packages', function (data) {
     if (! utils.check_data_distribution(data))
       return

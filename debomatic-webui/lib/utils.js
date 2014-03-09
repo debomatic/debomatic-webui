@@ -129,7 +129,7 @@ utils = {
     if (! event_name)
       event_name = 'distributions'
     return __send_distributions(event_name, socket);
-  }
+  },
 }
 
 module.exports = utils
