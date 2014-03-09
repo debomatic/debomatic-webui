@@ -97,6 +97,12 @@ function __send_file (event_name, socket, data) {
   });
 }
 
+function __send_distributions(event_name, socket, data) {
+  __get_files_list(config.debomatic.path, true, function(distros){
+    socket.emit(event_name, distros);
+  });
+}
+
 function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
   name = "watcher-" + event_name
   socket.get(name, function (err, watcher) {
@@ -137,33 +143,57 @@ function __file_newcontent(event_name, socket, data) {
   socket.emit(event_name, data)
 }
 
-sender = {
-
-  distributions: function(socket) {
-    __get_files_list(config.debomatic.path, true, function(distros){
-      socket.emit('distributions', distros);
-    });
-  },
-
-  package_files_list: function(socket, data) {
-    event_name = 'package_files_list'
-    package_path = utils.get_package_path(data)
-    __watch_path_onsocket(event_name, socket, data, package_path, __send_package_files_list)
-    __send_package_files_list(event_name, socket, data)
-  },
-
-  distribution_packages: function(socket, data) {
-    event_name = 'distribution_packages'
-    distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool')
-    __watch_path_onsocket(event_name, socket, data, distribution_path, __send_distribution_packages)
-    __send_distribution_packages(event_name, socket, data)
-  },
-  
-  file: function(socket, data) {
-    file_path = utils.get_file_path(data)
-    __watch_path_onsocket('file_newcontent', socket, data, file_path, __file_newcontent)
-    __send_file('file', socket, data)
-  },
+function __handler_get_distributions (socket, data) {
+  event_name = 'distributions'
+  __watch_path_onsocket(event_name,socket, data, config.debomatic.path, __send_distributions)
+  __send_distributions(event_name, socket, data)
 }
 
-module.exports = sender
+function __handler_get_package_files_list (socket, data) {
+  event_name = 'package_files_list'
+  package_path = utils.get_package_path(data)
+  __watch_path_onsocket(event_name, socket, data, package_path, __send_package_files_list)
+  __send_package_files_list(event_name, socket, data)
+}
+
+function __handler_get_distribution_packages (socket, data) {
+  event_name = 'distribution_packages'
+  distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool')
+  __watch_path_onsocket(event_name, socket, data, distribution_path, __send_distribution_packages)
+  __send_distribution_packages(event_name, socket, data)
+}
+
+function __handler_get_file (socket, data) {
+  file_path = utils.get_file_path(data)
+  __watch_path_onsocket('file_newcontent', socket, data, file_path, __file_newcontent)
+  __send_file('file', socket, data)
+}
+
+Client = function (socket) {
+
+  __handler_get_distributions(socket);
+  
+  // send distribution packages
+  socket.on('get_distribution_packages', function (data) {
+    if (! utils.check_data_distribution(data))
+      return
+    __handler_get_distribution_packages(socket, data);
+  })
+  
+  socket.on('get_package_files_list', function(data) {
+    if (! utils.check_data_package(data))
+      return
+    __handler_get_package_files_list(socket, data)
+  })
+  
+  socket.on('get_file', function (data){
+    if (! utils.check_data_file(data))
+      return
+    __handler_get_file(socket, data)
+  })
+
+  return {
+  }
+}
+
+module.exports = Client

@@ -8,7 +8,7 @@ var express = require('express')
   , fs = require('fs')
   , path = require('path')
   , config = require('./lib/config.js')
-  , send = require('./lib/send.js')
+  , client = require('./lib/client.js')
   , utils = require('./lib/utils.js')
 
 var app = module.exports = express.createServer();
@@ -40,35 +40,11 @@ app.get('/', routes.index);
 app.get(config.routes.distribution, routes.distribution)
 
 io.sockets.on('connection', function(socket) {
-  send.distributions(socket);
-  
-  // send distribution packages
-  socket.on('get_distribution_packages', function (data) {
-    if (! utils.check_data_distribution(data))
-      return
-    send.distribution_packages(socket, data);
-  })
-  
-  socket.on('get_package_files_list', function(data) {
-    if (! utils.check_data_package(data))
-      return
-    send.package_files_list(socket, data)
-    
-  })
-  
-  socket.on('get_file', function (data){
-    if (! utils.check_data_file(data))
-      return
-    send.file(socket, data)
-  })
+  client(socket)
 });
 
 io.sockets.on('disconnect', function(socket){
 
-});
-
-fs.watch(config.debomatic.path, { persistent: true }, function (event, fileName) {
-  send.distributions(io.sockets);
 });
 
 var server = app.listen(config.port, function(){
