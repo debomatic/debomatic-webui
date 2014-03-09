@@ -3,16 +3,22 @@ var path = require('path')
   , Tail = require('tail').Tail
   , config = require('./config.js')
 
+function __check_no_backward(backward_path) {
+  try {
+    return backward_path.indexOf('..') < 0
+  } catch (err) { return true }
+}
+
 function __check_data_distribution(data) {
-  return data && data.distribution && data.distribution.name
+  return __check_no_backward(data) && __check_no_backward(data.distribution) && __check_no_backward(data.distribution.name)
 }
 
 function __check_data_package(data) {
-  return __check_data_distribution(data) && data.package && data.package.name && data.package.version
+  return __check_data_distribution(data) && __check_no_backward(data.package) && __check_no_backward(data.package.name) && __check_no_backward(data.package.version)
 }
 
 function __check_data_file(data) {
-  return __check_data_package(data) && data.file && data.file.name
+  return __check_data_package(data) && __check_no_backward(data.file) && __check_no_backward(data.file.name)
 }
 
 function __get_distribution_pool_path(data) {
