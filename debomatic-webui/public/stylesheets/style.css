@@ -8,3 +8,7 @@
   background: url('../images/debian-logo.gif') right no-repeat;
   cursor: pointer;
 }
+
+aside .nav-pills li {
+  line-height: 10px;
+}
