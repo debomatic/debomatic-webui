@@ -9,4 +9,7 @@
     , "node-fs": "*"
     , "tail": "*"
   }
+  , "scripts": {
+      "install": "bash scripts/download_external_libs.sh"
+  }
 }
