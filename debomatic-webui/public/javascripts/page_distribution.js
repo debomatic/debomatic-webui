@@ -127,7 +127,7 @@ function Page_Distrubion()
         $('#logs li').removeClass('active');
     }
   }
-  
+
   var file = {
     set: function(socket_data) {
       $("#file pre").html(socket_data.file.content)
@@ -156,7 +156,7 @@ function Page_Distrubion()
       }
     }
   }
-  
+
   var breadcrumb = {
     update: function(hash) {
       if (! hash )
@@ -176,7 +176,7 @@ function Page_Distrubion()
       $('.breadcrumb').html(new_html)
     }
   }
-  
+
   // stiky sidebar
   var sticky = function() {
 //    $(window).off("scroll")
@@ -199,13 +199,13 @@ function Page_Distrubion()
       packages.select()
       files.select()
   }
-  
+
   var unselect = function() {
     $('#distributions li').removeClass('active')
     files.unselect()
     packages.unselect()
   }
-  
+
   var clean = function() {
     title.clean()
     packages.clean()
@@ -233,8 +233,8 @@ function Page_Distrubion()
       { // new pacakge view
         file.clean()
         files.get()
-        if (Utils.check_data_package(data)
-          && ! window.location.hash.split('/') > 3)
+        if ( Utils.check_data_package(data)
+          && window.location.hash.split('/').length <= 3)
         {
           // I will always get datastamp file from package
           window.location.hash += '/datestamp'
