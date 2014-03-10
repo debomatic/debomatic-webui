@@ -6,7 +6,7 @@ function Page_Distrubion()
   function __check_hash_makes_sense() {
     if (! window.location.hash)
       window.location.pathname = '/'
-    info = window.location.hash.split('/')
+    var info = window.location.hash.split('/')
     if (info.length == 2)
       window.location.hash = info[0]
   }
@@ -15,9 +15,9 @@ function Page_Distrubion()
     set: function(data) {
       if (! data)
         data = Utils.from_hash_to_data()
-      label = ''
+      var label = ''
       if (Utils.check_data_file(data)) {
-        complete_name = data.package.orig_name + '.' + data.file.name
+        var complete_name = data.package.orig_name + '.' + data.file.name
         if (! data.file.path)
           data.file.path = PATHS.debomatic + '/' + data.distribution.name + '/pool/' + data.package.orig_name + '/' + complete_name
         label = complete_name + ' \
@@ -39,7 +39,7 @@ function Page_Distrubion()
   var packages = {
     set: function (data) {
       $('#packages ul').html('')
-      tmp = data
+      var tmp = data
       tmp.file = null
       data.distribution.packages.forEach(function(p){
         tmp.package = p
@@ -55,7 +55,7 @@ function Page_Distrubion()
       if (! data)
         data = Utils.from_hash_to_data()
       if (Utils.check_data_distribution(data)) {
-        new_data = {}
+        var new_data = {}
         new_data.distribution = data.distribution
         socket.emit("get_distribution_packages", new_data)
       }
@@ -76,16 +76,16 @@ function Page_Distrubion()
   var files = {
     set: function (data) {
       files.clean()
-      tmp = data
+      var tmp = data
       if (data.package.files && data.package.files.length > 0) {
         selected_file = Utils.check_data_file(data)
         data.package.files.forEach(function(f){
           tmp.file = f
-          current_file = $('<li id="file-'+ f.orig_name +'"><a title="'+ f.orig_name +'" href="'+ Utils.from_data_to_hash(tmp) + '">' + f.name + '</a></li>')
-          current_file.on("click", function(){
+          var html_file = $('<li id="file-'+ f.orig_name +'"><a title="'+ f.orig_name +'" href="'+ Utils.from_data_to_hash(tmp) + '">' + f.name + '</a></li>')
+          html_file.on("click", function(){
             files.select(this)
           })
-          $('#logs ul').append(file)
+          $('#logs ul').append(html_file)
         })
         $('#logs').show()
         select()
@@ -119,7 +119,7 @@ function Page_Distrubion()
       if (! data)
         data = Utils.from_hash_to_data()
       if (Utils.check_data_package(data)) {
-        new_data = {}
+        var new_data = {}
         new_data.distribution = data.distribution
         new_data.package = data.package
         socket.emit("get_package_files_list", new_data)
@@ -149,7 +149,7 @@ function Page_Distrubion()
       $('#file').hide()
     },
     append: function(data) {
-      new_html =  $("#file pre").html() + data.file.new_content
+      var new_html =  $("#file pre").html() + data.file.new_content
       $("#file pre").html(new_html)
       
       if (AUTOSCROLL) // scroll down
@@ -159,7 +159,7 @@ function Page_Distrubion()
       if (! data)
         data = Utils.from_hash_to_data()
       if (Utils.check_data_file(data)) {
-        new_data = {}
+        var new_data = {}
         new_data.distribution = data.distribution
         new_data.package = data.package
         new_data.file = data.file
@@ -174,9 +174,9 @@ function Page_Distrubion()
       if (! hash )
         hash = window.location.hash
       hash = hash.replace('#', '')
-      new_html = '<li><a href="/">home</a></li>'
-      new_hash = '#'
-      info = hash.split('/')
+      var new_html = '<li><a href="/">home</a></li>'
+      var new_hash = '#'
+      var info = hash.split('/')
       for (var i = 0; i < info.length ; i++) {
         new_hash += info[i]
         if (i == (info.length - 1))
