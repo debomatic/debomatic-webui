@@ -8,9 +8,19 @@ socket.on('distributions', function(distributions) {
 
 socket.on('error', function(data) { console.error(data) });
 
+socket.on('status', function(data) {
+  console.log('status')
+  console.log(data)
+})
+
+socket.on('status-update', function(data) {
+  console.log('status')
+  console.log(data)
+})
+
 if (window.location.pathname == DISTRIBUTION_PAGE) {
 
-  function __check_hash_has_sense() {
+  function __check_hash_makes_sense() {
     if (! window.location.hash)
       window.location.pathname = '/'
     info = window.location.hash.split('/')
@@ -37,14 +47,14 @@ if (window.location.pathname == DISTRIBUTION_PAGE) {
   })
 
   $(window).on('hashchange', function() {
-    __check_hash_has_sense()
+    __check_hash_makes_sense()
     data = Utils.from_hash_to_data()
     Page_Distrubion.update(data, old_data)
     old_data = data
   });
 
   $(window).on('load', function (){
-    __check_hash_has_sense()
+    __check_hash_makes_sense()
     Page_Distrubion.update(old_data)
   });
 }
