@@ -77,30 +77,32 @@ function __send_file (event_name, socket, data) {
 
 function __handler_get_file (socket, data) {
   file_path = utils.get_file_path(data)
-  utils.watch_path_onsocket('file_newcontent', socket, data, file_path, function(event_name, socket, data) {
+  utils.watch_path_onsocket(events.file_newcontent, socket, data, file_path, function(event_name, socket, data) {
     data.file.content = null
     socket.emit(event_name, data)
   })
-  __send_file('file', socket, data)
+  __send_file(events.file.set, socket, data)
 }
 
 Client = function (socket) {
 
-  socket.on('get_distribution_packages', function (data) {
+  events = config.events.client
+
+  socket.on(events.distribution_packages.get, function (data) {
     if (! utils.check_data_distribution(data))
       return
     distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool')
-    utils.generic_handler_watcher('distribution_packages', socket, data, distribution_path, __send_distribution_packages)
+    utils.generic_handler_watcher(events.distribution_packages.set, socket, data, distribution_path, __send_distribution_packages)
   })
   
-  socket.on('get_package_files_list', function(data) {
+  socket.on(events.package_files_list.get, function(data) {
     if (! utils.check_data_package(data))
       return
     package_path = utils.get_package_path(data)
-    utils.generic_handler_watcher('package_files_list', socket, data, package_path, __send_package_files_list)
+    utils.generic_handler_watcher(events.package_files_list.set, socket, data, package_path, __send_package_files_list)
   })
   
-  socket.on('get_file', function (data){
+  socket.on(events.file.get, function (data){
     if (! utils.check_data_file(data))
       return
     __handler_get_file(socket, data)

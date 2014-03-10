@@ -1,6 +1,7 @@
 function Page_Distrubion()
 {
   var socket
+  var events = config.events.client
   var data = Utils.from_hash_to_data()
 
   function __check_hash_makes_sense() {
@@ -53,7 +54,7 @@ function Page_Distrubion()
       if (Utils.check_data_distribution(data)) {
         var new_data = {}
         new_data.distribution = data.distribution
-        socket.emit("get_distribution_packages", new_data)
+        socket.emit(events.distribution_packages.get, new_data)
       }
     },
     select: function() {
@@ -114,7 +115,7 @@ function Page_Distrubion()
         var new_data = {}
         new_data.distribution = data.distribution
         new_data.package = data.package
-        socket.emit("get_package_files_list", new_data)
+        socket.emit(events.package_files_list.get, new_data)
       }
     },
     select: function() {
@@ -152,7 +153,7 @@ function Page_Distrubion()
         new_data.package = data.package
         new_data.file = data.file
         new_data.file.content = null
-        socket.emit("get_file", new_data)
+        socket.emit(events.file.get, new_data)
       }
     }
   }
@@ -269,19 +270,19 @@ function Page_Distrubion()
 
     socket = mysocket
 
-    socket.on('distribution_packages', function(socket_data){
+    socket.on(events.distribution_packages.set, function(socket_data){
       packages.set(socket_data)
     })
 
-    socket.on('package_files_list', function(socket_data){
+    socket.on(events.package_files_list.set, function(socket_data){
       files.set(socket_data)
     })
 
-    socket.on('file', function (socket_data) {
+    socket.on(events.file.set, function (socket_data) {
       file.set(socket_data)
     })
 
-    socket.on('file_newcontent', function(socket_data) {
+    socket.on(events.file_newcontent, function(socket_data) {
       file.append(socket_data)
     })
 
