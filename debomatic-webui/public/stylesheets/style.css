@@ -9,13 +9,16 @@
   cursor: pointer;
 }
 
+aside .nav-pills li {
+  line-height: 10px;
+}
+
 footer {
   height: 40px;
 }
 #wrapper {
   padding-bottom: 40px;
 }
-
 
 footer {
   position: fixed;
@@ -31,11 +34,22 @@ footer {
   font-size: small;
 }
 
+#status > span.label {
+  margin-right: 10px;
+}
+
 #status .packages {
   display: inline;
 }
 
-aside .nav-pills li {
-  line-height: 10px;
+#status .packages li a {
+  position: relative;
+  padding-right: 22px;
+}
+
+#status .packages li a .icon {
+  position: absolute;
+  top: 3px;
+  right: 5px;
 }
 
