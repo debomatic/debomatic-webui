@@ -2,6 +2,49 @@ function Page_Generic()
 {
   var socket;
 
+  function __get_status_html(status_package) {
+
+    classes = {}
+    classes.building = 'warning'
+    classes.successed = 'success'
+    classes.failed = 'danger'
+
+    icons = {}
+    icons.building = 'refresh'
+    icons.successed = ''
+    icons.failed = ''
+
+    s = status_package
+
+    li = $('<li></li>')
+    li.attr('id', 'status-' + s.distribution + "-" + s.package)
+    button = $('<a></a>')
+    button.addClass('btn btn-xs')
+    button.addClass(s.status)
+    button.attr('title', s.status + ': ' + s.distribution + ' > ' + s.package)
+    button.attr('href', config.paths.distribution + '#' + s.distribution + '/' + s.package.replace('_', '/') + '/datestamp')
+    button.html(s.package.split('_')[0])
+    //button.html(button.html() + ' <small class="distribution">[' + s.distribution + ']</small>')
+    if (s.status == 'building') {
+      button_class = classes.building
+      icon = icons.building
+    }
+    else if (s.status == 'build-failed') {
+      button_class = classes.failed
+      icon = icons.failed
+    }
+    else {
+      button_class = classes.successed
+      icon = icons.successed
+    }
+    button.addClass('btn-' + button_class)
+    button.html(button.html() + ' <span class="icon glyphicon glyphicon-' + icon + '"></span>')
+    li.html(button)
+    result = $('<div></div>')
+    result.html(li)
+    return result.html()
+  }
+
   var update = {
     distributions: function(distributions) {
       $('#distributions ul').html('');
@@ -13,6 +56,22 @@ function Page_Generic()
         if (Utils.check_data_distribution(data)) {
           $("#distributions li[id='distribution-"  + data.distribution.name + "']").addClass('active')
         }
+      }
+    },
+    status: function(new_package) {
+      
+    }
+  }
+
+  var status =  {
+    set: function(data_status) {
+      $("#status ul").html('')
+      if (data_status.packages.length > 0) {
+        $('#status .idle').hide()
+        data_status.packages.forEach(function(p){
+          $("#status ul").html($("#status ul").html()  + " " + __get_status_html(p))
+      })
+
       }
     }
   }
@@ -28,9 +87,8 @@ function Page_Generic()
 
     socket.on('error', function(data) { console.error(data) });
 
-    socket.on('status', function(data) {
-      console.log('status')
-      console.log(data)
+    socket.on('status', function(data_status) {
+      status.set(data_status)
     })
 
     socket.on(config.events.broadcast.status_update, function(data) {

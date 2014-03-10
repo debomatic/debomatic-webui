@@ -28,6 +28,7 @@ footer {
 
 #status span {
   font-weight: bold;
+  font-size: small;
 }
 
 #status .packages {
