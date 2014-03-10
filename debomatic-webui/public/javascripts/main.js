@@ -2,7 +2,7 @@
 socket.on('distributions', function(distributions) {
     $('#distributions ul').html('');
     distributions.forEach(function (name){
-      $('#distributions ul').append('<li id="distribution-' + name +'"><a href="'+ DISTRIBUTION_PAGE + '#'+ name + '">' + name + '</li>');
+      $('#distributions ul').append('<li id="distribution-' + name +'"><a href="'+ PATHS.distribution + '#'+ name + '">' + name + '</li>');
     });
 });
 
@@ -18,7 +18,7 @@ socket.on('status-update', function(data) {
   console.log(data)
 })
 
-if (window.location.pathname == DISTRIBUTION_PAGE) {
+if (window.location.pathname == PATHS.distribution) {
 
   function __check_hash_makes_sense() {
     if (! window.location.hash)

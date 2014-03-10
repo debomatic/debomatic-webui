@@ -8,7 +8,7 @@ var Page_Distrubion = {
       if (Utils.check_data_file(data)) {
         complete_name = data.package.orig_name + '.' + data.file.name
         if (! data.file.path)
-          data.file.path = DEBOMATIC_STATIC + '/' + data.distribution.name + '/pool/' + data.package.orig_name + '/' + complete_name
+          data.file.path = PATHS.debomatic + '/' + data.distribution.name + '/pool/' + data.package.orig_name + '/' + complete_name
         label = complete_name + ' \
           <a class="btn btn-link btn-lg" title="Download" href="' + data.file.path + '">\
             <span class="glyphicon glyphicon-download-alt"></span>\

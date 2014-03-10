@@ -44,9 +44,8 @@
     <script src="/libs/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
     <script>
-    var DEBOMATIC_STATIC = '<%= paths.debomatic %>'
+    var PATHS = <%- JSON.stringify(paths) %>
     var AUTOSCROLL = <%= autoscroll %>
-    var DISTRIBUTION_PAGE = '<%= paths.distribution %>'
     var HOSTNAME = '<%= host %><% if (port) { %>:<%= port%><% } %>'
     var socket = io.connect('//' + HOSTNAME);
     </script>
