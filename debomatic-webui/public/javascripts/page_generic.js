@@ -4,16 +4,8 @@ function Page_Generic()
 
   function __get_status_html(status_package) {
 
-    classes = {}
-    classes.building = 'warning'
-    classes.successed = 'success'
-    classes.failed = 'danger'
-
-    icons = {}
-    icons.building = 'refresh'
-    icons.successed = ''
-    icons.failed = ''
-
+    c = config.status.classes
+    i = config.status.icons
     s = status_package
 
     li = $('<li></li>')
@@ -24,18 +16,17 @@ function Page_Generic()
     button.attr('title', s.status + ': ' + s.distribution + ' > ' + s.package)
     button.attr('href', config.paths.distribution + '#' + s.distribution + '/' + s.package.replace('_', '/') + '/datestamp')
     button.html(s.package.split('_')[0])
-    //button.html(button.html() + ' <small class="distribution">[' + s.distribution + ']</small>')
     if (s.status == 'building') {
-      button_class = classes.building
-      icon = icons.building
+      button_class = c.building
+      icon = i.building
     }
     else if (s.status == 'build-failed') {
-      button_class = classes.failed
-      icon = icons.failed
+      button_class = c.failed
+      icon = i.failed
     }
     else {
-      button_class = classes.successed
-      icon = icons.successed
+      button_class = c.successed
+      icon = i.successed
     }
     button.addClass('btn-' + button_class)
     button.html(button.html() + ' <span class="icon glyphicon glyphicon-' + icon + '"></span>')

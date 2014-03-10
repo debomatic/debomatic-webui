@@ -45,6 +45,18 @@
 
     <script>
     var config = <%- JSON.stringify(web) %>
+
+    config.status = {}
+    config.status.classes = {}
+    config.status.classes.building = 'info'
+    config.status.classes.successed = 'success'
+    config.status.classes.failed = 'danger'
+
+    config.status.icons = {}
+    config.status.icons.building = 'refresh'
+    config.status.icons.successed = 'ok'
+    config.status.icons.failed = 'error'
+
     </script>
 
     <script src='/javascripts/utils.js'></script>
