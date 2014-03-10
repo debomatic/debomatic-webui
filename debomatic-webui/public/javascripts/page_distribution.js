@@ -34,7 +34,7 @@ var Page_Distrubion = {
         tmp.package = p
         $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_data_to_hash(tmp) + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
       })
-      Page_Distrubion.select()
+      Page_Distrubion.select(data)
     },
     
     clean: function () {
@@ -87,11 +87,11 @@ var Page_Distrubion = {
         $('#debs').show()
       }
       
-      if (data.package.archives && data.package.archives.length > 0) {
-        data.package.archives.forEach(function(f){
-          $('#archives ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a></li>')
+      if (data.package.sources && data.package.sources.length > 0) {
+        data.package.sources.forEach(function(f){
+          $('#sources ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a></li>')
         })
-        $('#archives').show()
+        $('#sources').show()
       }
       $('#files').show()
     },
@@ -100,8 +100,8 @@ var Page_Distrubion = {
       $('#logs').hide()
       $('#debs ul').html('');
       $('#debs').hide();
-      $('#archives ul').html('')
-      $('#archives').hide()
+      $('#sources ul').html('')
+      $('#sources').hide()
       $('#files').hide()
     },
     get: function (data) {

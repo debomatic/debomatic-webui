@@ -8,7 +8,7 @@ function __get_files_list_from_package(data, callback) {
   utils.get_files_list(package_path, false, function(files) {
     data.package.files = []
     data.package.debs = []
-    data.package.archives = []
+    data.package.sources = []
     files.forEach(function (f) {
       file = {}
       file.path = path.join(package_path, f).replace(config.debomatic.path, config.routes.debomatic)
@@ -26,7 +26,7 @@ function __get_files_list_from_package(data, callback) {
           file.name = file.extension
         else if (f.indexOf('.tar') >= 0 && f.indexOf('.orig.') > 0)
           file.name = 'orig.' + f.split('.orig.').pop()
-        data.package.archives.push(file)
+        data.package.sources.push(file)
       }
       else {
         file.name = file.extension
