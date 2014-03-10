@@ -5,8 +5,15 @@ var Page_Distrubion = {
       if (! data)
         data = Utils.from_hash_to_data()
       label = ''
-      if (Utils.check_data_file(data))
-        label = data.package.orig_name + '.' + data.file.name
+      if (Utils.check_data_file(data)) {
+        complete_name = data.package.orig_name + '.' + data.file.name
+        if (! data.file.path)
+          data.file.path = DEBOMATIC_STATIC + '/' + data.distribution.name + '/pool/' + data.package.orig_name + '/' + complete_name
+        label = complete_name + ' \
+          <a class="btn btn-link btn-lg" title="Download" href="' + data.file.path + '">\
+            <span class="glyphicon glyphicon-download-alt"></span>\
+          </a>'
+      }
       else if (Utils.check_data_package(data))
         label = data.package.orig_name
       else if (Utils.check_data_distribution(data))
