@@ -45,7 +45,7 @@ function Page_Distrubion()
         tmp.package = p
         $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_data_to_hash(tmp) + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
       })
-      select(data)
+      select()
     },
     
     clean: function () {
@@ -60,10 +60,8 @@ function Page_Distrubion()
         socket.emit("get_distribution_packages", new_data)
       }
     },
-    select: function(data) {
+    select: function() {
       packages.unselect()
-      if (! data)
-        data = Utils.from_hash_to_data()
       if (Utils.check_data_package(data)) {
         $("#packages li[id='package-"+ data.package.orig_name + "']").addClass('active')
       }
@@ -125,10 +123,8 @@ function Page_Distrubion()
         socket.emit("get_package_files_list", new_data)
       }
     },
-    select: function(data) {
+    select: function() {
       files.unselect()
-      if (! data)
-        data = Utils.from_hash_to_data()
       if (Utils.check_data_file(data)) {
         $("#logs li[id='file-" + data.file.orig_name + "']").addClass('active')
       }
@@ -203,15 +199,13 @@ function Page_Distrubion()
 //    })
   }
   
-  var select = function(data) {
+  var select = function() {
       unselect()
-      if (! data)
-        data = Utils.from_hash_to_data()
       if (Utils.check_data_distribution(data)) {
         $("#distributions li[id='distribution-"  + data.distribution.name + "']").addClass('active')
       }
-      packages.select(data)
-      files.select(data)
+      packages.select()
+      files.select()
   }
   
   var unselect = function() {
@@ -228,51 +222,59 @@ function Page_Distrubion()
     unselect()
     breadcrumb.update()
   }
-  
-  var update = function(data, old_data) {
-    if (! old_data ) {
-      if (! data )
-        populate()
-      else
-        populate(data)
-      return;
-    }
-    else {
-      if (! Utils.check_data_distribution(old_data) ||
-          ! Utils.check_data_distribution(data) ||
-          data.distribution.name != old_data.distribution.name) 
-      {
-        clean()
-        populate(data)
+
+  var update = {
+      page: function(data, old_data) {
+      if (! old_data ) {
+        if (! data )
+          populate()
+        else
+          populate(data)
+        return;
       }
-      else if (
-        ! Utils.check_data_package(old_data) ||
-        ! Utils.check_data_package(data) ||
-        data.package.orig_name != old_data.package.orig_name )
-      {
-        file.clean()
-        files.clean()
-        files.get(data)
-        if (Utils.check_data_package(data)) {
-          // I will always get dataestamp from package
-          window.location.hash += '/datestamp'
+      else {
+        if (! Utils.check_data_distribution(old_data) ||
+            ! Utils.check_data_distribution(data) ||
+            data.distribution.name != old_data.distribution.name) 
+        {
+          clean()
+          populate(data)
+          return
         }
+        else if (
+          ! Utils.check_data_package(old_data) ||
+          ! Utils.check_data_package(data) ||
+          data.package.orig_name != old_data.package.orig_name )
+        {
+          file.clean()
+          files.clean()
+          files.get(data)
+          if (Utils.check_data_package(data)) {
+            // I will always get dataestamp from package
+            window.location.hash += '/datestamp'
+          }
+        }
+        else if (
+          ! Utils.check_data_file(old_data) ||
+          ! Utils.check_data_file(data) ||
+          data.file.name != old_data.file.name
+        )
+        {
+          file.get()
+        }
+        update.view(data)
       }
-      else if (
-        ! Utils.check_data_file(old_data) ||
-        ! Utils.check_data_file(data) ||
-        data.file.name != old_data.file.name
-      )
-      {
-        file.get()
-      }
+    },
+    view : function(data) {
+      if (! data )
+        data = Utils.from_hash_to_data()
       title.set(data)
       breadcrumb.update()
-      select(data)
+      select()
       sticky()
     }
   }
-  
+
   var populate = function (data) {
     clean()
     if (! data )
@@ -280,37 +282,34 @@ function Page_Distrubion()
     packages.get(data)
     files.get(data)
     file.get(data)
-    select(data)
-    breadcrumb.update()
-    title.set(data)
-    sticky()
+    update.view(data)
   }
 
   this.init = function (mysocket) {
 
     socket = mysocket
 
-    socket.on('distribution_packages', function(data){
-      packages.set(data)
+    socket.on('distribution_packages', function(socket_data){
+      packages.set(socket_data)
     })
 
-    socket.on('package_files_list', function(data){
-      files.set(data)
+    socket.on('package_files_list', function(socket_data){
+      files.set(socket_data)
     })
 
-    socket.on('file', function (data) {
-      file.set(data)
+    socket.on('file', function (socket_data) {
+      file.set(socket_data)
     })
 
-    socket.on('file_newcontent', function(data) {
-      file.append(data)
+    socket.on('file_newcontent', function(socket_data) {
+      file.append(socket_data)
     })
 
     $(window).on('hashchange', function() {
       __check_hash_makes_sense()
-      new_data = Utils.from_hash_to_data()
-      update(new_data, data)
-      data = new_data
+      var old_data = data
+      data = Utils.from_hash_to_data()
+      update.page(data, old_data)
     });
 
     $(window).on('load', function (){
