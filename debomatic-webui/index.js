@@ -83,7 +83,7 @@ status_watcher.on('line', function(new_content) {
       }
     }
   }
-  io.sockets.emit('status-update', data)
+  io.sockets.emit(config.events.broadcast.status_update, data)
 })
 
 var server = app.listen(config.port, function(){

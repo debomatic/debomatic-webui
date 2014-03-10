@@ -1,5 +1,5 @@
 // update distributions
-socket.on('distributions', function(distributions) {
+socket.on(config.events.broadcast.distributions, function(distributions) {
     $('#distributions ul').html('');
     distributions.forEach(function (name){
       $('#distributions ul').append('<li id="distribution-' + name +'"><a href="'+ config.paths.distribution + '#'+ name + '">' + name + '</li>');
@@ -13,8 +13,8 @@ socket.on('status', function(data) {
   console.log(data)
 })
 
-socket.on('status-update', function(data) {
-  console.log('status')
+socket.on(config.events.broadcast.status_update, function(data) {
+  console.log('status_update')
   console.log(data)
 })
 

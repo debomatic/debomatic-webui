@@ -16,7 +16,16 @@ config.web.title = "deb-o-matic web.ui"
 config.web.description = "This is a web interface for debomatic"
 config.web.footer = "Fork me on github.com"
 config.web.autoscroll = true
+
+
+// do not edit these ones
+config.events = {}
+config.events.broadcast = {}
+config.events.broadcast.distributions = 'distributions'
+config.events.broadcast.status_update = 'status_update'
+
 config.web.paths = config.routes
+config.web.events = config.events
 config.web.hostname = config.host + ((config.port == 80) ? null : ':' + config.port)
 
 module.exports = config

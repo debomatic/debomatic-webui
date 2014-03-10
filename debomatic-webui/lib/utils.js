@@ -134,7 +134,7 @@ utils = {
   },
   send_distributions: function (socket, event_name) {
     if (! event_name)
-      event_name = 'distributions'
+      event_name = config.events.broadcast.distributions
     return __send_distributions(event_name, socket);
   },
 }
