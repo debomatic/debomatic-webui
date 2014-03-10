@@ -21,7 +21,11 @@ function __get_files_list_from_package(data, callback) {
         data.package.debs.push(file);
       }
       else if (f.indexOf('.tar') >= 0 || file.extension == "changes" || file.extension == "dsc") {
-        file.name = f.replace(data.package.name + '_' + data.package.version, '')
+        file.name = f.replace(data.package.name + '_' + data.package.version + '.', '')
+        if (file.extension == 'changes')
+          file.name = file.extension
+        else if (f.indexOf('.tar') >= 0 && f.indexOf('.orig.') > 0)
+          file.name = 'orig.' + f.split('.orig.').pop()
         data.package.archives.push(file)
       }
       else {
