@@ -6,23 +6,8 @@
     <link rel="stylesheet" href="/libs/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="/libs/bootstrap/3.1.1/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/stylesheets/style.css">
-    
-    <script src='//code.jquery.com/jquery-1.7.2.min.js'></script>
-    <script src='/socket.io/socket.io.js'></script>
-    <script src="/libs/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-
-    <script>
-    var DEBOMATIC_STATIC = '<%= paths.debomatic %>'
-    var AUTOSCROLL = <%= autoscroll %>
-    var DISTRIBUTION_PAGE = '<%= paths.distribution %>'
-    var HOSTNAME = '<%= host %><% if (port) { %>:<%= port%><% } %>'
-    var socket = io.connect('//' + HOSTNAME);
-    </script>
-
-    <script src='/javascripts/utils.js'></script>
-    <script src='/javascripts/page_distribution.js'></script>
-    <script src='/javascripts/main.js'></script>
   </head>
+  
   <body>
     <div id="wrapper" class="container-fluid">
 
@@ -53,6 +38,22 @@
         <ul class="packages list-inline"></ul>
       </div>
     </footer>
+
+    <script src='//code.jquery.com/jquery-1.7.2.min.js'></script>
+    <script src='/socket.io/socket.io.js'></script>
+    <script src="/libs/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+    <script>
+    var DEBOMATIC_STATIC = '<%= paths.debomatic %>'
+    var AUTOSCROLL = <%= autoscroll %>
+    var DISTRIBUTION_PAGE = '<%= paths.distribution %>'
+    var HOSTNAME = '<%= host %><% if (port) { %>:<%= port%><% } %>'
+    var socket = io.connect('//' + HOSTNAME);
+    </script>
+
+    <script src='/javascripts/utils.js'></script>
+    <script src='/javascripts/page_distribution.js'></script>
+    <script src='/javascripts/main.js'></script>
 
   </body>
 </html>
