@@ -89,12 +89,12 @@ function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
         }
         socket.set(name, watcher)
       })
-    } catch (err_watch) {}
+    } catch (err_watch) { console.error('utils.__watch_path_onsocket ' + err_watch)}
   })
 }
 
 function __generic_handler_watcher(event_name, socket, data, watch_path, callback) {
-  __watch_path_onsocket(event_name, socket, data, config.debomatic.path, callback)
+  __watch_path_onsocket(event_name, socket, data, watch_path, callback)
   callback(event_name, socket, data)
 }
 
