@@ -233,8 +233,10 @@ function Page_Distrubion()
       { // new pacakge view
         file.clean()
         files.get()
-        if (Utils.check_data_package(data)) {
-          // I will always get dataestamp from package
+        if (Utils.check_data_package(data)
+          && ! window.location.hash.split('/') > 3)
+        {
+          // I will always get datastamp file from package
           window.location.hash += '/datestamp'
         }
       }
