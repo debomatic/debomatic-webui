@@ -293,7 +293,7 @@ function Page_Distrubion()
       update.page(old_data)
     });
 
-    $(window).on('load', function (){
+    $(window).on('load', function () {
       __check_hash_makes_sense()
       populate()
     });
