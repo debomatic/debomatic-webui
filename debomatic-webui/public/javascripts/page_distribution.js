@@ -17,7 +17,7 @@ function Page_Distrubion()
       if (Utils.check_data_file(data)) {
         var complete_name = data.package.orig_name + '.' + data.file.name
         if (! data.file.path)
-          data.file.path = PATHS.debomatic + '/' + data.distribution.name + '/pool/' + data.package.orig_name + '/' + complete_name
+          data.file.path = config.paths.debomatic + '/' + data.distribution.name + '/pool/' + data.package.orig_name + '/' + complete_name
         label = complete_name + ' \
           <a class="btn btn-link btn-lg" title="Download" href="' + data.file.path + '">\
             <span class="glyphicon glyphicon-download-alt"></span>\
@@ -142,7 +142,7 @@ function Page_Distrubion()
       var new_html =  $("#file pre").html() + data.file.new_content
       $("#file pre").html(new_html)
       
-      if (AUTOSCROLL) // scroll down
+      if (config.autoscroll) // scroll down
         $('body,html').animate({ scrollTop: $('#file pre').height() }, 500);
     },
     get: function() {
