@@ -12,9 +12,7 @@ function Page_Distrubion()
   }
 
   var title = {
-    set: function(data) {
-      if (! data)
-        data = Utils.from_hash_to_data()
+    set: function() {
       var label = ''
       if (Utils.check_data_file(data)) {
         var complete_name = data.package.orig_name + '.' + data.file.name
@@ -37,23 +35,21 @@ function Page_Distrubion()
   }
 
   var packages = {
-    set: function (data) {
+    set: function (socket_data) {
       $('#packages ul').html('')
-      var tmp = data
+      var tmp = socket_data
       tmp.file = null
-      data.distribution.packages.forEach(function(p){
+      socket_data.distribution.packages.forEach(function(p){
         tmp.package = p
         $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_data_to_hash(tmp) + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
       })
-      select()
+      packages.select()
     },
     
     clean: function () {
       $('#packages ul').html('')
     },
-    get: function (data) {
-      if (! data)
-        data = Utils.from_hash_to_data()
+    get: function () {
       if (Utils.check_data_distribution(data)) {
         var new_data = {}
         new_data.distribution = data.distribution
@@ -72,12 +68,12 @@ function Page_Distrubion()
   }
 
   var files = {
-    set: function (data) {
+    set: function (socket_data) {
       files.clean()
-      var tmp = data
-      if (data.package.files && data.package.files.length > 0) {
-        selected_file = Utils.check_data_file(data)
-        data.package.files.forEach(function(f){
+      var tmp = socket_data
+      if (socket_data.package.files && socket_data.package.files.length > 0) {
+        selected_file = Utils.check_data_file(socket_data)
+        socket_data.package.files.forEach(function(f){
           tmp.file = f
           var html_file = $('<li id="file-'+ f.orig_name +'"><a title="'+ f.orig_name +'" href="'+ Utils.from_data_to_hash(tmp) + '">' + f.name + '</a></li>')
           html_file.on("click", function(){
@@ -86,18 +82,18 @@ function Page_Distrubion()
           $('#logs ul').append(html_file)
         })
         $('#logs').show()
-        select()
+        files.select()
       }
       
-      if (data.package.debs && data.package.debs.length > 0) {
-        data.package.debs.forEach(function(f){
+      if (socket_data.package.debs && socket_data.package.debs.length > 0) {
+        socket_data.package.debs.forEach(function(f){
           $('#debs ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a> <span>.' + f.label + '</span></li>')
         })
         $('#debs').show()
       }
       
-      if (data.package.sources && data.package.sources.length > 0) {
-        data.package.sources.forEach(function(f){
+      if (socket_data.package.sources && socket_data.package.sources.length > 0) {
+        socket_data.package.sources.forEach(function(f){
           $('#sources ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a></li>')
         })
         $('#sources').show()
@@ -113,9 +109,7 @@ function Page_Distrubion()
       $('#sources').hide()
       $('#files').hide()
     },
-    get: function (data) {
-      if (! data)
-        data = Utils.from_hash_to_data()
+    get: function () {
       if (Utils.check_data_package(data)) {
         var new_data = {}
         new_data.distribution = data.distribution
@@ -135,8 +129,8 @@ function Page_Distrubion()
   }
   
   var file = {
-    set: function(data) {
-      $("#file pre").html(data.file.content)
+    set: function(socket_data) {
+      $("#file pre").html(socket_data.file.content)
       $("#file").show()
       select()
     },
@@ -151,9 +145,7 @@ function Page_Distrubion()
       if (AUTOSCROLL) // scroll down
         $('body,html').animate({ scrollTop: $('#file pre').height() }, 500);
     },
-    get: function(data) {
-      if (! data)
-        data = Utils.from_hash_to_data()
+    get: function() {
       if (Utils.check_data_file(data)) {
         var new_data = {}
         new_data.distribution = data.distribution
@@ -247,8 +239,7 @@ function Page_Distrubion()
           data.package.orig_name != old_data.package.orig_name )
         {
           file.clean()
-          files.clean()
-          files.get(data)
+          files.get()
           if (Utils.check_data_package(data)) {
             // I will always get dataestamp from package
             window.location.hash += '/datestamp'
@@ -268,7 +259,7 @@ function Page_Distrubion()
     view : function(data) {
       if (! data )
         data = Utils.from_hash_to_data()
-      title.set(data)
+      title.set()
       breadcrumb.update()
       select()
       sticky()
@@ -279,9 +270,9 @@ function Page_Distrubion()
     clean()
     if (! data )
       data = Utils.from_hash_to_data()
-    packages.get(data)
-    files.get(data)
-    file.get(data)
+    packages.get()
+    files.get()
+    file.get()
     update.view(data)
   }
 
