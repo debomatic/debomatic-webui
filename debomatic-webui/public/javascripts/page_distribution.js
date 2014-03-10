@@ -216,49 +216,38 @@ function Page_Distrubion()
   }
 
   var update = {
-      page: function(data, old_data) {
-      if (! old_data ) {
-        if (! data )
-          populate()
-        else
-          populate(data)
-        return;
-      }
-      else {
-        if (! Utils.check_data_distribution(old_data) ||
-            ! Utils.check_data_distribution(data) ||
-            data.distribution.name != old_data.distribution.name) 
-        {
-          clean()
-          populate(data)
-          return
-        }
-        else if (
-          ! Utils.check_data_package(old_data) ||
-          ! Utils.check_data_package(data) ||
-          data.package.orig_name != old_data.package.orig_name )
-        {
-          file.clean()
-          files.get()
-          if (Utils.check_data_package(data)) {
-            // I will always get dataestamp from package
-            window.location.hash += '/datestamp'
-          }
-        }
-        else if (
-          ! Utils.check_data_file(old_data) ||
-          ! Utils.check_data_file(data) ||
-          data.file.name != old_data.file.name
+    page: function(old_data) {
+      if ( ! old_data
+        || ! Utils.check_data_distribution(old_data)
+        || ! Utils.check_data_distribution(data)
+        || data.distribution.name != old_data.distribution.name 
         )
-        {
-          file.get()
-        }
-        update.view(data)
+      { // new distribution view
+        populate()
+        return
       }
+      else if ( ! Utils.check_data_package(old_data)
+        || ! Utils.check_data_package(data)
+        || data.package.orig_name != old_data.package.orig_name
+      )
+      { // new pacakge view
+        file.clean()
+        files.get()
+        if (Utils.check_data_package(data)) {
+          // I will always get dataestamp from package
+          window.location.hash += '/datestamp'
+        }
+      }
+      else if ( ! Utils.check_data_file(old_data)
+        || ! Utils.check_data_file(data)
+        || data.file.name != old_data.file.name
+      )
+      { // new file view
+        file.get()
+      }
+      update.view(data)
     },
-    view : function(data) {
-      if (! data )
-        data = Utils.from_hash_to_data()
+    view : function() {
       title.set()
       breadcrumb.update()
       select()
@@ -266,14 +255,12 @@ function Page_Distrubion()
     }
   }
 
-  var populate = function (data) {
+  var populate = function () {
     clean()
-    if (! data )
-      data = Utils.from_hash_to_data()
     packages.get()
     files.get()
     file.get()
-    update.view(data)
+    update.view()
   }
 
   this.init = function (mysocket) {
@@ -300,12 +287,12 @@ function Page_Distrubion()
       __check_hash_makes_sense()
       var old_data = data
       data = Utils.from_hash_to_data()
-      update.page(data, old_data)
+      update.page(old_data)
     });
 
     $(window).on('load', function (){
       __check_hash_makes_sense()
-      populate(data)
+      populate()
     });
   }
 
