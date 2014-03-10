@@ -19,42 +19,5 @@ socket.on('status-update', function(data) {
 })
 
 if (window.location.pathname == PATHS.distribution) {
-
-  function __check_hash_makes_sense() {
-    if (! window.location.hash)
-      window.location.pathname = '/'
-    info = window.location.hash.split('/')
-    if (info.length == 2)
-      window.location.hash = info[0]
-  }
-
-  var old_data = Utils.from_hash_to_data()
-
-  socket.on('distribution_packages', function(data){
-    Page_Distrubion.packages.set(data)
-  })
-
-  socket.on('package_files_list', function(data){
-    Page_Distrubion.files.set(data)
-  })
-
-  socket.on('file', function (data) {
-    Page_Distrubion.file.set(data)
-  })
-
-  socket.on('file_newcontent', function(data) {
-    Page_Distrubion.file.append(data)
-  })
-
-  $(window).on('hashchange', function() {
-    __check_hash_makes_sense()
-    data = Utils.from_hash_to_data()
-    Page_Distrubion.update(data, old_data)
-    old_data = data
-  });
-
-  $(window).on('load', function (){
-    __check_hash_makes_sense()
-    Page_Distrubion.update(old_data)
-  });
+  new Page_Distrubion().init(socket)
 }

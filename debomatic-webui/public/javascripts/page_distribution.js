@@ -1,6 +1,17 @@
-var Page_Distrubion = {
+function Page_Distrubion()
+{
+  var socket
+  var data = Utils.from_hash_to_data()
 
-  title: {
+  function __check_hash_makes_sense() {
+    if (! window.location.hash)
+      window.location.pathname = '/'
+    info = window.location.hash.split('/')
+    if (info.length == 2)
+      window.location.hash = info[0]
+  }
+
+  var title = {
     set: function(data) {
       if (! data)
         data = Utils.from_hash_to_data()
@@ -23,9 +34,9 @@ var Page_Distrubion = {
     clean: function() {
       $('#title').html('')
     }
-  },
+  }
 
-  packages: {
+  var packages = {
     set: function (data) {
       $('#packages ul').html('')
       tmp = data
@@ -34,7 +45,7 @@ var Page_Distrubion = {
         tmp.package = p
         $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_data_to_hash(tmp) + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
       })
-      Page_Distrubion.select(data)
+      select(data)
     },
     
     clean: function () {
@@ -50,7 +61,7 @@ var Page_Distrubion = {
       }
     },
     select: function(data) {
-      Page_Distrubion.packages.unselect()
+      packages.unselect()
       if (! data)
         data = Utils.from_hash_to_data()
       if (Utils.check_data_package(data)) {
@@ -60,24 +71,24 @@ var Page_Distrubion = {
     unselect: function() {
       $('#packages li').removeClass('active')
     }
-  },
+  }
 
-  files: {
+  var files = {
     set: function (data) {
-      Page_Distrubion.files.clean()
+      files.clean()
       tmp = data
       if (data.package.files && data.package.files.length > 0) {
         selected_file = Utils.check_data_file(data)
         data.package.files.forEach(function(f){
           tmp.file = f
-          file = $('<li id="file-'+ f.orig_name +'"><a title="'+ f.orig_name +'" href="'+ Utils.from_data_to_hash(tmp) + '">' + f.name + '</a></li>')
-          file.on("click", function(){
-            Page_Distrubion.files.select(this)
+          current_file = $('<li id="file-'+ f.orig_name +'"><a title="'+ f.orig_name +'" href="'+ Utils.from_data_to_hash(tmp) + '">' + f.name + '</a></li>')
+          current_file.on("click", function(){
+            files.select(this)
           })
           $('#logs ul').append(file)
         })
         $('#logs').show()
-        Page_Distrubion.select()
+        select()
       }
       
       if (data.package.debs && data.package.debs.length > 0) {
@@ -115,7 +126,7 @@ var Page_Distrubion = {
       }
     },
     select: function(data) {
-      Page_Distrubion.files.unselect()
+      files.unselect()
       if (! data)
         data = Utils.from_hash_to_data()
       if (Utils.check_data_file(data)) {
@@ -125,13 +136,13 @@ var Page_Distrubion = {
     unselect: function() {
         $('#logs li').removeClass('active');
     }
-  },
+  }
   
-  file: {
+  var file = {
     set: function(data) {
       $("#file pre").html(data.file.content)
       $("#file").show()
-      Page_Distrubion.select()
+      select()
     },
     clean: function() {
       $('#file pre').html('')
@@ -156,9 +167,9 @@ var Page_Distrubion = {
         socket.emit("get_file", new_data)
       }
     }
-  },
+  }
   
-  breadcrumb: {
+  var breadcrumb = {
     update: function(hash) {
       if (! hash )
         hash = window.location.hash
@@ -176,10 +187,10 @@ var Page_Distrubion = {
       }
       $('.breadcrumb').html(new_html)
     }
-  },
+  }
   
   // stiky sidebar
-  sticky: function() {
+  var sticky = function() {
 //    $(window).off("scroll")
 //    // back on top
 ////    $("html, body").animate({scrollTop: 0}, 0);
@@ -190,40 +201,40 @@ var Page_Distrubion = {
 //      else 
 //        $("#sticky").stop().removeClass('fixed');
 //    })
-  },
+  }
   
-  select: function(data) {
-      Page_Distrubion.unselect()
+  var select = function(data) {
+      unselect()
       if (! data)
         data = Utils.from_hash_to_data()
       if (Utils.check_data_distribution(data)) {
         $("#distributions li[id='distribution-"  + data.distribution.name + "']").addClass('active')
       }
-      Page_Distrubion.packages.select(data)
-      Page_Distrubion.files.select(data)
-  },
+      packages.select(data)
+      files.select(data)
+  }
   
-  unselect: function() {
+  var unselect = function() {
     $('#distributions li').removeClass('active')
-    Page_Distrubion.files.unselect()
-    Page_Distrubion.packages.unselect()
-  },
+    files.unselect()
+    packages.unselect()
+  }
   
-  clean: function() {
-    Page_Distrubion.title.clean()
-    Page_Distrubion.packages.clean()
-    Page_Distrubion.files.clean()
-    Page_Distrubion.file.clean()
-    Page_Distrubion.unselect()
-    Page_Distrubion.breadcrumb.update()
-  },
+  var clean = function() {
+    title.clean()
+    packages.clean()
+    files.clean()
+    file.clean()
+    unselect()
+    breadcrumb.update()
+  }
   
-  update: function(data, old_data) {
+  var update = function(data, old_data) {
     if (! old_data ) {
       if (! data )
-        Page_Distrubion.populate()
+        populate()
       else
-        Page_Distrubion.populate(data)
+        populate(data)
       return;
     }
     else {
@@ -231,17 +242,17 @@ var Page_Distrubion = {
           ! Utils.check_data_distribution(data) ||
           data.distribution.name != old_data.distribution.name) 
       {
-        Page_Distrubion.clean()
-        Page_Distrubion.populate(data)
+        clean()
+        populate(data)
       }
       else if (
         ! Utils.check_data_package(old_data) ||
         ! Utils.check_data_package(data) ||
         data.package.orig_name != old_data.package.orig_name )
       {
-        Page_Distrubion.file.clean()
-        Page_Distrubion.files.clean()
-        Page_Distrubion.files.get(data)
+        file.clean()
+        files.clean()
+        files.get(data)
         if (Utils.check_data_package(data)) {
           // I will always get dataestamp from package
           window.location.hash += '/datestamp'
@@ -253,25 +264,59 @@ var Page_Distrubion = {
         data.file.name != old_data.file.name
       )
       {
-        Page_Distrubion.file.get()
+        file.get()
       }
-      Page_Distrubion.title.set(data)
-      Page_Distrubion.breadcrumb.update()
-      Page_Distrubion.select(data)
-      Page_Distrubion.sticky()
+      title.set(data)
+      breadcrumb.update()
+      select(data)
+      sticky()
     }
-  },
+  }
   
-  populate: function (data) {
-    Page_Distrubion.clean()
+  var populate = function (data) {
+    clean()
     if (! data )
       data = Utils.from_hash_to_data()
-    Page_Distrubion.packages.get(data)
-    Page_Distrubion.files.get(data)
-    Page_Distrubion.file.get(data)
-    Page_Distrubion.select(data)
-    Page_Distrubion.breadcrumb.update()
-    Page_Distrubion.title.set(data)
-    Page_Distrubion.sticky()
+    packages.get(data)
+    files.get(data)
+    file.get(data)
+    select(data)
+    breadcrumb.update()
+    title.set(data)
+    sticky()
   }
+
+  this.init = function (mysocket) {
+
+    socket = mysocket
+
+    socket.on('distribution_packages', function(data){
+      packages.set(data)
+    })
+
+    socket.on('package_files_list', function(data){
+      files.set(data)
+    })
+
+    socket.on('file', function (data) {
+      file.set(data)
+    })
+
+    socket.on('file_newcontent', function(data) {
+      file.append(data)
+    })
+
+    $(window).on('hashchange', function() {
+      __check_hash_makes_sense()
+      new_data = Utils.from_hash_to_data()
+      update(new_data, data)
+      data = new_data
+    });
+
+    $(window).on('load', function (){
+      __check_hash_makes_sense()
+      populate(data)
+    });
+  }
+
 }
