@@ -65,7 +65,9 @@ function Page_Generic()
       if (li.length > 0
         && status_package.status != 'building')
       {
+        // Update color and icon
         li.html($(__get_status_html(status_package)).children())
+        li.attr('id', '')
         // This is a chain to have a fadeOut and correctly
         // delete package from list.
         // The first timemout fades out the package.
@@ -73,7 +75,6 @@ function Page_Generic()
           li.children().fadeOut(config.status.delay.fadeOut)
           // Then resize packages list.
           setTimeout(function() {
-            li.attr('id', '')
             li.animate({width: 'toggle'})
             }, config.status.delay.fadeOut)
             // Finally remove package html
@@ -82,7 +83,7 @@ function Page_Generic()
               li.remove()
               if ($('#status li').length == 0)
                 $('#status .idle').show()
-            }, config.status.delay.remove)
+            }, config.status.delay.remove + 2000) // more delay on remove html
           }, config.status.delay.remove)
       }
       else if (status_package.status == 'building') {
