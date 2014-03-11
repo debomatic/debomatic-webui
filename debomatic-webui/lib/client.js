@@ -84,7 +84,7 @@ function __handler_get_file (socket, data) {
   __send_file(events.file.set, socket, data)
 }
 
-Client = function (socket) {
+function Client (socket) {
 
   events = config.events.client
 

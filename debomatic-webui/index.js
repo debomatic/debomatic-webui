@@ -9,8 +9,8 @@ var express = require('express')
   , path = require('path')
   , Tail = require('tail').Tail
   , config = require('./lib/config.js')
-  , client = require('./lib/client.js')
   , utils = require('./lib/utils.js')
+  , Client = require('./lib/client.js')
 
 var app = module.exports = express.createServer();
 var io = require('socket.io').listen(app);
@@ -46,7 +46,7 @@ app.get(config.routes.distribution, routes.distribution)
 io.sockets.on('connection', function(socket) {
   utils.send_distributions(socket)
   socket.emit('status', status)
-  client(socket)
+  client = new Client(socket)
 });
 
 io.sockets.on('disconnect', function(socket){
