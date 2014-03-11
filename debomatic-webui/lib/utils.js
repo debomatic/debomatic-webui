@@ -98,12 +98,6 @@ function __generic_handler_watcher(event_name, socket, data, watch_path, callbac
   callback(event_name, socket, data)
 }
 
-function __send_distributions(event_name, socket) {
-  __get_files_list(config.debomatic.path, true, function(distros){
-    socket.emit(event_name, distros);
-  });
-}
-
 utils = {
   check_data_distribution: function(data) {
     return __check_data_distribution(data)
@@ -131,11 +125,6 @@ utils = {
   },
   generic_handler_watcher: function(event_name, socket, data, watch_path, callback) {
     return __generic_handler_watcher(event_name, socket, data, watch_path, callback);
-  },
-  send_distributions: function (socket, event_name) {
-    if (! event_name)
-      event_name = config.events.broadcast.distributions
-    return __send_distributions(event_name, socket);
   },
 }
 
