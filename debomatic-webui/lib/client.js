@@ -43,6 +43,56 @@ function __send_package_files_list (event_name, socket, data) {
   });
 }
 
+function __send_package_status(socket, data, package_data) {
+
+  var event_name = config.events.client.distribution_packages.status
+
+  var new_data = {}
+  new_data.distribution = data.distribution
+  new_data.package = package_data
+
+  var status_data = {}
+  status_data.distribution = data.distribution.name
+  status_data.package = package_data.orig_name
+
+  var package_path = utils.get_package_path(new_data)
+
+  //  status policy:
+  //  + successed: exists .dsc
+  //  + building: wc -l .datestamp == 1 (FIX_ME)
+  //  + failed: else
+  var base_path = path.join(package_path, package_data.orig_name)
+  console.log(base_path)
+  fs.exists(base_path + '.dsc', function(changes_exists){
+    if (changes_exists) {
+      status_data.status = 'build-successed'
+      socket.emit(event_name, status_data)
+    }
+    else {
+      // emulate wc -l .datestamp in nodejs
+      var count = 0
+      var datestamp = base_path + '.datestamp'
+      fs.exists(datestamp, function(datestamp_exists){
+        if (datestamp_exists) {
+          // count lines
+          fs.createReadStream(datestamp)
+          .on('data', function(chunk) {
+            for (var i=0; i < chunk.length; ++i)
+              if (chunk[i] == 10) count++;
+            })
+          .on('end', function() {
+            if (count <= 1)
+              status_data.status = 'building'
+            else
+              status_data.status = 'build-failed'
+            socket.emit(event_name, status_data)
+          });
+        }
+      })
+    }
+  })
+}
+
 function __send_distribution_packages (event_name, socket, data) {
   distro_path = utils.get_distribution_pool_path(data)
   utils.get_files_list(distro_path, true, function (packages) {
@@ -59,6 +109,7 @@ function __send_distribution_packages (event_name, socket, data) {
           pack.selected = true;
       }
       data.distribution.packages.push(pack)
+      __send_package_status(socket, data, pack)
     });
     socket.emit(event_name, data)
   });

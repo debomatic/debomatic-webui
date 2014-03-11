@@ -34,6 +34,7 @@ function __build_get_set(event_name) {
 
 config.events.client = {}
 config.events.client.distribution_packages = __build_get_set('distribution_packages')
+config.events.client.distribution_packages.status = 'package_status'
 config.events.client.package_files_list = __build_get_set('package_files_list')
 config.events.client.file = __build_get_set('file')
 config.events.client.file_newcontent = 'file_newcontent'
