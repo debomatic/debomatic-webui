@@ -76,39 +76,51 @@ function __send_file (event_name, socket, data) {
 }
 
 function __handler_get_file (socket, data) {
+  var _e = config.events.client
   file_path = utils.get_file_path(data)
-  utils.watch_path_onsocket(events.file_newcontent, socket, data, file_path, function(event_name, socket, data) {
+  utils.watch_path_onsocket(_e.file_newcontent, socket, data, file_path, function(event_name, socket, data) {
     data.file.content = null
     socket.emit(event_name, data)
   })
-  __send_file(events.file.set, socket, data)
+  __send_file(_e.file.set, socket, data)
 }
 
 function Client (socket) {
 
-  events = config.events.client
+  var socket = socket
 
-  socket.on(events.distribution_packages.get, function (data) {
+  var _e = config.events.client
+
+  // init send distributions and status
+  utils.get_files_list(config.debomatic.path, true, function(distros) {
+    socket.emit(config.events.broadcast.distributions, distros);
+  })
+
+  // init events
+  socket.on(_e.distribution_packages.get, function (data) {
     if (! utils.check_data_distribution(data))
       return
     distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool')
-    utils.generic_handler_watcher(events.distribution_packages.set, socket, data, distribution_path, __send_distribution_packages)
+    utils.generic_handler_watcher(_e.distribution_packages.set, socket, data, distribution_path, __send_distribution_packages)
   })
   
-  socket.on(events.package_files_list.get, function(data) {
+  socket.on(_e.package_files_list.get, function(data) {
     if (! utils.check_data_package(data))
       return
     package_path = utils.get_package_path(data)
-    utils.generic_handler_watcher(events.package_files_list.set, socket, data, package_path, __send_package_files_list)
+    utils.generic_handler_watcher(_e.package_files_list.set, socket, data, package_path, __send_package_files_list)
   })
   
-  socket.on(events.file.get, function (data){
+  socket.on(_e.file.get, function (data){
     if (! utils.check_data_file(data))
       return
     __handler_get_file(socket, data)
   })
 
   return {
+    send_status: function (status) {
+      socket.emit(_e.status, status)
+    }
   }
 }
 
