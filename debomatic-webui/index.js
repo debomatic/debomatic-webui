@@ -45,7 +45,8 @@ var broadcast = new Broadcaster(io.sockets, status)
 
 io.sockets.on('connection', function(socket) {
   client = new Client(socket)
-  client.send_status(status)
+  if (status.packages.length > 0)
+    client.send_status(status)
 });
 
 io.sockets.on('disconnect', function(socket){
