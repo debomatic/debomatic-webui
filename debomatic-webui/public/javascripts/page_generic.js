@@ -1,9 +1,30 @@
 function Page_Generic()
 {
   var socket;
-  var c = config.status.classes
-  var i = config.status.icons
-  var e = config.events
+
+  function __get_status_icon_and_class(status_package) {
+    var _c = config.status.classes
+    var _i = config.status.icons
+    var button_class = null
+    var icon = null
+    var s = status_package
+    if (s.status == 'building') {
+      button_class = _c.building
+      icon = _i.building
+    }
+    else if (s.status == 'build-failed') {
+      button_class = _c.failed
+      icon = _i.failed
+    }
+    else {
+      button_class = _c.successed
+      icon = _i.successed
+    }
+    return {
+      button_class: button_class,
+      icon: icon
+    }
+  }
 
   function __get_status_html(status_package) {
     var s = status_package
@@ -14,24 +35,10 @@ function Page_Generic()
     button.addClass(s.status)
     button.attr('title', s.status + ': ' + s.distribution + ' > ' + s.package)
     button.attr('href', config.paths.distribution + '#' + s.distribution + '/' + s.package.replace('_', '/') + '/datestamp')
-//    button.html(s.package)
     button.html(s.package.split('_')[0])
-    var button_class = null
-    var icon = null
-    if (s.status == 'building') {
-      button_class = c.building
-      icon = i.building
-    }
-    else if (s.status == 'build-failed') {
-      button_class = c.failed
-      icon = i.failed
-    }
-    else {
-      button_class = c.successed
-      icon = i.successed
-    }
-    button.addClass('btn-' + button_class)
-    button.html(button.html() + ' <span class="icon glyphicon glyphicon-' + icon + '"></span>')
+    var info = __get_status_icon_and_class(s)
+    button.addClass('btn-' + info.button_class)
+    button.html(button.html() + ' <span class="icon glyphicon glyphicon-' + info.icon + '"></span>')
     li.html(button)
     var result = $('<div></div>')
     result.html(li)
@@ -51,8 +58,30 @@ function Page_Generic()
         }
       }
     },
-    status: function(new_package) {
-      
+
+    status: function(status_package) {
+
+      var delay = {}
+      delay.remove = 10000 // 10 seconds
+      delay.fadeOut = 2500
+
+      var li = $("#status li[id='status-" + status_package.distribution + "-" + status_package.package + "']")
+      if (li.length > 0
+        && status_package.status != 'building')
+      {
+        li.html($(__get_status_html(status_package)).children())
+        // chain fadeOut and delete
+        setTimeout(function() {
+          li.children().fadeOut(config.status.delay.fadeOut)
+          setTimeout(function() {
+            li.animate({width: 'toggle'})
+            li.attr('id', '')
+            }, config.status.delay.fadeOut)
+          }, config.status.delay.remove)
+      }
+      else if (status_package.status == 'building') {
+        status.append(status_package)
+      }
     }
   }
 
@@ -62,34 +91,33 @@ function Page_Generic()
       if (data_status.packages.length > 0) {
         $('#status .idle').hide()
         data_status.packages.forEach(function(p){
-          $("#status ul").html($("#status ul").html()  + " " + __get_status_html(p))
-      })
-
+          status.append(p)
+        })
       }
+    },
+    append: function(status_package) {
+      $("#status ul").html($("#status ul").html()  + " " + __get_status_html(status_package))
     }
   }
 
   this.init = function(mysocket) {
 
+    var _e = config.events
     socket = mysocket
 
     // update distributions
-    socket.on(e.broadcast.distributions, function(distributions) {
+    socket.on(_e.broadcast.distributions, function(distributions) {
       update.distributions(distributions)
     });
 
-    socket.on('error', function(data) { console.error(data) });
+    socket.on('error', function(data) { consol_e.error(data) });
 
-    socket.on(e.client.status, function(data_status) {
-      status.set(data_status)
+    socket.on(_e.client.status, function(packages) {
+      status.set(packages)
     })
 
-    socket.on(e.broadcast.status_update, function(data) {
-      // this is how to fadeout and remove
-      // setTimeout(function() {$('#id-status').remove();}, 3500);
-      // $($("li[id='id-status']")[0]).delay(3200).fadeOut(300)
-      console.log('status_update')
-      console.log(data)
+    socket.on(_e.broadcast.status_update, function(package_status) {
+      update.status(package_status)
     })
   }
 }
