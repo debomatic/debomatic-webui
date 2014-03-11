@@ -61,22 +61,28 @@ function Page_Generic()
 
     status: function(status_package) {
 
-      var delay = {}
-      delay.remove = 10000 // 10 seconds
-      delay.fadeOut = 2500
-
       var li = $("#status li[id='status-" + status_package.distribution + "-" + status_package.package + "']")
       if (li.length > 0
         && status_package.status != 'building')
       {
         li.html($(__get_status_html(status_package)).children())
-        // chain fadeOut and delete
+        // This is a chain to have a fadeOut and correctly
+        // delete package from list.
+        // The first timemout fades out the package.
         setTimeout(function() {
           li.children().fadeOut(config.status.delay.fadeOut)
+          // Then resize packages list.
           setTimeout(function() {
-            li.animate({width: 'toggle'})
             li.attr('id', '')
+            li.animate({width: 'toggle'})
             }, config.status.delay.fadeOut)
+            // Finally remove package html
+            // and show idle status if necessary.
+            setTimeout(function() {
+              li.remove()
+              if ($('#status li').length == 0)
+                $('#status .idle').show()
+            }, config.status.delay.remove)
           }, config.status.delay.remove)
       }
       else if (status_package.status == 'building') {
@@ -89,13 +95,13 @@ function Page_Generic()
     set: function(data_status) {
       $("#status ul").html('')
       if (data_status.packages.length > 0) {
-        $('#status .idle').hide()
         data_status.packages.forEach(function(p){
           status.append(p)
         })
       }
     },
     append: function(status_package) {
+      $('#status .idle').hide()
       $("#status ul").html($("#status ul").html()  + " " + __get_status_html(status_package))
     }
   }
