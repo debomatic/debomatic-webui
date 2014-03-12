@@ -142,36 +142,36 @@ function Client (socket) {
 
   var _e = config.events.client
 
-  // init send distributions and status
-  utils.get_files_list(config.debomatic.path, true, function(distros) {
-    socket.emit(config.events.broadcast.distributions, distros);
-  })
+  this.start = function () {
+    // init send distributions and status
+    utils.get_files_list(config.debomatic.path, true, function(distros) {
+      socket.emit(config.events.broadcast.distributions, distros);
+    })
 
-  // init events
-  socket.on(_e.distribution_packages.get, function (data) {
-    if (! utils.check_data_distribution(data))
-      return
-    distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool')
-    utils.generic_handler_watcher(_e.distribution_packages.set, socket, data, distribution_path, __send_distribution_packages)
-  })
-  
-  socket.on(_e.package_files_list.get, function(data) {
-    if (! utils.check_data_package(data))
-      return
-    package_path = utils.get_package_path(data)
-    utils.generic_handler_watcher(_e.package_files_list.set, socket, data, package_path, __send_package_files_list)
-  })
-  
-  socket.on(_e.file.get, function (data){
-    if (! utils.check_data_file(data))
-      return
-    __handler_get_file(socket, data)
-  })
+    // init events
+    socket.on(_e.distribution_packages.get, function (data) {
+      if (! utils.check_data_distribution(data))
+        return
+      distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool')
+      utils.generic_handler_watcher(_e.distribution_packages.set, socket, data, distribution_path, __send_distribution_packages)
+    })
+    
+    socket.on(_e.package_files_list.get, function(data) {
+      if (! utils.check_data_package(data))
+        return
+      package_path = utils.get_package_path(data)
+      utils.generic_handler_watcher(_e.package_files_list.set, socket, data, package_path, __send_package_files_list)
+    })
+    
+    socket.on(_e.file.get, function (data){
+      if (! utils.check_data_file(data))
+        return
+      __handler_get_file(socket, data)
+    })
+  }
 
-  return {
-    send_status: function (status) {
-      socket.emit(_e.status, status)
-    }
+  this.send_status = function(status) {
+    socket.emit(_e.status, status)
   }
 }
 

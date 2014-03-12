@@ -266,7 +266,7 @@ function Page_Distrubion(socket)
     update.view()
   }
 
-  this.start = function (mysocket) {
+  this.start = function () {
 
     socket.on(events.distribution_packages.set, function(socket_data){
       packages.set(socket_data)

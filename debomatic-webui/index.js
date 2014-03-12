@@ -45,6 +45,7 @@ var broadcast = new Broadcaster(io.sockets, status)
 
 io.sockets.on('connection', function(socket) {
   client = new Client(socket)
+  client.start()
   if (status.packages.length > 0)
     client.send_status(status)
 });
