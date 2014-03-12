@@ -1,6 +1,6 @@
-function Page_Distrubion()
+function Page_Distrubion(socket)
 {
-  var socket
+  var socket = socket
   var events = config.events.client
   var data = Utils.from_hash_to_data()
 
@@ -266,9 +266,7 @@ function Page_Distrubion()
     update.view()
   }
 
-  this.init = function (mysocket) {
-
-    socket = mysocket
+  this.start = function (mysocket) {
 
     socket.on(events.distribution_packages.set, function(socket_data){
       packages.set(socket_data)
