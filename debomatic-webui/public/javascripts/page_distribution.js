@@ -72,6 +72,8 @@ function Page_Distrubion(socket)
       var p_html = $("#packages li[id='package-"+ status_data.package + "'] a")
       p_html.find('span.icon').remove()
       p_html.html(p_html.html() + ' ' + Utils.get_status_icon_html(status_data))
+      if (Utils.check_data_package(data))
+        data.package.status = status_data.status
     }
   }
 
