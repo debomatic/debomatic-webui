@@ -47,4 +47,28 @@ var Utils = {
   check_data_file: function(data) {
     return Utils.check_data_package(data) && data.file && data.file.name
   },
+
+  get_status_icon_and_class: function (status_data) {
+    var _c = config.status.className
+    var _i = config.status.icons
+    var className = null
+    var icon = null
+    var s = status_package
+    if (s.status == config.status.package.building) {
+      className = _c.building
+      icon = _i.building
+    }
+    else if (s.status == config.status.package.failed) {
+      className = _c.failed
+      icon = _i.failed
+    }
+    else {
+      className = _c.successed
+      icon = _i.successed
+    }
+    return {
+      className: className,
+      icon: icon
+    }
+  },
 }

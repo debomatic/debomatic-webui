@@ -2,30 +2,6 @@ function Page_Generic()
 {
   var socket;
 
-  function __get_status_icon_and_class(status_package) {
-    var _c = config.status.className
-    var _i = config.status.icons
-    var button_class = null
-    var icon = null
-    var s = status_package
-    if (s.status == config.status.package.building) {
-      button_class = _c.building
-      icon = _i.building
-    }
-    else if (s.status == config.status.package.failed) {
-      button_class = _c.failed
-      icon = _i.failed
-    }
-    else {
-      button_class = _c.successed
-      icon = _i.successed
-    }
-    return {
-      button_class: button_class,
-      icon: icon
-    }
-  }
-
   function __get_status_html(status_package) {
     var s = status_package
     var li = $('<li></li>')
@@ -36,8 +12,8 @@ function Page_Generic()
     button.attr('title', s.status + ': ' + s.distribution + ' > ' + s.package)
     button.attr('href', config.paths.distribution + '#' + s.distribution + '/' + s.package.replace('_', '/') + '/datestamp')
     button.html(s.package.split('_')[0])
-    var info = __get_status_icon_and_class(s)
-    button.addClass('btn-' + info.button_class)
+    var info = utils.get_status_icon_and_class(s)
+    button.addClass('btn-' + info.className)
     button.html(button.html() + ' <span class="icon glyphicon glyphicon-' + info.icon + '"></span>')
     li.html(button)
     var result = $('<div></div>')
