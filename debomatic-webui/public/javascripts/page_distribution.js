@@ -4,6 +4,7 @@ function Page_Distrubion(socket)
   var events = config.events.client
   var data = Utils.from_hash_to_data()
   var sidebarOffset = 0
+  var new_lines = []
 
   function __check_hash_makes_sense() {
     if (! window.location.hash)
@@ -145,9 +146,9 @@ function Page_Distrubion(socket)
       $('#file pre').html('')
       $('#file').hide()
     },
-    append: function(data) {
+    append: function(new_content) {
       var content = $("#file pre")
-      content.html(content.html() + data.file.new_content)
+      content.html(content.html() + new_content)
       
       if (config.autoscroll) {
         // scroll down if file is covering footer
@@ -308,7 +309,7 @@ function Page_Distrubion(socket)
     })
 
     socket.on(events.file_newcontent, function (socket_data) {
-      file.append(socket_data)
+      new_lines.push(socket_data.file.new_content)
     })
 
     $(window).on('hashchange', function() {
@@ -321,8 +322,24 @@ function Page_Distrubion(socket)
     $(window).on('load', function () {
       __check_hash_makes_sense()
       populate()
-      // FIXME: workaround for sticky.start() on page load and offset is 0
+
+      // WORKAROUND:
+      // when page is loaded sidebar has offset().top
+      // equals 0. This is why html will be loaded on socket
+      // events. Sleep a while and call stiky.reset()
       this.setTimeout(sticky.reset, 500);
+
+      // WORKAOUND:
+      // On incoming hundred of lines browser goes crazy.
+      // Append lines only on a timeout.
+      function watch_for_new_lines() {
+        if (new_lines.length > 0) {
+          file.append(new_lines.join(''))
+          new_lines = []
+        }
+        setTimeout(watch_for_new_lines, 200);
+      }
+      watch_for_new_lines()
     });
   }
 
