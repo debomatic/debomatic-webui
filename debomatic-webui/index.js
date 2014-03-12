@@ -11,7 +11,9 @@ var express = require('express')
   , Broadcaster = require('./lib/broadcaster.js')
 
 var app = module.exports = express.createServer();
-var io = require('socket.io').listen(app);
+var io = require('socket.io').listen(app, { log: false });
+
+// no log
 
 // statuses
 var status = {}

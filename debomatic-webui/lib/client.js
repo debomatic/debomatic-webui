@@ -62,7 +62,6 @@ function __send_package_status(socket, data, package_data) {
   //  + building: wc -l .datestamp == 1 (FIX_ME)
   //  + failed: else
   var base_path = path.join(package_path, package_data.orig_name)
-  console.log(base_path)
   fs.exists(base_path + '.dsc', function(changes_exists){
     if (changes_exists) {
       status_data.status = config.status.package.successed
