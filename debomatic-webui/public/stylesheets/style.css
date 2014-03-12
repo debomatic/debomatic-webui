@@ -23,6 +23,7 @@ aside .nav-pills li {
   bottom: 50px;
   font-size: 30px;
   cursor: pointer;
+  min-width: 150px;
 }
 
 #sticky-view .package .version,
