@@ -44,7 +44,8 @@ function Page_Distrubion(socket)
       tmp.file = null
       socket_data.distribution.packages.forEach(function(p){
         tmp.package = p
-        $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_data_to_hash(tmp) + '">'+ p.name + ' <span>'+p.version+'</span></a></li>')
+        // get datestamp if package is clicked
+        $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_data_to_hash(tmp) + '/datestamp">'+ p.name + ' <span>'+p.version+'</span></a></li>')
       })
       packages.select()
     },
@@ -295,14 +296,10 @@ function Page_Distrubion(socket)
         || data.package.orig_name != old_data.package.orig_name
       )
       { // new pacakge view
-        file.clean()
         files.get()
-        if ( Utils.check_data_package(data)
-          && window.location.hash.split('/').length <= 3)
-        {
-          // I will always get datastamp file from package
-          window.location.hash += '/datestamp'
-        }
+        // I will always get datestamp file from package view
+        file.clean()
+        file.get()
       }
       else if ( ! Utils.check_data_file(old_data)
         || ! Utils.check_data_file(data)
