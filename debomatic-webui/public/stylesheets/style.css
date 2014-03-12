@@ -29,6 +29,11 @@ footer {
   border-top: 1px solid #f0f0f0;
 }
 
+#packages li .icon {
+  float: right;
+  margin-top: -3px;
+}
+
 #status span {
   font-weight: bold;
   font-size: small;

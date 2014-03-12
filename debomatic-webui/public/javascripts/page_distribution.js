@@ -65,6 +65,11 @@ function Page_Distrubion(socket)
     },
     unselect: function() {
       $('#packages li').removeClass('active')
+    },
+    set_status: function (status_data) {
+      var p_html = $("#packages li[id='package-"+ status_data.package + "'] a")
+      p_html.find('span.icon').remove()
+      p_html.html(p_html.html() + ' ' + Utils.get_status_icon_html(status_data))
     }
   }
 
@@ -270,6 +275,14 @@ function Page_Distrubion(socket)
 
     socket.on(events.distribution_packages.set, function(socket_data){
       packages.set(socket_data)
+    })
+
+    socket.on(events.distribution_packages.status, function(socket_data){
+      packages.set_status(socket_data)
+    })
+
+    socket.on(config.events.broadcast.status_update, function(socket_data){
+      packages.set_status(socket_data)
     })
 
     socket.on(events.package_files_list.set, function(socket_data){
