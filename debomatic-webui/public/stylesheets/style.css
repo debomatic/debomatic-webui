@@ -1,9 +1,3 @@
-.fixed {
-  position: fixed;
-  width: 220px !important;
-  top: 10px;
-}
-
 #header {
   background: url('../images/debian-logo.gif') right no-repeat;
   cursor: pointer;
@@ -12,6 +6,17 @@
 aside .nav-pills li {
   line-height: 10px;
 }
+
+#sidebar {
+  position: relative; 
+}
+
+#sidebar .fixed {
+  position: fixed;
+  width: 220px !important;
+  top: 0;
+}
+
 
 footer {
   height: 40px;

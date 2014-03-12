@@ -3,6 +3,7 @@ function Page_Distrubion(socket)
   var socket = socket
   var events = config.events.client
   var data = Utils.from_hash_to_data()
+  var sidebarOffset = 0
 
   function __check_hash_makes_sense() {
     if (! window.location.hash)
@@ -189,18 +190,30 @@ function Page_Distrubion(socket)
     }
   }
 
-  // stiky sidebar
-  var sticky = function() {
-//    $(window).off("scroll")
-//    // back on top
-////    $("html, body").animate({scrollTop: 0}, 0);
-//    var offset = $("#sticky").offset();
-//    $(window).scroll(function() {
-//      if ($(window).scrollTop() > offset.top)
-//        $("#sticky").stop().addClass('fixed');
-//      else 
-//        $("#sticky").stop().removeClass('fixed');
-//    })
+  // sticky sidebar
+  var sticky = {
+    
+    start: function() {
+      $(window).scroll(function() {
+        // FIXME: on load sidebarOffset is always 0 !!!
+        if (sidebarOffset == 0)
+          return
+        if ($(window).scrollTop() > sidebarOffset) {
+          //console.log("sidebar.start -> adding: ", $(window).scrollTop(), sidebarOffset, $("#files").offset().top)
+          $("#files").addClass('fixed')
+        } else {
+          //console.log("sidebar.start -> remove: ", $(window).scrollTop(), sidebarOffset, $("#files").offset().top)
+          $("#files").removeClass('fixed')
+        }
+      })
+    },
+
+    reset: function() {
+      var sidebar = $("#files")
+      sidebarOffset = sidebar.offset().top
+      $(window).off("scroll")
+      sticky.start()
+    },
   }
   
   var select = function() {
@@ -265,7 +278,7 @@ function Page_Distrubion(socket)
       title.set()
       breadcrumb.update()
       select()
-      sticky()
+      sticky.reset()
     }
   }
 
@@ -279,19 +292,19 @@ function Page_Distrubion(socket)
 
   this.start = function () {
 
-    socket.on(events.distribution_packages.set, function(socket_data){
+    socket.on(events.distribution_packages.set, function (socket_data){
       packages.set(socket_data)
     })
 
-    socket.on(events.distribution_packages.status, function(socket_data){
+    socket.on(events.distribution_packages.status, function (socket_data){
       packages.set_status(socket_data)
     })
 
-    socket.on(config.events.broadcast.status_update, function(socket_data){
+    socket.on(config.events.broadcast.status_update, function (socket_data){
       packages.set_status(socket_data)
     })
 
-    socket.on(events.package_files_list.set, function(socket_data){
+    socket.on(events.package_files_list.set, function (socket_data){
       files.set(socket_data)
     })
 
@@ -299,7 +312,7 @@ function Page_Distrubion(socket)
       file.set(socket_data)
     })
 
-    socket.on(events.file_newcontent, function(socket_data) {
+    socket.on(events.file_newcontent, function (socket_data) {
       file.append(socket_data)
     })
 
