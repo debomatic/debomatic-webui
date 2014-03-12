@@ -214,7 +214,7 @@ function Page_Distrubion(socket)
       sticky.start()
       // onclic - back on top and disable auto-scroll
       $("#sticky-view").on("click", function(){
-        $('html').animate({scrollTop: 0}, 250);
+        $('html').animate({scrollTop: 0}, 100);
       })
     },
     stop: function() {
@@ -374,7 +374,7 @@ function Page_Distrubion(socket)
       // events. Sleep a while and call stiky.reset()
       this.setTimeout(sticky.reset, 500);
 
-      // WORKAOUND:
+      // WORKAROUND:
       // On incoming hundred of lines browser goes crazy.
       // Append lines only on a timeout.
       function watch_for_new_lines() {
