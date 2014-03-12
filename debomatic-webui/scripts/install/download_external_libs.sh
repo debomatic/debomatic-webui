@@ -1,6 +1,5 @@
 #!/bin/bash
 
-SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 EXT_LIBS_DIR="${SCRIPTS_DIR}/../public/external_libs"
 
 get_bootstrap() {
