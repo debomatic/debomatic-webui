@@ -192,22 +192,17 @@ function Page_Distrubion(socket)
 
   // sticky sidebar
   var sticky = {
-    
     start: function() {
       $(window).scroll(function() {
-        // FIXME: on load sidebarOffset is always 0 !!!
         if (sidebarOffset == 0)
           return
         if ($(window).scrollTop() > sidebarOffset) {
-          //console.log("sidebar.start -> adding: ", $(window).scrollTop(), sidebarOffset, $("#files").offset().top)
           $("#files").addClass('fixed')
         } else {
-          //console.log("sidebar.start -> remove: ", $(window).scrollTop(), sidebarOffset, $("#files").offset().top)
           $("#files").removeClass('fixed')
         }
       })
     },
-
     reset: function() {
       var sidebar = $("#files")
       sidebarOffset = sidebar.offset().top
@@ -326,6 +321,8 @@ function Page_Distrubion(socket)
     $(window).on('load', function () {
       __check_hash_makes_sense()
       populate()
+      // FIXME: workaround for sticky.start() on page load and offset is 0
+      this.setTimeout(sticky.reset, 500);
     });
   }
 
