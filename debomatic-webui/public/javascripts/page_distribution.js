@@ -236,6 +236,11 @@ function Page_Distrubion(socket)
       if (Utils.check_data_package(data)) {
         $("#sticky-view .package .name").html(data.package.name)
         $("#sticky-view .package .version").html(data.package.version)
+        var status_data = {}
+        status_data.distribution = data.distribution.name
+        status_data.package = data.package.orig_name
+        status_data.status = data.package.status
+        sticky.set_status(status_data)
       }
     },
     set_status: function(status_data) {
