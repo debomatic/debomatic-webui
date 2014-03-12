@@ -51,14 +51,14 @@ var Utils = {
   get_status_icon_and_class: function (status_data) {
     var _c = config.status.className
     var _i = config.status.icons
+    var _s = status_data
     var className = null
     var icon = null
-    var s = status_package
-    if (s.status == config.status.package.building) {
+    if (_s.status == config.status.package.building) {
       className = _c.building
       icon = _i.building
     }
-    else if (s.status == config.status.package.failed) {
+    else if (_s.status == config.status.package.failed) {
       className = _c.failed
       icon = _i.failed
     }
@@ -71,4 +71,9 @@ var Utils = {
       icon: icon
     }
   },
+
+  get_status_icon_html: function (status_data) {
+    info = Utils.get_status_icon_and_class(status_data)
+    return '<span class="icon glyphicon glyphicon-' + info.icon + '"></span>'
+  }
 }
