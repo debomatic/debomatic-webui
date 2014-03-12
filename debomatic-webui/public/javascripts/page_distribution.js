@@ -193,23 +193,55 @@ function Page_Distrubion(socket)
 
   // sticky sidebar
   var sticky = {
-    start: function() {
-      $(window).scroll(function() {
-        if (sidebarOffset == 0)
+    init: function() {
+      if (sidebarOffset == 0)
           return
-        if ($(window).scrollTop() > sidebarOffset) {
-          $("#files").addClass('fixed')
-        } else {
-          $("#files").removeClass('fixed')
-        }
-      })
+      if ($(window).scrollTop() > sidebarOffset) {
+        sticky.show()
+      } else {
+        sticky.hide()
+      }
+    },
+    start: function() {
+      $(window).scroll(sticky.init)
     },
     reset: function() {
+      sticky.stop()
+      sticky.update()
+      sticky.init()
+      sticky.start()
+      // onclic - back on top and disable auto-scroll
+      $("#sticky-view").on("click", function(){
+        $('html').animate({scrollTop: 0}, 250);
+      })
+    },
+    stop: function() {
+      $(window).off("scroll")
+    },
+    show: function() {
+      $("#sticky").addClass('fixed')
+      $("#sticky-view").fadeIn()
+    },
+    hide: function() {
+      $("#sticky").removeClass('fixed')
+      $("#sticky-view").fadeOut(150)
+    },
+    update: function() {
       var sidebar = $("#files")
       sidebarOffset = sidebar.offset().top
-      $(window).off("scroll")
-      sticky.start()
+      if (Utils.check_data_distribution(data))
+        $("#sticky-view .distribution .name").html(data.distribution.name)
+      if (Utils.check_data_package(data)) {
+        $("#sticky-view .package .name").html(data.package.name)
+        $("#sticky-view .package .version").html(data.package.version)
+      }
     },
+    set_status: function(status_data) {
+      console.log(status_data)
+      var div = $("#sticky-view .status")
+      div.find('span.icon').remove()
+      div.html(div.html() + ' ' + Utils.get_status_icon_html(status_data))
+    }
   }
   
   var select = function() {
@@ -294,10 +326,12 @@ function Page_Distrubion(socket)
 
     socket.on(events.distribution_packages.status, function (socket_data){
       packages.set_status(socket_data)
+      sticky.set_status(socket_data)
     })
 
     socket.on(config.events.broadcast.status_update, function (socket_data){
       packages.set_status(socket_data)
+      sticky.set_status(socket_data)
     })
 
     socket.on(events.package_files_list.set, function (socket_data){

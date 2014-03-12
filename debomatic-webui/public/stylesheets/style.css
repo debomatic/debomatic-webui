@@ -17,6 +17,22 @@ aside .nav-pills li {
   top: 0;
 }
 
+#sticky-view {
+  display: none;
+  position: fixed;
+  bottom: 50px;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+#sticky-view .package .version,
+#sticky-view .distribution {
+  font-size: 20px;
+}
+
+#sticky-view .distribution .icon {
+  margin-top: 4px;
+}
 
 footer {
   height: 40px;
