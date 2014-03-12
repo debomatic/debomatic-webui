@@ -145,11 +145,17 @@ function Page_Distrubion(socket)
       $('#file').hide()
     },
     append: function(data) {
-      var new_html =  $("#file pre").html() + data.file.new_content
-      $("#file pre").html(new_html)
+      var content = $("#file pre")
+      content.html(content.html() + data.file.new_content)
       
-      if (config.autoscroll) // scroll down
-        $('body,html').animate({ scrollTop: $('#file pre').height() }, 500);
+      if (config.autoscroll) {
+        // scroll down if file is covering footer
+        var file_height = $("#fileOffset").offset().top
+        var footerOffset = $("footer").offset().top
+        if (file_height > footerOffset) {
+          $('html').animate({ scrollTop: file_height }, 0);
+        }
+      }
     },
     get: function() {
       if (Utils.check_data_file(data)) {
