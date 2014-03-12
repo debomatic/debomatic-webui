@@ -65,7 +65,7 @@ function __send_package_status(socket, data, package_data) {
   console.log(base_path)
   fs.exists(base_path + '.dsc', function(changes_exists){
     if (changes_exists) {
-      status_data.status = 'build-successed'
+      status_data.status = config.status.package.successed
       socket.emit(event_name, status_data)
     }
     else {
@@ -82,9 +82,9 @@ function __send_package_status(socket, data, package_data) {
             })
           .on('end', function() {
             if (count <= 1)
-              status_data.status = 'building'
+              status_data.status = config.status.package.building
             else
-              status_data.status = 'build-failed'
+              status_data.status = config.status.package.failed
             socket.emit(event_name, status_data)
           });
         }

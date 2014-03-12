@@ -13,11 +13,11 @@ function __watch_build_status (socket, status) {
     try {
       data = JSON.parse(new_content)
     } catch (error) { return }
-    if (data.status == 'building') {
+    if (data.status == config.status.package.building) {
       status.packages.push(data)
     }
-    else if (data.status == 'build-successed'
-      || data.status == 'build-failed' )
+    else if (data.status == config.status.package.sucessed
+      || data.status == config.status.package.failed )
     {
       for(i = 0; i < status.packages.length; i++)
       {

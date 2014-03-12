@@ -46,11 +46,10 @@
     <script>
     var config = <%- JSON.stringify(web) %>
 
-    config.status = {}
-    config.status.classes = {}
-    config.status.classes.building = 'info'
-    config.status.classes.successed = 'success'
-    config.status.classes.failed = 'danger'
+    config.status.className = {}
+    config.status.className.building = 'info'
+    config.status.className.successed = 'success'
+    config.status.className.failed = 'danger'
 
     config.status.icons = {}
     config.status.icons.building = 'refresh'

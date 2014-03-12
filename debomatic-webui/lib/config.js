@@ -40,8 +40,16 @@ config.events.client.file = __build_get_set('file')
 config.events.client.file_newcontent = 'file_newcontent'
 config.events.client.status = 'status'
 
+config.status = {}
+config.status.package = {}
+config.status.package.building = 'building'
+config.status.package.failed = 'build-failed'
+config.status.package.successed = 'build-successed'
+
+// export some variable
 config.web.paths = config.routes
 config.web.events = config.events
+config.web.status = config.status
 config.web.hostname = config.host + ((config.port == 80) ? null : ':' + config.port)
 
 module.exports = config

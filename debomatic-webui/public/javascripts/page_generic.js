@@ -3,16 +3,16 @@ function Page_Generic()
   var socket;
 
   function __get_status_icon_and_class(status_package) {
-    var _c = config.status.classes
+    var _c = config.status.className
     var _i = config.status.icons
     var button_class = null
     var icon = null
     var s = status_package
-    if (s.status == 'building') {
+    if (s.status == config.status.package.building) {
       button_class = _c.building
       icon = _i.building
     }
-    else if (s.status == 'build-failed') {
+    else if (s.status == config.status.package.failed) {
       button_class = _c.failed
       icon = _i.failed
     }
@@ -63,7 +63,7 @@ function Page_Generic()
 
       var li = $("#status li[id='status-" + status_package.distribution + "-" + status_package.package + "']")
       if (li.length > 0
-        && status_package.status != 'building')
+        && status_package.status != config.status.package.building)
       {
         // Update color and icon
         li.html($(__get_status_html(status_package)).children())
@@ -86,7 +86,7 @@ function Page_Generic()
             }, config.status.delay.remove + 2000) // more delay on remove html
           }, config.status.delay.remove)
       }
-      else if (status_package.status == 'building') {
+      else if (status_package.status == config.status.package.building) {
         status.append(status_package)
       }
     }
