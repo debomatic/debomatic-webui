@@ -237,10 +237,14 @@ function Page_Distrubion(socket)
       }
     },
     set_status: function(status_data) {
-      console.log(status_data)
-      var div = $("#sticky-view .status")
-      div.find('span.icon').remove()
-      div.html(div.html() + ' ' + Utils.get_status_icon_html(status_data))
+      if ( Utils.check_data_package(data)
+        && status_data.distribution == data.distribution.name
+        && status_data.package == data.package.orig_name)
+      {
+        var div = $("#sticky-view .status")
+        div.find('span.icon').remove()
+        div.html(div.html() + ' ' + Utils.get_status_icon_html(status_data))
+      }
     }
   }
   
