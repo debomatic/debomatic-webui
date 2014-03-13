@@ -5,18 +5,20 @@ var Utils = {
     hash = hash.replace('#', '')
     info = hash.split('/');
     var view = {}
+    view.distribution = {}
+    view.packages = {}
+    view.package = {}
+    view.file = {}
+
     if (info.length >= 1) {
-      view.distribution = {}
       view.distribution.name = info[0];
     }
     if (info.length >= 3){
-      view.package = {}
       view.package.name = info[1];
       view.package.version = info[2];
       view.package.orig_name = view.package.name + '_' + view.package.version
     }
     if (info.length >= 4) {
-      view.file = {}
       view.file.name = info[3]
       view.file.orig_name = view.package.orig_name + '.' + view.file.name
     }
