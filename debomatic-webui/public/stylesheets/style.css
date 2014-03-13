@@ -21,18 +21,23 @@ aside .nav-pills li {
   display: none;
   position: fixed;
   bottom: 50px;
-  font-size: 30px;
+  font-size: 22px;
   cursor: pointer;
-  min-width: 150px;
 }
 
 #sticky-view .package .version,
-#sticky-view .distribution {
-  font-size: 20px;
+#sticky-view .distribution,
+#sticky-view .icon {
+  font-size: 16px;
 }
 
-#sticky-view .distribution .icon {
-  margin-top: 4px;
+#sticky-view .panel-body {
+  padding: 10px 15px;
+  min-width: 200px;
+}
+
+#sticky-view .panel-heading {
+  padding: 8px 15px;
 }
 
 footer {

@@ -46,6 +46,7 @@ function Page_Distrubion(socket)
         tmp.package = p
         // get datestamp if package is clicked
         $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_data_to_hash(tmp) + '/datestamp">'+ p.name + ' <span>'+p.version+'</span></a></li>')
+        data.packages
       })
       packages.select()
     },
@@ -73,8 +74,13 @@ function Page_Distrubion(socket)
       var p_html = $("#packages li[id='package-"+ status_data.package + "'] a")
       p_html.find('span.icon').remove()
       p_html.html(p_html.html() + ' ' + Utils.get_status_icon_html(status_data))
-      if (Utils.check_data_package(data))
+      if (Utils.check_data_package(data)
+        && data.package.orig_name == status_data.package
+        && data.distribution.name == status_data.distribution)
+      {
+        console.log(status_data)
         data.package.status = status_data.status
+      }
     }
   }
 
@@ -229,10 +235,10 @@ function Page_Distrubion(socket)
       var sidebar = $("#files")
       sidebarOffset = sidebar.offset().top
       if (Utils.check_data_distribution(data))
-        $("#sticky-view .distribution .name").html(data.distribution.name)
+        $("#sticky-view .distribution").html(data.distribution.name)
       if (Utils.check_data_package(data)) {
-        $("#sticky-view .package .name").html(data.package.name)
-        $("#sticky-view .package .version").html(data.package.version)
+        $("#sticky-view .name").html(data.package.name)
+        $("#sticky-view .version").html(data.package.version)
         var status_data = {}
         status_data.distribution = data.distribution.name
         status_data.package = data.package.orig_name
@@ -245,6 +251,10 @@ function Page_Distrubion(socket)
         && status_data.distribution == data.distribution.name
         && status_data.package == data.package.orig_name)
       {
+        var info = Utils.get_status_icon_and_class(status_data)
+        var panel = $("#sticky-view")
+        panel.removeClass()
+        panel.addClass('panel panel-' + info.className)
         var div = $("#sticky-view .status")
         div.find('span.icon').remove()
         div.html(div.html() + ' ' + Utils.get_status_icon_html(status_data))
@@ -330,6 +340,12 @@ function Page_Distrubion(socket)
 
     socket.on(events.distribution_packages.status, function (socket_data){
       packages.set_status(socket_data)
+      // FIX_ME - qui ricevo tutti gli stati mentre sto sempre sulla stessa view!!
+      // refactory rename data -> view
+      //    view.packages = {} -> key = package.orig_name
+      //    view.file 
+      //    ......
+      // creare una socket_data quando voglio inviare
       sticky.set_status(socket_data)
     })
 
@@ -362,20 +378,20 @@ function Page_Distrubion(socket)
       __check_hash_makes_sense()
       populate()
 
-      // Init sticky-view back on top
+      // Init sticky-view back top on click
       $("#sticky-view").on("click", function(){
         $('html').animate({scrollTop: 0}, 100);
       })
 
       // WORKAROUND:
       // when page is loaded sidebar has offset().top
-      // equals 0. This is why html will be loaded on socket
+      // equals 0. This is because html is loaded on socket
       // events. Sleep a while and call stiky.reset()
       this.setTimeout(sticky.reset, 500);
 
       // WORKAROUND:
       // On incoming hundred of lines browser goes crazy.
-      // Append lines only on a timeout.
+      // Append lines every 200 mills.
       function watch_for_new_lines() {
         if (new_lines.length > 0) {
           file.append(new_lines.join(''))
