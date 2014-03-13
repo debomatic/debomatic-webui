@@ -1,5 +1,32 @@
 function Page_Distrubion(socket)
 {
+
+    /*
+
+      General Objects description:
+
+      The current view:
+
+      view = {}
+      view.distribution                       --- the selected distribution
+      view.distribution.name
+      view.distribution.packages = {package}
+      view.package                            --- the selected package
+      view.package.name
+      view.package.version
+      view.package.orig_name
+      view.package.status
+      view.package.files    = [file]
+      view.package.debs     = [file]
+      view.package.archives = [file]
+      view.file                               --- the selected file
+      view.file.name
+      view.file.content
+      view.file.path
+      view.file.extension
+
+    */
+
   var socket = socket
   var events = config.events.client
   var view = Utils.from_hash_to_view()
