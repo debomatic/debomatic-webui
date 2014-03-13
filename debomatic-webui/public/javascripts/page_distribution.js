@@ -355,6 +355,7 @@ function Page_Distrubion(socket)
       var old_data = data
       data = Utils.from_hash_to_data()
       update.page(old_data)
+      $('html').animate({scrollTop: 0}, 0);
     });
 
     $(window).on('load', function () {
