@@ -22,8 +22,8 @@ function Page_Generic()
     return result.html()
   }
 
-  var update = {
-    distributions: function(distributions) {
+  var distributions = {
+    set: function(distributions) {
       $('#distributions ul').html('');
       if(distributions.length < 1) {
         $('#distributions ul').append('<li><a title="There is no distribution at the moment" onclick="return false">None</li>')
@@ -40,8 +40,22 @@ function Page_Generic()
         }
       }
     },
+  }
 
-    status: function(status_package) {
+  var status =  {
+    set: function(data_status) {
+      $("#status ul").html('')
+      if (data_status.packages.length > 0) {
+        data_status.packages.forEach(function(p){
+          status.append(p)
+        })
+      }
+    },
+    append: function(status_package) {
+      $('#status .idle').hide()
+      $("#status ul").html($("#status ul").html()  + " " + __get_status_html(status_package))
+    },
+    update: function(status_package) {
 
       var li = $("#status li[id='status-" + status_package.distribution + "-" + status_package.package + "']")
       if (li.length > 0
@@ -71,22 +85,7 @@ function Page_Generic()
       else if (status_package.status == config.status.package.building) {
         status.append(status_package)
       }
-    }
-  }
-
-  var status =  {
-    set: function(data_status) {
-      $("#status ul").html('')
-      if (data_status.packages.length > 0) {
-        data_status.packages.forEach(function(p){
-          status.append(p)
-        })
-      }
     },
-    append: function(status_package) {
-      $('#status .idle').hide()
-      $("#status ul").html($("#status ul").html()  + " " + __get_status_html(status_package))
-    }
   }
 
   this.init = function(mysocket) {
@@ -95,18 +94,18 @@ function Page_Generic()
     socket = mysocket
 
     // update distributions
-    socket.on(_e.broadcast.distributions, function(distributions) {
-      update.distributions(distributions)
+    socket.on(_e.broadcast.distributions, function(socket_distributions) {
+      distributions.set(socket_distributions)
     });
 
     socket.on('error', function(data) { consol_e.error(data) });
 
-    socket.on(_e.client.status, function(packages) {
-      status.set(packages)
+    socket.on(_e.client.status, function(packages_status) {
+      status.set(packages_status)
     })
 
     socket.on(_e.broadcast.status_update, function(package_status) {
-      update.status(package_status)
+      status.update(package_status)
     })
   }
 }
