@@ -3,6 +3,10 @@
   cursor: pointer;
 }
 
+#error {
+  display: none;
+}
+
 aside .nav-pills li {
   line-height: 10px;
 }

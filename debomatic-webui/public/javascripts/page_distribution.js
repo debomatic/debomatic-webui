@@ -32,7 +32,7 @@ function Page_Distrubion(socket)
     */
 
   var socket = socket
-  var events = config.events.client
+  var _e = config.events.client
   var view = Utils.from_hash_to_view()
   var sidebarOffset = 0
   var new_lines = []
@@ -91,7 +91,7 @@ function Page_Distrubion(socket)
       if (Utils.check_view_distribution(view)) {
         var query_data = {}
         query_data.distribution = view.distribution
-        socket.emit(events.distribution_packages.get, query_data)
+        socket.emit(_e.distribution_packages.get, query_data)
       }
     },
     select: function() {
@@ -181,7 +181,7 @@ function Page_Distrubion(socket)
         var query_data = {}
         query_data.distribution = view.distribution
         query_data.package = view.package
-        socket.emit(events.package_files_list.get, query_data)
+        socket.emit(_e.package_files_list.get, query_data)
       }
     },
     select: function() {
@@ -226,7 +226,7 @@ function Page_Distrubion(socket)
         query_data.package = view.package
         query_data.file = view.file
         query_data.file.content = null
-        socket.emit(events.file.get, query_data)
+        socket.emit(_e.file.get, query_data)
       }
     }
   }
@@ -315,6 +315,17 @@ function Page_Distrubion(socket)
       }
     }
   }
+
+  var error = {
+    set: function(socket_error) {
+      $("#error span").html(socket_error)
+      $("#error").fadeIn(100)
+    },
+    clean: function() {
+      $("#error").hide()
+      $("#error span").html('')
+    },
+  }
   
   var select = function() {
       unselect()
@@ -370,6 +381,7 @@ function Page_Distrubion(socket)
       { // new file view
         file.get()
       }
+      error.clean()
       update.view(view)
     },
     view : function() {
@@ -390,11 +402,15 @@ function Page_Distrubion(socket)
 
   this.start = function () {
 
-    socket.on(events.distribution_packages.set, function (socket_data){
+    socket.on(config.events.error, function(socket_error) {
+      error.set(socket_error)
+    })
+
+    socket.on(_e.distribution_packages.set, function (socket_data){
       packages.set(socket_data)
     })
 
-    socket.on(events.distribution_packages.status, function (socket_data){
+    socket.on(_e.distribution_packages.status, function (socket_data){
       packages.set_status(socket_data)
       sticky.set_status(socket_data)
     })
@@ -404,15 +420,15 @@ function Page_Distrubion(socket)
       sticky.set_status(socket_data)
     })
 
-    socket.on(events.package_files_list.set, function (socket_data){
+    socket.on(_e.package_files_list.set, function (socket_data){
       files.set(socket_data)
     })
 
-    socket.on(events.file.set, function (socket_data) {
+    socket.on(_e.file.set, function (socket_data) {
       file.set(socket_data)
     })
 
-    socket.on(events.file_newcontent, function (socket_data) {
+    socket.on(_e.file_newcontent, function (socket_data) {
       new_lines.push(socket_data.file.new_content)
     })
 
