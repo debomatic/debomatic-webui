@@ -25,13 +25,18 @@ function Page_Generic()
   var update = {
     distributions: function(distributions) {
       $('#distributions ul').html('');
-      distributions.forEach(function (name){
-        $('#distributions ul').append('<li id="distribution-' + name +'"><a href="'+ config.paths.distribution + '#'+ name + '">' + name + '</li>');
-      });
-      if (window.location.pathname == config.paths.distribution) {
-        data = Utils.from_hash_to_data()
-        if (Utils.check_data_distribution(data)) {
-          $("#distributions li[id='distribution-"  + data.distribution.name + "']").addClass('active')
+      if(distributions.length < 1) {
+        $('#distributions ul').append('<li><a title="There is no distribution at the moment" onclick="return false">None</li>')
+      }
+      else {
+        distributions.forEach(function (name){
+          $('#distributions ul').append('<li id="distribution-' + name +'"><a href="'+ config.paths.distribution + '#'+ name + '">' + name + '</li>');
+        });
+        if (window.location.pathname == config.paths.distribution) {
+          data = Utils.from_hash_to_data()
+          if (Utils.check_data_distribution(data)) {
+            $("#distributions li[id='distribution-"  + data.distribution.name + "']").addClass('active')
+          }
         }
       }
     },
