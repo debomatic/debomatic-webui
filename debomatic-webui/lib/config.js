@@ -18,25 +18,28 @@ config.web.footer = "Fork me on github.com"
 config.web.autoscroll = true
 
 
-// do not edit these ones
-config.events = {}
-config.events.broadcast = {}
-config.events.broadcast.distributions = 'distributions'
-config.events.broadcast.status_update = 'status_update'
+// DO NOT EDIT these ones
 
-
-function __build_get_set(event_name) {
+// A simple function to quickly have
+// get and set strings for client events
+function _event_get_set(event_name) {
   return {
     set: event_name,
     get: 'get_' + event_name
   }
 }
 
+config.events = {}
+config.events.error = 'error'
+config.events.broadcast = {}
+config.events.broadcast.distributions = 'distributions'
+config.events.broadcast.status_update = 'status_update'
+
 config.events.client = {}
-config.events.client.distribution_packages = __build_get_set('distribution_packages')
+config.events.client.distribution_packages = _event_get_set('distribution_packages')
 config.events.client.distribution_packages.status = 'package_status'
-config.events.client.package_files_list = __build_get_set('package_files_list')
-config.events.client.file = __build_get_set('file')
+config.events.client.package_files_list = _event_get_set('package_files_list')
+config.events.client.file = _event_get_set('file')
 config.events.client.file_newcontent = 'file_newcontent'
 config.events.client.status = 'status'
 
@@ -50,6 +53,6 @@ config.status.package.successed = 'build-successed'
 config.web.paths = config.routes
 config.web.events = config.events
 config.web.status = config.status
-config.web.hostname = config.host + ((config.port == 80) ? null : ':' + config.port)
+config.web.hostname = config.host + ((config.port == 80) ? '' : ':' + config.port)
 
 module.exports = config
