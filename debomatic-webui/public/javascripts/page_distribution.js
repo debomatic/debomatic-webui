@@ -38,11 +38,16 @@ function Page_Distrubion(socket)
   var new_lines = []
 
   function __check_hash_makes_sense() {
+    if (window.location.hash.indexOf('..') >= 0) {
+      error.set('God Is Watching You !')
+      return false
+    }
     if (! window.location.hash)
       window.location.pathname = '/'
     var info = window.location.hash.split('/')
     if (info.length == 2)
       window.location.hash = info[0]
+    return true
   }
 
   var title = {
@@ -433,7 +438,8 @@ function Page_Distrubion(socket)
     })
 
     $(window).on('hashchange', function() {
-      __check_hash_makes_sense()
+      if (! __check_hash_makes_sense())
+        return
       var old_view = Utils.clone(view)
       var new_view = Utils.from_hash_to_view()
       // reset current view
@@ -447,7 +453,8 @@ function Page_Distrubion(socket)
     });
 
     $(window).on('load', function () {
-      __check_hash_makes_sense()
+      if (! __check_hash_makes_sense())
+        return
       populate()
 
       // Init sticky-view back_on_top on click
