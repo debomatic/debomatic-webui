@@ -90,7 +90,7 @@ function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
           })
         }
         else {
-          watcher = tail(watch_path,function(line, tailInfo) {
+          watcher = tail(watch_path,function(new_content, tailInfo) {
             data.file.new_content = new_content + '\n'
             updater(event_name, socket, data)
           });
