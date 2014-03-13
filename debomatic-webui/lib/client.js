@@ -14,10 +14,8 @@ function __get_files_list_from_package(data, callback) {
       file.path = path.join(package_path, f).replace(config.debomatic.path, config.routes.debomatic)
       file.orig_name = f
       file.name = f.split('_')[0]
-      file.label = f.replace(file.name + '_', '')
       file.extension = f.split('.').pop();
       if (file.extension == "deb" || file.extension == "ddeb") {
-        file.label = file.extension
         data.package.debs.push(file);
       }
       else if (f.indexOf('.tar') >= 0 || file.extension == "changes" || file.extension == "dsc") {
@@ -102,11 +100,6 @@ function __send_distribution_packages (event_name, socket, data) {
       pack.name = info[0]
       pack.version = info[1]
       pack.orig_name = p
-      if( data.package &&
-        pack.name == data.package.name &&
-        pack.version == data.package.version ) {
-          pack.selected = true;
-      }
       data.distribution.packages.push(pack)
       __send_package_status(socket, data, pack)
     });

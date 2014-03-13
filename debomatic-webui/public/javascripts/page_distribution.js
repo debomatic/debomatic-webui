@@ -98,7 +98,7 @@ function Page_Distrubion(socket)
       
       if (socket_data.package.debs && socket_data.package.debs.length > 0) {
         socket_data.package.debs.forEach(function(f){
-          $('#debs ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a> <span>.' + f.label + '</span></li>')
+          $('#debs ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a> <span>.' + f.extension + '</span></li>')
         })
         $('#debs').show()
       }
@@ -179,7 +179,7 @@ function Page_Distrubion(socket)
       if (! hash )
         hash = window.location.hash
       hash = hash.replace('#', '')
-      var new_html = '<li><a href="/">home</a></li>'
+      var new_html = ''
       var new_hash = '#'
       var info = hash.split('/')
       for (var i = 0; i < info.length ; i++) {
