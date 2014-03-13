@@ -2,7 +2,7 @@ function Page_Distrubion(socket)
 {
   var socket = socket
   var events = config.events.client
-  var data = Utils.from_hash_to_data()
+  var view = Utils.from_hash_to_view()
   var sidebarOffset = 0
   var new_lines = []
 
@@ -17,19 +17,19 @@ function Page_Distrubion(socket)
   var title = {
     set: function() {
       var label = ''
-      if (Utils.check_data_file(data)) {
-        var complete_name = data.package.orig_name + '.' + data.file.name
-        if (! data.file.path)
-          data.file.path = config.paths.debomatic + '/' + data.distribution.name + '/pool/' + data.package.orig_name + '/' + complete_name
+      if (Utils.check_view_file(view)) {
+        var complete_name = view.package.orig_name + '.' + view.file.name
+        if (! view.file.path)
+          view.file.path = config.paths.debomatic + '/' + view.distribution.name + '/pool/' + view.package.orig_name + '/' + complete_name
         label = complete_name + ' \
-          <a class="btn btn-link btn-lg" title="Download" href="' + data.file.path + '">\
+          <a class="btn btn-link btn-lg" title="Download" href="' + view.file.path + '">\
             <span class="glyphicon glyphicon-download-alt"></span>\
           </a>'
       }
-      else if (Utils.check_data_package(data))
-        label = data.package.orig_name
-      else if (Utils.check_data_distribution(data))
-        label = data.distribution.name
+      else if (Utils.check_view_package(view))
+        label = view.package.orig_name
+      else if (Utils.check_view_distribution(view))
+        label = view.distribution.name
       $('#title').html(label)
     },
     clean: function() {
@@ -45,8 +45,8 @@ function Page_Distrubion(socket)
       socket_data.distribution.packages.forEach(function(p){
         tmp.package = p
         // get datestamp if package is clicked
-        $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_data_to_hash(tmp) + '/datestamp">'+ p.name + ' <span>'+p.version+'</span></a></li>')
-        data.packages
+        $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_view_to_hash(tmp) + '/datestamp">'+ p.name + ' <span>'+p.version+'</span></a></li>')
+        view.packages
       })
       packages.select()
     },
@@ -55,16 +55,16 @@ function Page_Distrubion(socket)
       $('#packages ul').html('')
     },
     get: function () {
-      if (Utils.check_data_distribution(data)) {
-        var new_data = {}
-        new_data.distribution = data.distribution
-        socket.emit(events.distribution_packages.get, new_data)
+      if (Utils.check_view_distribution(view)) {
+        var query_data = {}
+        query_data.distribution = view.distribution
+        socket.emit(events.distribution_packages.get, query_data)
       }
     },
     select: function() {
       packages.unselect()
-      if (Utils.check_data_package(data)) {
-        $("#packages li[id='package-"+ data.package.orig_name + "']").addClass('active')
+      if (Utils.check_view_package(view)) {
+        $("#packages li[id='package-"+ view.package.orig_name + "']").addClass('active')
       }
     },
     unselect: function() {
@@ -74,12 +74,12 @@ function Page_Distrubion(socket)
       var p_html = $("#packages li[id='package-"+ status_data.package + "'] a")
       p_html.find('span.icon').remove()
       p_html.html(p_html.html() + ' ' + Utils.get_status_icon_html(status_data))
-      if (Utils.check_data_package(data)
-        && data.package.orig_name == status_data.package
-        && data.distribution.name == status_data.distribution)
+      if (Utils.check_view_package(view)
+        && view.package.orig_name == status_data.package
+        && view.distribution.name == status_data.distribution)
       {
         console.log(status_data)
-        data.package.status = status_data.status
+        view.package.status = status_data.status
       }
     }
   }
@@ -89,10 +89,10 @@ function Page_Distrubion(socket)
       files.clean()
       var tmp = socket_data
       if (socket_data.package.files && socket_data.package.files.length > 0) {
-        selected_file = Utils.check_data_file(socket_data)
+        selected_file = Utils.check_view_file(socket_data)
         socket_data.package.files.forEach(function(f){
           tmp.file = f
-          var html_file = $('<li id="file-'+ f.orig_name +'"><a title="'+ f.orig_name +'" href="'+ Utils.from_data_to_hash(tmp) + '">' + f.name + '</a></li>')
+          var html_file = $('<li id="file-'+ f.orig_name +'"><a title="'+ f.orig_name +'" href="'+ Utils.from_view_to_hash(tmp) + '">' + f.name + '</a></li>')
           html_file.on("click", function(){
             files.select(this)
           })
@@ -127,17 +127,17 @@ function Page_Distrubion(socket)
       $('#files').hide()
     },
     get: function () {
-      if (Utils.check_data_package(data)) {
-        var new_data = {}
-        new_data.distribution = data.distribution
-        new_data.package = data.package
-        socket.emit(events.package_files_list.get, new_data)
+      if (Utils.check_view_package(view)) {
+        var query_data = {}
+        query_data.distribution = view.distribution
+        query_data.package = view.package
+        socket.emit(events.package_files_list.get, query_data)
       }
     },
     select: function() {
       files.unselect()
-      if (Utils.check_data_file(data)) {
-        $("#logs li[id='file-" + data.file.orig_name + "']").addClass('active')
+      if (Utils.check_view_file(view)) {
+        $("#logs li[id='file-" + view.file.orig_name + "']").addClass('active')
       }
     },
     unselect: function() {
@@ -169,13 +169,13 @@ function Page_Distrubion(socket)
       }
     },
     get: function() {
-      if (Utils.check_data_file(data)) {
-        var new_data = {}
-        new_data.distribution = data.distribution
-        new_data.package = data.package
-        new_data.file = data.file
-        new_data.file.content = null
-        socket.emit(events.file.get, new_data)
+      if (Utils.check_view_file(view)) {
+        var query_data = {}
+        query_data.distribution = view.distribution
+        query_data.package = view.package
+        query_data.file = view.file
+        query_data.file.content = null
+        socket.emit(events.file.get, query_data)
       }
     }
   }
@@ -234,22 +234,22 @@ function Page_Distrubion(socket)
     update: function() {
       var sidebar = $("#files")
       sidebarOffset = sidebar.offset().top
-      if (Utils.check_data_distribution(data))
-        $("#sticky-view .distribution").html(data.distribution.name)
-      if (Utils.check_data_package(data)) {
-        $("#sticky-view .name").html(data.package.name)
-        $("#sticky-view .version").html(data.package.version)
+      if (Utils.check_view_distribution(view))
+        $("#sticky-view .distribution").html(view.distribution.name)
+      if (Utils.check_view_package(view)) {
+        $("#sticky-view .name").html(view.package.name)
+        $("#sticky-view .version").html(view.package.version)
         var status_data = {}
-        status_data.distribution = data.distribution.name
-        status_data.package = data.package.orig_name
-        status_data.status = data.package.status
+        status_data.distribution = view.distribution.name
+        status_data.package = view.package.orig_name
+        status_data.status = view.package.status
         sticky.set_status(status_data)
       }
     },
     set_status: function(status_data) {
-      if ( Utils.check_data_package(data)
-        && status_data.distribution == data.distribution.name
-        && status_data.package == data.package.orig_name)
+      if ( Utils.check_view_package(view)
+        && status_data.distribution == view.distribution.name
+        && status_data.package == view.package.orig_name)
       {
         var info = Utils.get_status_icon_and_class(status_data)
         var panel = $("#sticky-view")
@@ -264,8 +264,8 @@ function Page_Distrubion(socket)
   
   var select = function() {
       unselect()
-      if (Utils.check_data_distribution(data)) {
-        $("#distributions li[id='distribution-"  + data.distribution.name + "']").addClass('active')
+      if (Utils.check_view_distribution(view)) {
+        $("#distributions li[id='distribution-"  + view.distribution.name + "']").addClass('active')
       }
       packages.select()
       files.select()
@@ -287,19 +287,19 @@ function Page_Distrubion(socket)
   }
 
   var update = {
-    page: function(old_data) {
-      if ( ! old_data
-        || ! Utils.check_data_distribution(old_data)
-        || ! Utils.check_data_distribution(data)
-        || data.distribution.name != old_data.distribution.name 
+    page: function(old_view) {
+      if ( ! old_view
+        || ! Utils.check_view_distribution(old_view)
+        || ! Utils.check_view_distribution(view)
+        || view.distribution.name != old_view.distribution.name 
         )
       { // new distribution view
         populate()
         return
       }
-      else if ( ! Utils.check_data_package(old_data)
-        || ! Utils.check_data_package(data)
-        || data.package.orig_name != old_data.package.orig_name
+      else if ( ! Utils.check_view_package(old_view)
+        || ! Utils.check_view_package(view)
+        || view.package.orig_name != old_view.package.orig_name
       )
       { // new pacakge view
         files.get()
@@ -307,14 +307,14 @@ function Page_Distrubion(socket)
         file.clean()
         file.get()
       }
-      else if ( ! Utils.check_data_file(old_data)
-        || ! Utils.check_data_file(data)
-        || data.file.name != old_data.file.name
+      else if ( ! Utils.check_view_file(old_view)
+        || ! Utils.check_view_file(view)
+        || view.file.name != old_view.file.name
       )
       { // new file view
         file.get()
       }
-      update.view(data)
+      update.view(view)
     },
     view : function() {
       title.set()
@@ -341,7 +341,7 @@ function Page_Distrubion(socket)
     socket.on(events.distribution_packages.status, function (socket_data){
       packages.set_status(socket_data)
       // FIX_ME - qui ricevo tutti gli stati mentre sto sempre sulla stessa view!!
-      // refactory rename data -> view
+      // refactory rename view -> view
       //    view.packages = {} -> key = package.orig_name
       //    view.file 
       //    ......
@@ -368,9 +368,9 @@ function Page_Distrubion(socket)
 
     $(window).on('hashchange', function() {
       __check_hash_makes_sense()
-      var old_data = data
-      data = Utils.from_hash_to_data()
-      update.page(old_data)
+      var old_view = view
+      view = Utils.from_hash_to_view()
+      update.page(old_view)
       $('html').animate({scrollTop: 0}, 0);
     });
 

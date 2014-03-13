@@ -1,51 +1,51 @@
 var Utils = {
-  from_hash_to_data: function (hash) {
+  from_hash_to_view: function (hash) {
     if (! hash )
       hash = window.location.hash
     hash = hash.replace('#', '')
     info = hash.split('/');
-    data = {}
+    var view = {}
     if (info.length >= 1) {
-      data.distribution = {}
-      data.distribution.name = info[0];
+      view.distribution = {}
+      view.distribution.name = info[0];
     }
     if (info.length >= 3){
-      data.package = {}
-      data.package.name = info[1];
-      data.package.version = info[2];
-      data.package.orig_name = data.package.name + '_' + data.package.version
+      view.package = {}
+      view.package.name = info[1];
+      view.package.version = info[2];
+      view.package.orig_name = view.package.name + '_' + view.package.version
     }
     if (info.length >= 4) {
-      data.file = {}
-      data.file.name = info[3]
-      data.file.orig_name = data.package.orig_name + '.' + data.file.name
+      view.file = {}
+      view.file.name = info[3]
+      view.file.orig_name = view.package.orig_name + '.' + view.file.name
     }
-    return data
+    return view
   },
   
-  from_data_to_hash: function (data) {
+  from_view_to_hash: function (view) {
     hash = "#"
-    if (Utils.check_data_distribution(data)) {
-      hash = hash + data.distribution.name
-      if (Utils.check_data_package(data)) {
-        hash = hash + '/' + data.package.name + "/" + data.package.version
-        if (Utils.check_data_file(data))
-          hash = hash + '/' + data.file.name
+    if (Utils.check_view_distribution(view)) {
+      hash = hash + view.distribution.name
+      if (Utils.check_view_package(view)) {
+        hash = hash + '/' + view.package.name + "/" + view.package.version
+        if (Utils.check_view_file(view))
+          hash = hash + '/' + view.file.name
       }
     }
   return hash
   },
   
-  check_data_distribution: function(data) {
-    return data && data.distribution && data.distribution.name
+  check_view_distribution: function(view) {
+    return view && view.distribution && view.distribution.name
   },
   
-  check_data_package: function(data) {
-    return Utils.check_data_distribution(data) && data.package && data.package.name && data.package.version && data.package.orig_name
+  check_view_package: function(view) {
+    return Utils.check_view_distribution(view) && view.package && view.package.name && view.package.version && view.package.orig_name
   },
   
-  check_data_file: function(data) {
-    return Utils.check_data_package(data) && data.file && data.file.name
+  check_view_file: function(view) {
+    return Utils.check_view_package(view) && view.file && view.file.name
   },
 
   get_status_icon_and_class: function (status_data) {

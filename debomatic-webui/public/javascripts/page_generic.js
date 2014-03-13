@@ -33,8 +33,8 @@ function Page_Generic()
           $('#distributions ul').append('<li id="distribution-' + name +'"><a href="'+ config.paths.distribution + '#'+ name + '">' + name + '</li>');
         });
         if (window.location.pathname == config.paths.distribution) {
-          data = Utils.from_hash_to_data()
-          if (Utils.check_data_distribution(data)) {
+          var data = Utils.from_hash_to_view()
+          if (Utils.check_view_distribution(data)) {
             $("#distributions li[id='distribution-"  + data.distribution.name + "']").addClass('active')
           }
         }
@@ -98,7 +98,7 @@ function Page_Generic()
       distributions.set(socket_distributions)
     });
 
-    socket.on('error', function(data) { consol_e.error(data) });
+    socket.on('error', function(socket_data_error) { console.error(socket_data_error) });
 
     socket.on(_e.client.status, function(packages_status) {
       status.set(packages_status)
