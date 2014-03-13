@@ -353,7 +353,8 @@ function Page_Distrubion(socket)
       )
       { // new package view
         // set status from packages
-        view.package.status = view.packages[view.package.orig_name].status
+        if (view.packages[view.package.orig_name])
+          view.package.status = view.packages[view.package.orig_name].status
         files.get()
         file.clean()
         file.get()
@@ -418,7 +419,8 @@ function Page_Distrubion(socket)
       // reset current view
       view.distribution = Utils.clone(new_view.distribution)
       view.package = Utils.clone(new_view.package)
-      view.package.status = view.packages[view.package.orig_name].status
+      if (view.packages[view.package.orig_name])
+        view.package.status = view.packages[view.package.orig_name].status
       view.file = Utils.clone(new_view.file)
       update.page(old_view)
       $('html').animate({scrollTop: 0}, 0);
