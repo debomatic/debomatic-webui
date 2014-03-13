@@ -63,7 +63,7 @@ function __get_files_list(dir, onlyDirectories, callback) {
           }
         }
       } catch (fs_error) {
-        __errors_handler("__get_files_list:forEach", fs_err)
+        __errors_handler("__get_files_list:forEach", fs_error)
         return
       }
     });
