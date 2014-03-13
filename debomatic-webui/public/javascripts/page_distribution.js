@@ -213,10 +213,6 @@ function Page_Distrubion(socket)
       sticky.update()
       sticky.init()
       sticky.start()
-      // onclic - back on top and disable auto-scroll
-      $("#sticky-view").on("click", function(){
-        $('html').animate({scrollTop: 0}, 100);
-      })
     },
     stop: function() {
       $(window).off("scroll")
@@ -364,6 +360,11 @@ function Page_Distrubion(socket)
     $(window).on('load', function () {
       __check_hash_makes_sense()
       populate()
+
+      // Init sticky-view back on top
+      $("#sticky-view").on("click", function(){
+        $('html').animate({scrollTop: 0}, 100);
+      })
 
       // WORKAROUND:
       // when page is loaded sidebar has offset().top
