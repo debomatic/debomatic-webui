@@ -105,7 +105,11 @@ function Page_Distrubion(socket)
     },
     set_status: function (status_data) {
       // set status in view
-      view.packages[status_data.package].status = Utils.clone(status_data.status)
+      if ( view.distribution.name == status_data.distribution
+        && view.packages[status_data.package] )
+      {
+        view.packages[status_data.package].status = Utils.clone(status_data.status)
+      }
       // and in html
       var p_html = $("#packages li[id='package-"+ status_data.package + "'] a")
       p_html.find('span.icon').remove()
