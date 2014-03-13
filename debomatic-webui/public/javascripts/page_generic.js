@@ -107,7 +107,7 @@ function Page_Generic()
     })
 
     socket.on(_e.error, function(error) {
-      console.error(error)
+      console.error("socket > " + error)
     })
   }
 }
