@@ -75,5 +75,10 @@ var Utils = {
   get_status_icon_html: function (status_data) {
     info = Utils.get_status_icon_and_class(status_data)
     return '<span class="icon glyphicon glyphicon-' + info.icon + '"></span>'
+  },
+
+  // clone an object via JSON
+  clone: function (object) {
+    return JSON.parse(JSON.stringify(object));
   }
 }
