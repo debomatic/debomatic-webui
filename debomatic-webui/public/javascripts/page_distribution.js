@@ -10,7 +10,8 @@ function Page_Distrubion(socket)
       view = {}
       view.distribution                       --- the selected distribution
       view.distribution.name
-      view.distribution.packages = {package}
+      view.distribution
+      view.packages = {package}
       view.package                            --- the selected package
       view.package.name
       view.package.version
@@ -18,12 +19,15 @@ function Page_Distrubion(socket)
       view.package.status
       view.package.files    = [file]
       view.package.debs     = [file]
-      view.package.archives = [file]
+      view.package.sources  = [file]
       view.file                               --- the selected file
       view.file.name
       view.file.content
       view.file.path
       view.file.extension
+      view.file.orig_name
+
+      More info on Utils.from_hash_to_view()
 
     */
 
@@ -67,15 +71,17 @@ function Page_Distrubion(socket)
   var packages = {
     set: function (socket_data) {
       $('#packages ul').html('')
-      var tmp = socket_data
+      var tmp = Utils.clone(socket_data)
       tmp.file = null
+      view.packages = {}
       socket_data.distribution.packages.forEach(function(p){
         tmp.package = p
         // get datestamp if package is clicked
         $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_view_to_hash(tmp) + '/datestamp">'+ p.name + ' <span>'+p.version+'</span></a></li>')
-        view.packages
+        view.packages[p.orig_name] = Utils.clone(p)
       })
       packages.select()
+      delete(socket_data)
     },
     
     clean: function () {
@@ -98,6 +104,9 @@ function Page_Distrubion(socket)
       $('#packages li').removeClass('active')
     },
     set_status: function (status_data) {
+      // set status in view
+      view.packages[status_data.package].status = Utils.clone(status_data.status)
+      // and in html
       var p_html = $("#packages li[id='package-"+ status_data.package + "'] a")
       p_html.find('span.icon').remove()
       p_html.html(p_html.html() + ' ' + Utils.get_status_icon_html(status_data))
@@ -105,18 +114,21 @@ function Page_Distrubion(socket)
         && view.package.orig_name == status_data.package
         && view.distribution.name == status_data.distribution)
       {
-        console.log(status_data)
-        view.package.status = status_data.status
+        // in case user is watching this package, update also view.package
+        view.package.status = Utils.clone(status_data.status)
       }
+      delete(status_data)
     }
   }
 
   var files = {
     set: function (socket_data) {
       files.clean()
-      var tmp = socket_data
+      var tmp = Utils.clone(socket_data)
       if (socket_data.package.files && socket_data.package.files.length > 0) {
-        selected_file = Utils.check_view_file(socket_data)
+        // update view
+        view.package.files = Utils.clone(socket_data.package.files)
+        // update html
         socket_data.package.files.forEach(function(f){
           tmp.file = f
           var html_file = $('<li id="file-'+ f.orig_name +'"><a title="'+ f.orig_name +'" href="'+ Utils.from_view_to_hash(tmp) + '">' + f.name + '</a></li>')
@@ -130,6 +142,9 @@ function Page_Distrubion(socket)
       }
       
       if (socket_data.package.debs && socket_data.package.debs.length > 0) {
+        // update view
+        view.package.debs = Utils.clone(socket_data.package.debs)
+        // update.html
         socket_data.package.debs.forEach(function(f){
           $('#debs ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a> <span>.' + f.extension + '</span></li>')
         })
@@ -137,12 +152,16 @@ function Page_Distrubion(socket)
       }
       
       if (socket_data.package.sources && socket_data.package.sources.length > 0) {
+        // update view
+        view.package.sources = Utils.clone(socket_data.package.sources)
+        // update html
         socket_data.package.sources.forEach(function(f){
           $('#sources ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a></li>')
         })
         $('#sources').show()
       }
       $('#files').show()
+      delete(socket_data)
     },
     clean: function() {
       $('#logs ul').html('');
@@ -174,9 +193,10 @@ function Page_Distrubion(socket)
 
   var file = {
     set: function(socket_data) {
+      view.file = Utils.clone(socket_data.file)
       $("#file pre").html(socket_data.file.content)
       $("#file").show()
-      select()
+      delete(socket_data)
     },
     clean: function() {
       $('#file pre').html('')
@@ -266,18 +286,21 @@ function Page_Distrubion(socket)
       if (Utils.check_view_package(view)) {
         $("#sticky-view .name").html(view.package.name)
         $("#sticky-view .version").html(view.package.version)
-        var status_data = {}
-        status_data.distribution = view.distribution.name
-        status_data.package = view.package.orig_name
-        status_data.status = view.package.status
-        sticky.set_status(status_data)
+        sticky.set_status()
       }
     },
     set_status: function(status_data) {
+      if (! status_data) {
+        status_data = {}
+        status_data.distribution = view.distribution.name
+        status_data.package = view.package.orig_name
+        status_data.status = view.package.status
+      }
       if ( Utils.check_view_package(view)
         && status_data.distribution == view.distribution.name
         && status_data.package == view.package.orig_name)
       {
+        // update html
         var info = Utils.get_status_icon_and_class(status_data)
         var panel = $("#sticky-view")
         panel.removeClass()
@@ -328,9 +351,10 @@ function Page_Distrubion(socket)
         || ! Utils.check_view_package(view)
         || view.package.orig_name != old_view.package.orig_name
       )
-      { // new pacakge view
+      { // new package view
+        // set status from packages
+        view.package.status = view.packages[view.package.orig_name].status
         files.get()
-        // I will always get datestamp file from package view
         file.clean()
         file.get()
       }
@@ -367,12 +391,6 @@ function Page_Distrubion(socket)
 
     socket.on(events.distribution_packages.status, function (socket_data){
       packages.set_status(socket_data)
-      // FIX_ME - qui ricevo tutti gli stati mentre sto sempre sulla stessa view!!
-      // refactory rename view -> view
-      //    view.packages = {} -> key = package.orig_name
-      //    view.file 
-      //    ......
-      // creare una socket_data quando voglio inviare
       sticky.set_status(socket_data)
     })
 
@@ -395,8 +413,13 @@ function Page_Distrubion(socket)
 
     $(window).on('hashchange', function() {
       __check_hash_makes_sense()
-      var old_view = view
-      view = Utils.from_hash_to_view()
+      var old_view = Utils.clone(view)
+      var new_view = Utils.from_hash_to_view()
+      // reset current view
+      view.distribution = Utils.clone(new_view.distribution)
+      view.package = Utils.clone(new_view.package)
+      view.package.status = view.packages[view.package.orig_name].status
+      view.file = Utils.clone(new_view.file)
       update.page(old_view)
       $('html').animate({scrollTop: 0}, 0);
     });
@@ -405,7 +428,7 @@ function Page_Distrubion(socket)
       __check_hash_makes_sense()
       populate()
 
-      // Init sticky-view back top on click
+      // Init sticky-view back_on_top on click
       $("#sticky-view").on("click", function(){
         $('html').animate({scrollTop: 0}, 100);
       })
