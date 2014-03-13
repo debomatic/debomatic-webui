@@ -1,14 +1,12 @@
 var config = require('./config.js')
   , fs = require('fs')
-  , Tail = require('tail').Tail
+  , tail = require('tailfd').tail
 
 
 // watcher on build_status
 function __watch_build_status (socket, status) {
 
-  status_watcher = new Tail(config.debomatic.jsonfile)
-
-  status_watcher.on('line', function(new_content) {
+  tail(config.debomatic.jsonfile, function(new_content) {
     var data = null
     try {
       data = JSON.parse(new_content)

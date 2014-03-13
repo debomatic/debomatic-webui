@@ -7,7 +7,7 @@
     , "ejs": ">= 0.0.1"
     , "socket.io": "*"
     , "node-fs": "*"
-    , "tail": "*"
+    , "tailfd": "*"
   }
   , "scripts": {
       "install": "bash scripts/install.sh"  

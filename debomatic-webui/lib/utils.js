@@ -1,6 +1,6 @@
 var path = require('path')
   , fs = require('fs')
-  , Tail = require('tail').Tail
+  , tail = require('tailfd').tail
   , config = require('./config.js')
 
 function __errors_handler(from, err, socket) {
@@ -75,13 +75,9 @@ function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
   name = "watcher-" + event_name
   socket.get(name, function (err, watcher) {
     try {
-      if (watcher) {
-        try {
-          watcher.unwatch()
-        } catch (errorWatchingDirectory) {
-          watcher.close()
-        }
-      }
+      if (watcher)
+        watcher.close()
+
       fs.stat(watch_path, function(err, stats) {
         if (err) {
           utils.errors_handler("__watch_path_onsocket:fs.stat", err, socket)
@@ -94,17 +90,12 @@ function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
           })
         }
         else {
-          watcher = new Tail(watch_path)
-          watcher.on('line', function(new_content) {
+          watcher = tail(watch_path,function(line, tailInfo) {
             data.file.new_content = new_content + '\n'
             updater(event_name, socket, data)
-          }).on('error', function(err) {
-            watcher.unwatch()
-            __errors_handler("__watch_path_onsocket.Tail <- " + arguments.callee.caller.name, err, socket)
-            return
-          })
-        socket.set(name, watcher)
+          });
         }
+        socket.set(name, watcher)
       })
     } catch (err) {
       __errors_handler("__watch_path_onsocket <- " + arguments.callee.caller.name, err, socket)
