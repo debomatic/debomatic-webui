@@ -98,14 +98,16 @@ function Page_Generic()
       distributions.set(socket_distributions)
     });
 
-    socket.on('error', function(socket_data_error) { console.error(socket_data_error) });
-
     socket.on(_e.client.status, function(packages_status) {
       status.set(packages_status)
     })
 
     socket.on(_e.broadcast.status_update, function(package_status) {
       status.update(package_status)
+    })
+
+    socket.on(_e.error, function(error) {
+      console.error(error)
     })
   }
 }

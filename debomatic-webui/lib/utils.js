@@ -3,6 +3,14 @@ var path = require('path')
   , Tail = require('tail').Tail
   , config = require('./config.js')
 
+function __errors_handler(from, err, socket) {
+  if (! socket)
+    from = "NO SOCKET: " + from
+  console.error(from, err)
+  if (socket)
+    socket.emit(config.events.error, err.message)
+}
+
 function __check_no_backward(backward_path) {
   try {
     return backward_path.indexOf('..') < 0
@@ -37,7 +45,7 @@ function __get_files_list(dir, onlyDirectories, callback) {
   fs.readdir(dir, function(err, files){
     result = [];
     if (err) {
-      console.error(err);
+      __errors_handler("__get_files_list", err)
       return;
     }
     files.forEach( function(f) {
@@ -54,7 +62,10 @@ function __get_files_list(dir, onlyDirectories, callback) {
             result.push(f);
           }
         }
-      } catch (fs_error) {}
+      } catch (fs_error) {
+        __errors_handler("__get_files_list:forEach", fs_err)
+        return
+      }
     });
     callback(result);
   });
@@ -63,17 +74,19 @@ function __get_files_list(dir, onlyDirectories, callback) {
 function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
   name = "watcher-" + event_name
   socket.get(name, function (err, watcher) {
-    if (watcher) {
-      try {
-        watcher.unwatch()
-      } catch (errorWatchingDirectory) {
-        watcher.close()
-      }
-    }
     try {
+      if (watcher) {
+        try {
+          watcher.unwatch()
+        } catch (errorWatchingDirectory) {
+          watcher.close()
+        }
+      }
       fs.stat(watch_path, function(err, stats) {
-        if (err)
+        if (err) {
+          utils.errors_handler("__watch_path_onsocket:fs.stat", err, socket)
           return
+        }
         if (stats.isDirectory()) {
           watcher = fs.watch(watch_path, {persistent: true}, function (event, fileName) {
           if(event == 'rename')
@@ -85,12 +98,20 @@ function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
           watcher.on('line', function(new_content) {
             data.file.new_content = new_content + '\n'
             updater(event_name, socket, data)
+          }).on('error', function(err) {
+            watcher.unwatch()
+            __errors_handler("__watch_path_onsocket.Tail <- " + arguments.callee.caller.name, err, socket)
+            return
           })
-        }
         socket.set(name, watcher)
+        }
       })
-    } catch (err_watch) { console.error('utils.__watch_path_onsocket ' + err_watch)}
+    } catch (err) {
+      __errors_handler("__watch_path_onsocket <- " + arguments.callee.caller.name, err, socket)
+      return
+    }
   })
+  return true;
 }
 
 function __generic_handler_watcher(event_name, socket, data, watch_path, callback) {
@@ -126,6 +147,9 @@ utils = {
   generic_handler_watcher: function(event_name, socket, data, watch_path, callback) {
     return __generic_handler_watcher(event_name, socket, data, watch_path, callback);
   },
+  errors_handler: function(from, error, socket) {
+    return __errors_handler(from, error, socket)
+  }
 }
 
 module.exports = utils

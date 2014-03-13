@@ -12,7 +12,10 @@ function __watch_build_status (socket, status) {
     var data = null
     try {
       data = JSON.parse(new_content)
-    } catch (error) { return }
+    } catch (err) {
+      utils.erros_handler('Broadcaster:__watch_build_status:JSON.parse(new_content) - ', err, socket)
+      return
+    }
     if (data.status == config.status.package.building) {
       status.packages.push(data)
     }

@@ -3,6 +3,8 @@ var fs = require('fs')
   , config = require('./config.js')
   , utils = require('./utils.js')
 
+var _e = config.events.client
+
 function __get_files_list_from_package(data, callback) {
   package_path = utils.get_package_path(data)
   utils.get_files_list(package_path, false, function(files) {
@@ -108,9 +110,12 @@ function __send_distribution_packages (event_name, socket, data) {
 }
 
 function __send_file (event_name, socket, data) {
-  file_path = utils.get_file_path(data)
+  var file_path = utils.get_file_path(data)
   fs.readFile(file_path, 'utf8', function (err, content) {
-    if (err) return;
+    if (err) {
+      utils.errors_handler('client:__send_file', err, socket)
+      return
+    }
     data.file.orig_name = file_path.split('/').pop()
     data.file.content = content
     data.file.path = file_path.replace(config.debomatic.path, config.routes.debomatic)
@@ -119,8 +124,7 @@ function __send_file (event_name, socket, data) {
 }
 
 function __handler_get_file (socket, data) {
-  var _e = config.events.client
-  file_path = utils.get_file_path(data)
+  var file_path = utils.get_file_path(data)
   utils.watch_path_onsocket(_e.file_newcontent, socket, data, file_path, function(event_name, socket, data) {
     data.file.content = null
     socket.emit(event_name, data)
@@ -131,8 +135,6 @@ function __handler_get_file (socket, data) {
 function Client (socket) {
 
   var socket = socket
-
-  var _e = config.events.client
 
   this.start = function () {
     // init send distributions and status
