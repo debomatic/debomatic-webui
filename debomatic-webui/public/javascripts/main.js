@@ -8,7 +8,8 @@ var socket = io.connect('//' + config.hostname );
 
   level: 1 - user interaction
          2 - automatic changes
-         3 - socket interaction
+         3 - socket emit data
+         4 - socket received data
 */
 var debug = function() {
   if (arguments.length == 0) {
