@@ -434,14 +434,17 @@ function Page_Distrubion(socket)
   this.start = function () {
 
     socket.on(config.events.error, function(socket_error) {
+      debug(3, "socket > received event:",config.events.error, "data: ", socket_error)
       error.set(socket_error)
     })
 
     socket.on(_e.distribution_packages.set, function (socket_data){
+      debug(3, "socket > received event:",_e.distribution_packages.set, "data: ", socket_data)
       packages.set(socket_data)
     })
 
     socket.on(_e.distribution_packages.status, function (socket_data){
+      debug(3, "socket > received event:",_e.distribution_packages.set, "data: ", socket_data)
       packages.set_status(socket_data)
       sticky.set_status(socket_data)
     })
@@ -452,14 +455,17 @@ function Page_Distrubion(socket)
     })
 
     socket.on(_e.package_files_list.set, function (socket_data){
+      debug(3, "socket > received event:",_e.package_files_list.set, "data: ", socket_data)
       files.set(socket_data)
     })
 
     socket.on(_e.file.set, function (socket_data) {
+      debug(3, "socket > received event:",_e.file.set, "data: ", socket_data)
       file.set(socket_data)
     })
 
     socket.on(_e.file_newcontent, function (socket_data) {
+      debug(3, "socket > received event:",_e.file_newcontent, "data: ", socket_data)
       new_lines.push(socket_data.file.new_content)
     })
 
