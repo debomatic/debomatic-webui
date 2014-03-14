@@ -89,3 +89,17 @@ footer {
   right: 5px;
 }
 
+#preferences {
+  font-size: 15px;
+}
+
+#preferences .debug #debug {
+  width: 58px;
+  float:left;
+  margin-right: 10px;
+}
+
+#preferences .debug label {
+  font-weight: normal;
+  padding-top: 6px;
+}

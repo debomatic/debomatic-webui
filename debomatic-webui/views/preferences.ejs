@@ -1,8 +1,32 @@
-<div class="panel panel-primary">
+<div id="preferences" class="panel panel-primary">
   <div class="panel-heading">
     <h3 class="panel-title">Preferences</h3>
   </div>
   <div class="panel-body">
-    Panel content
+    <div class="checkbox">
+  	  <label>
+  	    <input id="header" type="checkbox"> Show header
+  	  </label>
+    </div>
+    <div class="checkbox">
+      <label>
+        <input id="sidebar" type="checkbox"> Show sidebar
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+        <input id="autoscroll" type="checkbox"> Enable autoscroll
+      </label>
+    </div>
+    <div class="debug">
+      <select id="debug" class="form-control">
+        <option>0</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+      </select>
+      <label for="debug">Set debug level</label>
+    </div> 
   </div>
 </div>
