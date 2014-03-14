@@ -11,6 +11,13 @@
   margin-top: 20px;
 }
 
+.navbar .home-link .icon {
+  background: url('../images/debian-logo-small.png') right no-repeat;
+  width: 17px;
+  height: 50px;
+  margin-left: 10px;
+}
+
 #error {
   display: none;
 }
