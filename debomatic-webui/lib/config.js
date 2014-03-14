@@ -22,7 +22,7 @@ config.web.preferences = {}
 config.web.preferences.autoscroll = true
 config.web.preferences.header = true
 config.web.preferences.sidebar = true
-config.web.preferences.debug = 3      // debug level - 0 means disabled
+config.web.preferences.debug = 0      // debug level - 0 means disabled
 
 // DO NOT EDIT these ones
 
