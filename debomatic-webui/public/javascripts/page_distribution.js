@@ -86,7 +86,6 @@ function Page_Distrubion(socket)
         view.packages[p.orig_name] = Utils.clone(p)
       })
       packages.select()
-      delete(socket_data)
     },
     
     clean: function () {
@@ -126,7 +125,6 @@ function Page_Distrubion(socket)
         // in case user is watching this package, update also view.package
         view.package.status = Utils.clone(status_data.status)
       }
-      delete(status_data)
     }
   }
 
@@ -170,7 +168,6 @@ function Page_Distrubion(socket)
         $('#sources').show()
       }
       $('#files').show()
-      delete(socket_data)
     },
     clean: function() {
       $('#logs ul').html('');
@@ -205,7 +202,6 @@ function Page_Distrubion(socket)
       view.file = Utils.clone(socket_data.file)
       $("#file pre").html(socket_data.file.content)
       $("#file").show()
-      delete(socket_data)
     },
     clean: function() {
       $('#file pre').html('')
