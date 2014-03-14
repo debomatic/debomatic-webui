@@ -10,8 +10,7 @@ function Page_Distrubion(socket)
       view = {}
       view.distribution                       --- the selected distribution
       view.distribution.name
-      view.distribution
-      view.packages = {package}
+      view.packages         = {package}
       view.package                            --- the selected package
       view.package.name
       view.package.version
@@ -30,7 +29,7 @@ function Page_Distrubion(socket)
       More info on Utils.from_hash_to_view()
 
 
-      The status object recived by socket:
+      The status object received by socket:
 
       status_data = {}
       status_data.distribution                --- the distribution name
@@ -232,7 +231,7 @@ function Page_Distrubion(socket)
       var content = $("#file pre")
       content.html(content.html() + new_content)
       
-      if (config.autoscroll) {
+      if (config.preferences.autoscroll) {
         // scroll down if file is covering footer
         var file_height = $("#fileOffset").offset().top
         var footerOffset = $("footer").offset().top
@@ -485,6 +484,7 @@ function Page_Distrubion(socket)
       view.file = Utils.clone(new_view.file)
       update.page(old_view)
       $('html').animate({scrollTop: 0}, 0);
+      debug(1, "changing view", "old:", old_view, "new:", new_view)
     });
 
     $(window).on('load', function () {
