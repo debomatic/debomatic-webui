@@ -368,6 +368,7 @@ function Page_Distrubion(socket)
     file.clean()
     unselect()
     breadcrumb.update()
+    error.clean()
   }
 
   var update = {
@@ -400,10 +401,10 @@ function Page_Distrubion(socket)
       { // new file view
         file.get()
       }
-      error.clean()
       update.view(view)
     },
     view : function() {
+      error.clean()
       title.set()
       breadcrumb.update()
       select()
