@@ -11,19 +11,16 @@
          4 - socket received data
 */
 var debug = function() {
-  if (arguments.length == 0) {
+  if (arguments.length < 2) {
     return
   }
-  var level = 1
-  if (arguments.length > 2) {
-    level = arguments[0]
-    arguments[0] = "debug [" + level + "]:"
-    if (level <= config.preferences.debug) {
-      if (console.debug)
-        console.debug.apply(console, arguments)
-      else
-        console.log.apply(console, arguments)
-    }
+  var level = arguments[0]
+  arguments[0] = "debug [" + level + "]:"
+  if (level <= config.preferences.debug) {
+    if (console.debug)
+      console.debug.apply(console, arguments)
+    else
+      console.log.apply(console, arguments)
   }
 }
 
