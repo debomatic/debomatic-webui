@@ -3,6 +3,14 @@
   cursor: pointer;
 }
 
+#pageheader .lead {
+  padding-bottom: 0;
+}
+
+.navbar {
+  margin-top: 20px;
+}
+
 #error {
   display: none;
 }
