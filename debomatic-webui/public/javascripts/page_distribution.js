@@ -39,7 +39,7 @@ function Page_Distrubion(socket)
 
   function __check_hash_makes_sense() {
     if (window.location.hash.indexOf('..') >= 0) {
-      error.set('God Is Watching You !')
+      error.set("Detected '..' God Is Watching You !")
       return false
     }
     if (! window.location.hash)
