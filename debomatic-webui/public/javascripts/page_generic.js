@@ -1,6 +1,6 @@
-function Page_Generic()
+function Page_Generic(socket)
 {
-  var socket;
+  var _e = config.events
 
   function __get_status_html(status_package) {
     var s = status_package
@@ -88,34 +88,42 @@ function Page_Generic()
     },
   }
 
-  this.init = function(mysocket) {
-
-    var _e = config.events
-    socket = mysocket
-
-    // update distributions
-    socket.on(_e.broadcast.distributions, function(socket_distributions) {
-      debug_socket("received", _e.broadcast.distributions, socket_distributions)
-      distributions.set(socket_distributions)
-    });
-
-    socket.on(_e.client.status, function(packages_status) {
-      debug_socket("received", _e.client.status, packages_status)
-      status.set(packages_status)
-    })
-
-    socket.on(_e.broadcast.status_update, function(package_status) {
-      debug_socket("received", _e.broadcast.status_update, packages_status)
-      status.update(package_status)
-    })
-
-    socket.on(_e.error, function(error) {
-      console.error("socket > " + error)
-    })
-
-    // select current page in navbar
-    if (window.location.pathname != config.paths.distribution) {
-      $(".navbar li a[href='" + window.location.pathname + "']").parent().addClass("active")
+  this.header = function() {
+    if (config.preferences.header) {
+      $("#pageheader").show()
+      $(".navbar .home-link").hide()
+    }
+    else {
+      $("#pageheader").hide()
+      $(".navbar .home-link").show()
     }
   }
+
+  // update distributions
+  socket.on(_e.broadcast.distributions, function(socket_distributions) {
+    debug_socket("received", _e.broadcast.distributions, socket_distributions)
+    distributions.set(socket_distributions)
+  });
+
+  socket.on(_e.client.status, function(packages_status) {
+    debug_socket("received", _e.client.status, packages_status)
+    status.set(packages_status)
+  })
+
+  socket.on(_e.broadcast.status_update, function(package_status) {
+    debug_socket("received", _e.broadcast.status_update, packages_status)
+    status.update(package_status)
+  })
+
+  socket.on(_e.error, function(error) {
+    console.error("socket > " + error)
+  })
+
+  // select current page in navbar
+  if (window.location.pathname != config.paths.distribution) {
+    $(".navbar li a[href='" + window.location.pathname + "']").parent().addClass("active")
+  }
+
+  this.header()
+
 }

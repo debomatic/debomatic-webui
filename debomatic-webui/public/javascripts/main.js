@@ -2,7 +2,7 @@ var socket = io.connect('//' + config.hostname );
 
 var preferences = new Preferences()
 
-new Page_Generic().init(socket)
+var page_generic = new Page_Generic(socket)
 
 if (window.location.pathname == config.paths.distribution) {
   new Page_Distrubion(socket).start()
