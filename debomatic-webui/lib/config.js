@@ -10,13 +10,18 @@ config.debomatic.jsonfile = '/var/log/debomatic.json'
 config.routes = {}
 config.routes.debomatic = '/debomatic'
 config.routes.distribution = '/distribution'
+config.routes.preferences = '/preferences'
 
 config.web = {}
 config.web.title = "deb-o-matic web.ui"
 config.web.description = "This is a web interface for debomatic"
 config.web.footer = "Fork me on github.com"
-config.web.autoscroll = true
 
+// default ui settings
+config.web.preferences = {}
+config.web.preferences.autoscroll = true
+config.web.preferences.header = true
+config.web.preferences.sidebar = true
 
 // DO NOT EDIT these ones
 

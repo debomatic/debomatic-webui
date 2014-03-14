@@ -11,4 +11,8 @@ exports.index = function(req, res){
 
 exports.distribution = function(req, res) {
   res.render('distribution', config)
+};
+
+exports.preferences = function(req, res) {
+	res.render('preferences', config)
 }
