@@ -43,7 +43,8 @@ app.configure('production', function(){
 // Routes
 app.get('/', routes.index);
 app.get(config.routes.distribution, routes.distribution)
-app.get(config.routes.preferences, routes.preferences)
+if (config.routes.preferences)
+  app.get(config.routes.preferences, routes.preferences)
 
 var broadcast = new Broadcaster(io.sockets, status)
 
