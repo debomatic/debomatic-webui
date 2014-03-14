@@ -51,7 +51,11 @@ function Page_Distrubion(socket)
   }
 
   var title = {
-    set: function() {
+    set: function(label) {
+      if (label) {
+        $('#title').html(label)
+        return
+      }
       var label = ''
       if (Utils.check_view_file(view)) {
         var complete_name = view.package.orig_name + '.' + view.file.name
@@ -167,7 +171,7 @@ function Page_Distrubion(socket)
         })
         $('#sources').show()
       }
-      $('#files').show()
+      files.show()
     },
     clean: function() {
       $('#logs ul').html('');
@@ -176,7 +180,7 @@ function Page_Distrubion(socket)
       $('#debs').hide();
       $('#sources ul').html('')
       $('#sources').hide()
-      $('#files').hide()
+      files.hide()
     },
     get: function () {
       if (Utils.check_view_package(view)) {
@@ -187,6 +191,7 @@ function Page_Distrubion(socket)
       }
     },
     select: function() {
+      files.show()
       files.unselect()
       if (Utils.check_view_file(view)) {
         $("#logs li[id='file-" + view.file.orig_name + "']").addClass('active')
@@ -194,7 +199,13 @@ function Page_Distrubion(socket)
     },
     unselect: function() {
         $('#logs li').removeClass('active');
-    }
+    },
+    hide: function() {
+      $('#files').hide()
+    },
+    show: function() {
+      $('#files').show()
+    },
   }
 
   var file = {
@@ -320,11 +331,18 @@ function Page_Distrubion(socket)
   var error = {
     set: function(socket_error) {
       $("#error span").html(socket_error)
-      $("#error").fadeIn(100)
+      error.view()
     },
     clean: function() {
       $("#error").hide()
       $("#error span").html('')
+    },
+    view: function() {
+      $("#error").fadeIn(100)
+      title.set("Something is wrong ...")
+      file.clean()
+      files.hide()
+      unselect()
     },
   }
   
