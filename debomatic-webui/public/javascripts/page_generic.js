@@ -112,5 +112,10 @@ function Page_Generic()
     socket.on(_e.error, function(error) {
       console.error("socket > " + error)
     })
+
+    // select current page in navbar
+    if (window.location.pathname != config.paths.distribution) {
+      $(".navbar li a[href='" + window.location.pathname + "']").parent().addClass("active")
+    }
   }
 }
