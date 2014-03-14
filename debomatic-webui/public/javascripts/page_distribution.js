@@ -107,6 +107,7 @@ function Page_Distrubion(socket)
       if (Utils.check_view_distribution(view)) {
         var query_data = {}
         query_data.distribution = view.distribution
+        debug_socket("emit", _e.distribution_packages.get, query_data)
         socket.emit(_e.distribution_packages.get, query_data)
       }
     },
@@ -195,6 +196,7 @@ function Page_Distrubion(socket)
         var query_data = {}
         query_data.distribution = view.distribution
         query_data.package = view.package
+        debug_socket("emit", _e.package_files_list.get, query_data)
         socket.emit(_e.package_files_list.get, query_data)
       }
     },
@@ -246,6 +248,7 @@ function Page_Distrubion(socket)
         query_data.package = view.package
         query_data.file = view.file
         query_data.file.content = null
+        debug_socket("emit", _e.file.get, query_data)
         socket.emit(_e.file.get, query_data)
       }
     }
@@ -434,17 +437,17 @@ function Page_Distrubion(socket)
   this.start = function () {
 
     socket.on(config.events.error, function(socket_error) {
-      socket_debug("received", config.events.error, socket_error)
+      debug_socket("received", config.events.error, socket_error)
       error.set(socket_error)
     })
 
     socket.on(_e.distribution_packages.set, function (socket_data){
-      socket_debug("received", _e.distribution_packages.set, socket_data)
+      debug_socket("received", _e.distribution_packages.set, socket_data)
       packages.set(socket_data)
     })
 
     socket.on(_e.distribution_packages.status, function (socket_data){
-      socket_debug("received", _e.distribution_packages.set, socket_data)
+      debug_socket("received", _e.distribution_packages.set, socket_data)
       packages.set_status(socket_data)
       sticky.set_status(socket_data)
     })
@@ -455,17 +458,17 @@ function Page_Distrubion(socket)
     })
 
     socket.on(_e.package_files_list.set, function (socket_data){
-      socket_debug("received", _e.package_files_list.set, socket_data)
+      debug_socket("received", _e.package_files_list.set, socket_data)
       files.set(socket_data)
     })
 
     socket.on(_e.file.set, function (socket_data) {
-      socket_debug("received", _e.file.set, socket_data)
+      debug_socket("received", _e.file.set, socket_data)
       file.set(socket_data)
     })
 
     socket.on(_e.file_newcontent, function (socket_data) {
-      socket_debug("received", _e.file_newcontent, socket_data)
+      debug_socket("received", _e.file_newcontent, socket_data)
       new_lines.push(socket_data.file.new_content)
     })
 

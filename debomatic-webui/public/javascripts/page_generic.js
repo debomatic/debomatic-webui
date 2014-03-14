@@ -95,17 +95,17 @@ function Page_Generic()
 
     // update distributions
     socket.on(_e.broadcast.distributions, function(socket_distributions) {
-      socket_debug("received", _e.broadcast.distributions, socket_distributions)
+      debug_socket("received", _e.broadcast.distributions, socket_distributions)
       distributions.set(socket_distributions)
     });
 
     socket.on(_e.client.status, function(packages_status) {
-      socket_debug("received", _e.client.status, packages_status)
+      debug_socket("received", _e.client.status, packages_status)
       status.set(packages_status)
     })
 
     socket.on(_e.broadcast.status_update, function(package_status) {
-      socket_debug("received", _e.broadcast.status_update, packages_status)
+      debug_socket("received", _e.broadcast.status_update, packages_status)
       status.update(package_status)
     })
 

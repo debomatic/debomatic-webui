@@ -31,10 +31,10 @@ var debug = function() {
 /*
   An helper debug function for socket events
 
-  usage: socket_debug("emit"|"received", event_name, data)
+  usage: debug_socket("emit"|"received", event_name, data)
 */
 
-var socket_debug = function() {
+var debug_socket = function() {
   if (arguments.length != 3)
     return
   var level = 3;
