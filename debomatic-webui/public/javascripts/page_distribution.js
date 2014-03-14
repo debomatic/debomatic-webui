@@ -244,10 +244,12 @@ function Page_Distrubion(socket)
   }
 
   var breadcrumb = {
-    update: function(hash) {
-      if (! hash )
-        hash = window.location.hash
-      hash = hash.replace('#', '')
+    update: function(label) {
+      if (label) {
+        $('.breadcrumb').html('<li class="active">' + label + '</li>')
+        return
+      }
+      hash = hash = window.location.hash.replace('#', '')
       var new_html = ''
       var new_hash = '#'
       var info = hash.split('/')
@@ -340,6 +342,7 @@ function Page_Distrubion(socket)
     view: function() {
       $("#error").fadeIn(100)
       title.set("Something is wrong ...")
+      breadcrumb.update('Something is wrong ...')
       file.clean()
       files.hide()
       unselect()
