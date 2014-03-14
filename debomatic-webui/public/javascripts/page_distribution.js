@@ -29,6 +29,14 @@ function Page_Distrubion(socket)
 
       More info on Utils.from_hash_to_view()
 
+
+      The status object recived by socket:
+
+      status_data = {}
+      status_data.distribution                --- the distribution name
+      status_data.package                     --- the package name as name_version
+      status_data.status                      --- one of config.status.*.*
+
     */
 
   var socket = socket
