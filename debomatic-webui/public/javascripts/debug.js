@@ -1,9 +1,9 @@
 /*
-  General indication for debugging use:
+  General information about debugging:
 
   usage: debug(level, args)
 
-  args: can be everything
+  args: can be anything
 
   level: 1 - user interaction
          2 - automatic changes
@@ -17,7 +17,7 @@ var debug = function() {
   var level = 1
   if (arguments.length > 2) {
     level = arguments[0]
-    arguments[0] = "debug (" + level + ") >"
+    arguments[0] = "debug [" + level + "]:"
     if (level <= config.preferences.debug) {
       if (console.debug)
         console.debug.apply(console, arguments)
@@ -39,5 +39,5 @@ var debug_socket = function() {
   var level = 3;
   if (arguments[0] == "received")
     level = 4
-  debug(level, "socket >", arguments[0], "event:", arguments[1], "data:", arguments[2])
+  debug(level, "socket", arguments[0], "event:", arguments[1], "data:", arguments[2])
 }
