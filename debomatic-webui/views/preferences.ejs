@@ -1,32 +1,63 @@
-<div id="preferences" class="panel panel-primary">
-  <div class="panel-heading">
-    <h3 class="panel-title">Preferences</h3>
+<header><h2>Preferences</h2></header>
+
+<div class="row">
+  <div class="col-md-8">
+    <article>
+      <section>
+      <p class="lead text-muted">
+        Customize the web interface.
+      </p>
+
+      <h4>
+        There are few options you can set in <%= web.title %>
+      </h4>
+
+      <dl class="dl-horizontal">
+        <dt>Show header</dt><dd>Hide header to have a minimized interface <span class="text-muted">as much as possible</span></dd>
+
+        <dt>Enable sidebar</dt><dd>Enable sidebar in <a href="<%= web.paths.distribution %>">distribution</a> page</dd>
+
+        <dt>Enable autoscroll</dt><dd>Enable scroll down page automatically when viewing a file and a new line is received</dd>
+
+        <dt class="debug">Debug level</dt><dd class="debug">Set debug level, please take a look at <a href="/javascripts/debug.js">debug.js</a> for more information. Level <code>0</code> means no debug.</dd>
+      </dl>
+
+      </section>
+    </article>
   </div>
-  <div class="panel-body">
-    <div class="checkbox">
-  	  <label>
-  	    <input id="header" type="checkbox"> Show header
-  	  </label>
-    </div>
-    <div class="checkbox">
-      <label>
-        <input id="sidebar" type="checkbox"> Show sidebar
-      </label>
-    </div>
-    <div class="checkbox">
-      <label>
-        <input id="autoscroll" type="checkbox"> Enable autoscroll
-      </label>
-    </div>
-    <div class="debug">
-      <select id="debug" class="form-control">
-        <option>0</option>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-      </select>
-      <label for="debug">Set debug level</label>
-    </div> 
+
+  <div class="col-md-4">
+    <div id="preferences" class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Settings</h3>
+      </div>
+      <div class="panel-body">
+        <div class="checkbox">
+          <label>
+            <input id="header" type="checkbox"> Show header
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input id="sidebar" type="checkbox"> Enable sidebar
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input id="autoscroll" type="checkbox"> Enable autoscroll
+          </label>
+        </div>
+        <div class="debug">
+          <select id="debug" class="form-control">
+            <option>0</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+          </select>
+          <label for="debug">Set debug level</label>
+        </div>
+      </div>
+    </div> <!-- /#prefernces -->
   </div>
 </div>
