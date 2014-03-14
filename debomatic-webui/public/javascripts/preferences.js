@@ -33,7 +33,6 @@ function Preferences() {
         else {
           element.val(config.preferences[key])
         }
-
       }
 
       // on input change, set prefence
@@ -43,6 +42,10 @@ function Preferences() {
         if ($(this).attr('type') == 'checkbox')
           value = $(this).is(':checked')
         set(key,value)
+        // give to user an immediate feedback on show header
+        if (key == "header") {
+          page_generic.header()
+        }
       })
 
     })
