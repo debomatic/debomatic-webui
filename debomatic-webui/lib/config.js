@@ -18,6 +18,14 @@ config.web.title = "deb-o-matic web.ui"
 config.web.description = "This is a web interface for debomatic"
 config.web.footer = "Fork me on github.com"
 
+// debomatic configuration exportable for web
+config.web.debomatic = {}
+config.web.debomatic.admin = {}
+config.web.debomatic.admin.name = "Leo Iannacone"
+config.web.debomatic.admin.email = "l3on AT ubuntu DOT com" // please use this SPAMFREE form - it will be converted client side by javascript
+config.web.debomatic.incoming = config.debomatic.path
+config.web.debomatic.architecture = 'amd64'
+
 // default ui settings
 config.web.preferences = {}
 config.web.preferences.autoscroll = true
@@ -52,6 +60,7 @@ config.events.client.file = _event_get_set('file')
 config.events.client.file_newcontent = 'file_newcontent'
 config.events.client.status = 'status'
 
+// packages status according with debomatic.json file
 config.status = {}
 config.status.package = {}
 config.status.package.building = 'building'
@@ -62,6 +71,7 @@ config.status.package.successed = 'build-successed'
 config.web.paths = config.routes
 config.web.events = config.events
 config.web.status = config.status
+config.web.host = config.host
 config.web.hostname = config.host + ((config.port == 80) ? '' : ':' + config.port)
 
 module.exports = config

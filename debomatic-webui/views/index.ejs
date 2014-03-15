@@ -1,0 +1,127 @@
+<article id="home" class="page row">
+  <header class="col-md-12">
+    <h1>Welcome!</h1>
+    <p class="text-muted lead">This is <%= web.debomatic.architecture %> Debian source package build service powered by <a class="alert-link" href="http://launchpad.net/debomatic">Deb-o-Matic</a></p>
+  </header>
+
+  <section>
+    <article id="about" class="col-md-6">
+      <section>
+        <p>Welcome to debomatic web interface. Here you can control the status of the service,
+        browse the packages already built and real-time check the building of a new incoming
+        package. 
+        <p>Most of these actions can be taken in 
+        <a href="<%= web.paths.distribution %>">distribution</a> page. </p>
+
+        <p>If you want a bit customization 
+        please visit page <a href="<%= web.paths.preferences %>">preferences</a>.</p>
+
+        <p><a class="btn btn-lg btn-success">Let's start!</a></p>
+
+      </section>
+    </article>
+
+    <article id="account-request" class="col-md-6">
+      <div class="panel panel-default panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Account Request</h3>
+        </div>
+        <div class="panel-body">
+          <p>For account requests please mail <span class="email"><%= web.debomatic.admin.email %></span>.</p>
+        </div>
+      </div>
+
+      <section>
+        <p class="alert alert-warning"><strong>Remember:</strong> if you do not find here what you are 
+          looking for you are always able to browse debomatic static directory 
+          in <a class="alert-link" href="<%= web.paths.debomatic %>">this page</a>.</p>
+      </section>
+    </article>
+
+    <article id="configuration" >
+      <header class="lead col-md-12">
+        To upload packages, you may want to add these entries to your dput configuration:
+      </header>
+      <section>
+          <!-- dput -->
+          <div class="dput col-md-6">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title">dput</h3>
+              </div>
+              <div class="panel-body">
+                <pre>
+[debomatic-<%= web.debomatic.architecture %>]
+fqdn           = <%= web.host %>
+incoming       = <%= web.debomatic.incoming %>
+login          = debomatic
+method         = scp
+allow_unsigned_uploads  = 0
+allow_dcut     = 1
+scp_compress   = 1
+
+</pre>
+              </div>
+            </div>
+          </div>
+          <!-- /dput -->
+
+          <!-- dput-ng -->
+          <div class="dput col-md-6">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title">dput-ng</h3>
+              </div>
+              <div class="panel-body">
+                <pre>
+{
+    "allow_dcut": true,
+    "meta": "debomatic",
+    "fqdn": "<%= web.host %>",
+    "incoming": "<%= web.debomatic.incoming %>",
+    "login": "debomatic",
+    "method": "scp",
+    "check-debs": { "skip": true }
+}</pre>
+              </div>
+            </div>
+          </div>
+          <!-- /dput-ng -->
+      </section>
+    </article> <!-- /#configuration -->
+
+    <article id="about-debomatic" class="col-md-6">
+      <header><h3>About debomatic</h3></header>
+      <section>
+        <p><strong>Deb-o-Matic</strong> is an easy to use utility to build Debian source packages, meant
+        to help developers to automate building of their packages with limited user interaction 
+        and a simple startup configuration.</p>
+
+        <p>It provides some useful features such as automatic chroot update, rebuilds of
+        source packages, post-build checks, and much more.</p>
+        
+        <p>It is also extendable using modules that are loaded and executed 
+        during the build phases.</p>
+        
+        <p><a class="btn btn-primary" href="http://launchpad.net/debomatic">Get more!</a></p>
+      </section>
+    </article>
+
+    <article id="about-debomatic-webui" class="col-md-6">
+      <header><h3>About this interface</h3></header>
+      <section>
+        <p><strong>debomatic-webui</strong> is a web interface for Deb-o-Matic aims to give to user a simple
+        way to browse logs and to know what's going on debomatic build service providing 
+        a real-time packages status.</p>
+        
+        <p>This interface is built up on <a href="//nodejs.org">node</a> platform
+        and uses intensely <a href="//socket.io">socket.io</a> and <a href="//jquery.com/">jquery</a> technologies.</p>
+
+        <p>Whenever you want leave a suggestion or file a bug report, please open a new <a href="https://github.com/LeoIannacone/debomatic-webui/issues">issue</a>.</p>
+
+        <p><a class="btn btn-primary" href="https://github.com/LeoIannacone/debomatic-webui">Get more!</a></p>
+      </section>
+    </article>
+
+  </section>
+</article>

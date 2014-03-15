@@ -11,3 +11,13 @@ if (window.location.pathname == config.paths.distribution) {
 else if (window.location.pathname == config.paths.preferences) {
   preferences.initPage()
 }
+
+else if (window.location.pathname == '/') {
+  // convert email addresses in the right format
+  var emails = $(".email")
+  $.each(emails, function (){
+    var real_email = $(this).html().replace('AT','@').replace('DOT','.').replace(/ /g,'')
+    real_email = '<a href="mailto:' + real_email + '">' + real_email + '</a>'
+    $(this).html(real_email)
+  })
+}
