@@ -72,9 +72,13 @@ function __get_files_list(dir, onlyDirectories, callback) {
 }
 
 function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
-  name = "watcher-" + event_name
-  socket.get(name, function (err, watcher) {
+  socket.get("watchers", function(err, socket_watchers){
+    if (! socket_watchers) {
+      // init socket watchers
+      socket_watchers = {}
+    }
     try {
+      var watcher = socket_watchers[event_name]
       if (watcher)
         watcher.close()
 
@@ -95,14 +99,14 @@ function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
             updater(event_name, socket, data)
           });
         }
-        socket.set(name, watcher)
+        socket_watchers[event_name] = watcher
+        socket.set("watchers", socket_watchers)
       })
     } catch (err) {
       __errors_handler("__watch_path_onsocket <- " + arguments.callee.caller.name, err, socket)
       return
     }
   })
-  return true;
 }
 
 function __generic_handler_watcher(event_name, socket, data, watch_path, callback) {
