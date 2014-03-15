@@ -90,13 +90,18 @@ function Page_Distrubion(socket)
       var tmp = Utils.clone(socket_data)
       tmp.file = null
       view.packages = {}
-      socket_data.distribution.packages.forEach(function(p){
-        tmp.package = p
-        // get datestamp if package is clicked
-        $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_view_to_hash(tmp) + '/datestamp">'+ p.name + ' <span>'+p.version+'</span></a></li>')
-        view.packages[p.orig_name] = Utils.clone(p)
-      })
-      packages.select()
+      if (socket_data.distribution.packages && socket_data.distribution.packages.length > 0) {
+        socket_data.distribution.packages.forEach(function(p){
+          tmp.package = p
+          // get datestamp if package is clicked
+          $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_view_to_hash(tmp) + '/datestamp">'+ p.name + ' <span>'+p.version+'</span></a></li>')
+          view.packages[p.orig_name] = Utils.clone(p)
+        })
+        packages.select()
+      }
+      else {
+        $('#packages ul').append('<li class="text-muted">No packages yet</li>')
+      }
     },
     
     clean: function () {
