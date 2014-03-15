@@ -1,5 +1,7 @@
 var config = {}
 
+config.version = '0.1-b1'
+
 config.host = 'localhost'
 config.port = 3000
 config.user = 'www-data'  // who will run server
