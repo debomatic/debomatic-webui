@@ -88,7 +88,7 @@ function Page_Generic(socket)
     },
   }
 
-  this.header = function() {
+  this.preferences = function() {
     if (config.preferences.header) {
       $("#pageheader").show()
       $(".navbar .home-link").hide()
@@ -96,6 +96,13 @@ function Page_Generic(socket)
     else {
       $("#pageheader").hide()
       $(".navbar .home-link").show()
+    }
+
+    if (config.preferences.glossy_theme) {
+      $("head").append('<link rel="stylesheet" href="/external_libs/bootstrap-3.1.1-dist/css/bootstrap-theme.min.css">')
+    }
+    else {
+      $("head").find("link[href='/external_libs/bootstrap-3.1.1-dist/css/bootstrap-theme.min.css']").remove()
     }
   }
 
@@ -124,6 +131,7 @@ function Page_Generic(socket)
     $(".navbar li a[href='" + window.location.pathname + "']").parent().addClass("active")
   }
 
-  this.header()
+  // update html according with preferences
+  this.preferences()
 
 }

@@ -40,10 +40,8 @@ function Preferences() {
       if ($(this).attr('type') == 'checkbox')
         value = $(this).is(':checked')
       set(key,value)
-      // give to user an immediate feedback on show header
-      if (key == "header") {
-        page_generic.header()
-      }
+      // give to user an immediate feedback changing preferences
+      page_generic.preferences()
     })
   }
 
