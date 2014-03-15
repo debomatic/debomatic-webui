@@ -111,7 +111,7 @@ function Page_Generic(socket)
   })
 
   socket.on(_e.broadcast.status_update, function(package_status) {
-    debug_socket("received", _e.broadcast.status_update, packages_status)
+    debug_socket("received", _e.broadcast.status_update, package_status)
     status.update(package_status)
   })
 
