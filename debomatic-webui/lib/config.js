@@ -16,7 +16,6 @@ config.routes.preferences = '/preferences'
 config.web = {}
 config.web.title = "deb-o-matic web.ui"
 config.web.description = "This is a web interface for debomatic"
-config.web.footer = "Fork me on github.com"
 
 // debomatic configuration exportable for web
 config.web.debomatic = {}
