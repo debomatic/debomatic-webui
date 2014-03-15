@@ -36,26 +36,31 @@ aside .nav-pills li {
   top: 0;
 }
 
-#sticky-view {
+#sticky-package {
   display: none;
   position: fixed;
   bottom: 50px;
   font-size: 22px;
   cursor: pointer;
 }
+#sticky-package.on-top {
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+}
 
-#sticky-view .package .version,
-#sticky-view .distribution,
-#sticky-view .icon {
+#sticky-package .package .version,
+#sticky-package .distribution,
+#sticky-package .icon {
   font-size: 16px;
 }
 
-#sticky-view .panel-body {
+#sticky-package .panel-body {
   padding: 10px 15px;
   min-width: 200px;
 }
 
-#sticky-view .panel-heading {
+#sticky-package .panel-heading {
   padding: 8px 15px;
 }
 

@@ -304,21 +304,24 @@ function Page_Distrubion(socket)
       $(window).off("scroll")
     },
     show: function() {
-      $("#sticky").addClass('fixed')
-      $("#sticky-view").fadeIn()
+      if (config.preferences.sidebar) {
+        $("#sticky").addClass('fixed')
+      }
+      debug(2, "showing sticky")
+      $("#sticky-package").fadeIn()
     },
     hide: function() {
       $("#sticky").removeClass('fixed')
-      $("#sticky-view").fadeOut(150)
+      $("#sticky-package").fadeOut(150)
     },
     update: function() {
       var sidebar = $("#files")
       sidebarOffset = sidebar.offset().top
       if (Utils.check_view_distribution(view))
-        $("#sticky-view .distribution").html(view.distribution.name)
+        $("#sticky-package .distribution").html(view.distribution.name)
       if (Utils.check_view_package(view)) {
-        $("#sticky-view .name").html(view.package.name)
-        $("#sticky-view .version").html(view.package.version)
+        $("#sticky-package .name").html(view.package.name)
+        $("#sticky-package .version").html(view.package.version)
         sticky.set_status()
       }
     },
@@ -335,10 +338,10 @@ function Page_Distrubion(socket)
       {
         // update html
         var info = Utils.get_status_icon_and_class(status_data)
-        var panel = $("#sticky-view")
+        var panel = $("#sticky-package-content")
         panel.removeClass()
         panel.addClass('panel panel-' + info.className)
-        var div = $("#sticky-view .status")
+        var div = $("#sticky-package .status")
         div.find('span.icon').remove()
         div.html(div.html() + ' ' + Utils.get_status_icon_html(status_data))
       }
@@ -362,6 +365,19 @@ function Page_Distrubion(socket)
       files.hide()
       unselect()
     },
+  }
+
+  var preferences = function() {
+    if (! config.preferences.sidebar) {
+      debug(2, "no sidebar - updating html")
+      $("#sidebar").removeClass()
+      $("#sidebar").addClass("col-md-12 row")
+      $("#packages").addClass("col-md-4")
+      $("#logs").addClass("col-md-4")
+      $("#files .others").addClass("col-md-4")
+      $("#main").removeClass().addClass("col-md-12")
+      $("#sticky-package").addClass("on-top")
+    }
   }
   
   var select = function() {
@@ -497,8 +513,8 @@ function Page_Distrubion(socket)
         return
       populate()
 
-      // Init sticky-view back_on_top on click
-      $("#sticky-view").on("click", function(){
+      // Init sticky-package back_on_top on click
+      $("#sticky-package").on("click", function(){
         $('html').animate({scrollTop: 0}, 100);
       })
 
@@ -519,6 +535,9 @@ function Page_Distrubion(socket)
         setTimeout(watch_for_new_lines, 200);
       }
       watch_for_new_lines()
+
+      // Update html according with preferences
+      preferences()
     });
   }
 
