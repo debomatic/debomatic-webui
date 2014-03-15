@@ -113,15 +113,15 @@ footer {
   font-size: 15px;
 }
 
-#preferences .debug #debug {
-  width: 58px;
+#preferences .select select {
+  width: 68px;
   float:left;
   margin-right: 10px;
 }
 
-#preferences .debug label {
+#preferences .select label {
   font-weight: normal;
-  padding-top: 6px;
+  line-height: 35px;
 }
 
 #file .no-background {

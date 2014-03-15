@@ -381,6 +381,7 @@ function Page_Distrubion(socket)
     if (! config.preferences.file_background) {
       $("#file pre").addClass("no-background")
     }
+    $("#file pre").css('font-size', config.preferences.file_fontsize)
   }
   
   var select = function() {
