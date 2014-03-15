@@ -162,6 +162,20 @@ function Client (socket) {
         return
       __handler_get_file(socket, data)
     })
+
+
+    // on client disconnection close all watchers
+    socket.on('disconnect', function() {
+      socket.get("watchers", function(err, socket_watchers){
+        if (! socket_watchers)
+          return;
+        for (key in socket_watchers) {
+          try { socket_watchers[key].close() }
+          catch (err) {}
+        }
+      })
+    });
+
   }
 
   this.send_status = function(status) {

@@ -73,9 +73,5 @@ var server = app.listen(config.port, config.host, null, function(){
       client.send_status(status)
   });
 
-  io.sockets.on('disconnect', function(socket){
-
-  });
-
   console.log("Debomatic-webui listening on %s:%d in %s mode", app.address().address, app.address().port, app.settings.env);
 });
