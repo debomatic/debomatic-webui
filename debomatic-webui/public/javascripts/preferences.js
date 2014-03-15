@@ -22,32 +22,28 @@ function Preferences() {
   // init prefence page
   this.initPage = function() {
 
-    $(window).on('load', function() {
-
-      // set view according with config.preferences
-      for (key in config.preferences) {
-        var element = $("#preferences #" + key)
-        if (element.attr('type') == "checkbox") {
-          element.prop('checked', config.preferences[key])
-        }
-        else {
-          element.val(config.preferences[key])
-        }
+    // set view according with config.preferences
+    for (key in config.preferences) {
+      var element = $("#preferences #" + key)
+      if (element.attr('type') == "checkbox") {
+        element.prop('checked', config.preferences[key])
       }
+      else {
+        element.val(config.preferences[key])
+      }
+    }
 
-      // on input change, set prefence
-      $("#preferences input, #preferences select").change(function() {
-        var key = $(this).attr('id')
-        var value = $(this).val()
-        if ($(this).attr('type') == 'checkbox')
-          value = $(this).is(':checked')
-        set(key,value)
-        // give to user an immediate feedback on show header
-        if (key == "header") {
-          page_generic.header()
-        }
-      })
-
+    // on input change, set prefence
+    $("#preferences input, #preferences select").change(function() {
+      var key = $(this).attr('id')
+      var value = $(this).val()
+      if ($(this).attr('type') == 'checkbox')
+        value = $(this).is(':checked')
+      set(key,value)
+      // give to user an immediate feedback on show header
+      if (key == "header") {
+        page_generic.header()
+      }
     })
   }
 

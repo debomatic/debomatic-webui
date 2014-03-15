@@ -508,37 +508,35 @@ function Page_Distrubion(socket)
       debug(1, "changing view", "old:", old_view, "new:", new_view)
     });
 
-    $(window).on('load', function () {
-      if (! __check_hash_makes_sense())
-        return
-      populate()
+    if (! __check_hash_makes_sense())
+      return
+    populate()
 
-      // Init sticky-package back_on_top on click
-      $("#sticky-package").on("click", function(){
-        $('html').animate({scrollTop: 0}, 100);
-      })
+    // Init sticky-package back_on_top on click
+    $("#sticky-package").on("click", function(){
+      $('html').animate({scrollTop: 0}, 100);
+    })
 
-      // WORKAROUND:
-      // when page is loaded sidebar has offset().top
-      // equals 0. This is because html is loaded on socket
-      // events. Sleep a while and call stiky.reset()
-      this.setTimeout(sticky.reset, 500);
+    // WORKAROUND:
+    // when page is loaded sidebar has offset().top
+    // equals 0. This is because html is loaded on socket
+    // events. Sleep a while and call stiky.reset()
+    setTimeout(sticky.reset, 500);
 
-      // WORKAROUND:
-      // On incoming hundred of lines browser goes crazy.
-      // Append lines every 200 mills.
-      function watch_for_new_lines() {
-        if (new_lines.length > 0) {
-          file.append(new_lines.join(''))
-          new_lines = []
-        }
-        setTimeout(watch_for_new_lines, 200);
+    // WORKAROUND:
+    // On incoming hundred of lines browser goes crazy.
+    // Append lines every 200 mills.
+    function watch_for_new_lines() {
+      if (new_lines.length > 0) {
+        file.append(new_lines.join(''))
+        new_lines = []
       }
-      watch_for_new_lines()
+      setTimeout(watch_for_new_lines, 200);
+    }
+    watch_for_new_lines()
 
-      // Update html according with preferences
-      preferences()
-    });
+    // Update html according with preferences
+    preferences()
+
   }
-
 }
