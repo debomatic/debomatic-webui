@@ -39,6 +39,20 @@ if (config.routes.preferences)
 // Listening
 var server = app.listen(config.port, config.host, null, function(){
 
+  // set uid e gid - drop root privileges
+  try {
+    process.setuid(config.user);
+    process.setgid(config.user);
+  } catch (err) {
+    if (err.code == 'EPERM') {
+      console.error('Changing user id %s: permission denied. Running as %s.', config.user, process.getuid());
+    }
+    else {
+      console.error('Error changing user id.', err)
+      process.exit(1)
+    }
+  }
+
   var Client = require('./lib/client.js')
   var Broadcaster = require('./lib/broadcaster.js')
 

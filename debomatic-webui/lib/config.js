@@ -2,6 +2,7 @@ var config = {}
 
 config.host = 'localhost'
 config.port = 3000
+config.user = 'www-data'  // who will run server
 
 config.debomatic = {}
 config.debomatic.path = '/srv/debomatic-amd64'
