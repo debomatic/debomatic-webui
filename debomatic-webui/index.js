@@ -59,6 +59,6 @@ io.sockets.on('disconnect', function(socket){
 
 });
 
-var server = app.listen(config.port, function(){
-  console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+var server = app.listen(config.port, config.host, null, function(){
+  console.log("Debomatic-webui listening on %s:%d in %s mode", app.address().address, app.address().port, app.settings.env);
 });
