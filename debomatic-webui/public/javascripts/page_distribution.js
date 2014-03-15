@@ -378,6 +378,9 @@ function Page_Distrubion(socket)
       $("#main").removeClass().addClass("col-md-12")
       $("#sticky-package").addClass("on-top")
     }
+    if (! config.preferences.file_background) {
+      $("#file pre").addClass("no-background")
+    }
   }
   
   var select = function() {

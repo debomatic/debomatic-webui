@@ -123,3 +123,8 @@ footer {
   font-weight: normal;
   padding-top: 6px;
 }
+
+#file .no-background {
+  background: none;
+  border: none;
+}
