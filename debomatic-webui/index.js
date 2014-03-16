@@ -7,8 +7,13 @@ var express = require('express')
   , routes = require('./routes')
   , config = require('./lib/config.js')
   , utils = require('./lib/utils.js')
+  , Client = require('./lib/client.js')
+  , Broadcaster = require('./lib/broadcaster.js')
 
 var app = module.exports = express.createServer();
+
+//var io = require('socket.io').listen(app, { log: false });  // disable-log
+var io = require('socket.io').listen(app);
 
 // Configuration
 app.configure(function(){
@@ -41,8 +46,8 @@ var server = app.listen(config.port, config.host, null, function(){
 
   // set uid e gid - drop root privileges
   try {
-    process.setuid(config.user);
     process.setgid(config.user);
+    process.setuid(config.user);
   } catch (err) {
     if (err.code == 'EPERM') {
       console.error('Changing user id %s: permission denied. Running as %s.', config.user, process.getuid());
@@ -52,13 +57,6 @@ var server = app.listen(config.port, config.host, null, function(){
       process.exit(1)
     }
   }
-
-  var Client = require('./lib/client.js')
-  var Broadcaster = require('./lib/broadcaster.js')
-
-  // no log
-  //var io = require('socket.io').listen(app, { log: false });
-  var io = require('socket.io').listen(app);
 
   // statuses
   var status = {}
