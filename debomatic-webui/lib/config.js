@@ -87,16 +87,8 @@ config.status.package.building = 'building'
 config.status.package.failed = 'build-failed'
 config.status.package.successed = 'build-successed'
 
-// export some variable
-config.web.paths = config.routes
-config.web.events = config.events
-config.web.status = config.status
-config.web.host = config.host
-config.web.hostname = config.host + ((config.port == 80) ? '' : ':' + config.port)
-
 
 // read user configuration and merge it
-
 /*
  * update object1 with object2 values
  */
@@ -131,5 +123,11 @@ try {
     process.exit(1)
   }
 } finally {
+  // export some variable
+  config.web.paths = config.routes
+  config.web.events = config.events
+  config.web.status = config.status
+  config.web.host = config.host
+  config.web.hostname = config.host + ((config.port == 80) ? '' : ':' + config.port)
   module.exports = config
 }
