@@ -8,9 +8,13 @@
 // #start config-auto-export
 var config = {}
 
+/*
+ * Configure host and port.
+ *  Please for ports < 1000 use authbind. DO NOT RUN nodejs as root.
+ *  $ authbind nodejs index.js
+ */
 config.host = 'localhost'
 config.port = 3000
-config.user = 'www-data'  // who will run server [not fully tested yet]
 
 config.socket = {}
 config.socket.log = false
@@ -117,14 +121,15 @@ function _merge(object1, object2) {
 try {
   user_config = require('../user.config.js')
   console.log("Reading user configutation ...")
-  module.exports = _merge(config, user_config)
+  config = _merge(config, user_config)
 } catch (err) {
   if (err.code == 'MODULE_NOT_FOUND') {
     console.log("User configutation not found. Using global settings.")
-    module.exports = config
   }
   else {
-    console.error("Error reading user configutation", err)
+    console.error("Error reading user configutation", err);
     process.exit(1)
   }
+} finally {
+  module.exports = config
 }

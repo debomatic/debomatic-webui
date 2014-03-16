@@ -41,20 +41,21 @@ if (config.routes.preferences)
   app.get(config.routes.preferences, routes.preferences)
 
 // Listening
-var server = app.listen(config.port, config.host, null, function(){
+var server = app.listen(config.port, config.host, null, function(err){
 
-  // set uid e gid - drop root privileges
-  try {
-    process.setgid(config.user);
-    process.setuid(config.user);
-  } catch (err) {
-    if (err.code == 'EPERM') {
-      console.error('Changing user id %s: permission denied. Running as %s.', config.user, process.getuid());
-    }
-    else {
-      console.error('Error changing user id.', err)
-      process.exit(1)
-    }
+  if (err) {
+    console.log(err)
+    return
+  }
+
+  // Checking nodejs with sudo:
+  // Find out which user used sudo through the environment variable
+  // and set his user id
+  var uid = parseInt(process.env.SUDO_UID);
+  if (uid) {
+    console.log("Please do not run nodejs with sudo. Changing user to %d", uid)
+    process.setgid(uid);
+    process.setuid(uid);
   }
 
   // statuses
