@@ -12,8 +12,8 @@ config.host = 'localhost'
 config.port = 3000
 config.user = 'www-data'  // who will run server [not fully tested yet]
 
-config.debug = {}
-config.debug.socket = false
+config.socket = {}
+config.socket.log = false
 
 config.debomatic = {}
 config.debomatic.path = '/srv/debomatic-amd64'
