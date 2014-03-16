@@ -12,8 +12,12 @@ var express = require('express')
 
 var app = module.exports = express.createServer();
 
-//var io = require('socket.io').listen(app, { log: false });  // disable-log
-var io = require('socket.io').listen(app);
+var io;
+
+if (config.debug.socket)
+  io = require('socket.io').listen(app);
+else
+  io = require('socket.io').listen(app, { log: false });  // disable-log
 
 // Configuration
 app.configure(function(){
