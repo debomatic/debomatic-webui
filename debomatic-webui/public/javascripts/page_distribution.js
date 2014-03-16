@@ -50,10 +50,7 @@ function Page_Distrubion(socket)
       return false
     }
     if (! window.location.hash) {
-      title.set("Please select a distribution")
-      file.clean()
-      files.hide()
-      unselect()
+      welcome.show()
       return false
     }
     var info = window.location.hash.split('/')
@@ -91,7 +88,7 @@ function Page_Distrubion(socket)
 
   var packages = {
     set: function (socket_data) {
-      $('#packages ul').html('')
+      packages.clean()
       var tmp = Utils.clone(socket_data)
       tmp.file = null
       view.packages = {}
@@ -107,6 +104,7 @@ function Page_Distrubion(socket)
       else {
         $('#packages ul').append('<li class="text-muted">No packages yet</li>')
       }
+      packages.show()
     },
     
     clean: function () {
@@ -147,6 +145,12 @@ function Page_Distrubion(socket)
         // in case user is watching this package, update also view.package
         view.package.status = Utils.clone(status_data.status)
       }
+    },
+    show: function() {
+      $("#packages").show()
+    },
+    hide: function() {
+      $("#packages").hide()
     }
   }
 
@@ -372,6 +376,35 @@ function Page_Distrubion(socket)
     },
   }
 
+  var welcome = {
+    set: function(distributions) {
+      welcome.clean()
+      if(distributions.length < 1) {
+        $('#welcome').append('<p class="lead text-muted">There is no distribution at the moment</p>')
+      }
+      else {
+        distributions.forEach(function (name){
+          $('#welcome').append('<a class="btn btn-lg btn-primary" href="'+ config.paths.distribution + '#'+ name + '">' + name + '</a>');
+        });
+      }
+    },
+    show: function() {
+      title.set("Please select a distribution")
+      breadcrumb.update("Select a distribution")
+      packages.hide()
+      file.clean()
+      files.hide()
+      unselect()
+      $("#welcome").show()
+    },
+    clean: function() {
+      $("#welcome").html('')
+    },
+    hide: function() {
+      $("#welcome").hide()
+    }
+  }
+
   var preferences = function() {
     if (! config.preferences.sidebar) {
       debug(2, "no sidebar - updating html")
@@ -405,6 +438,7 @@ function Page_Distrubion(socket)
   }
 
   var clean = function() {
+    welcome.hide()
     title.clean()
     packages.clean()
     files.clean()
@@ -469,6 +503,11 @@ function Page_Distrubion(socket)
     socket.on(config.events.error, function(socket_error) {
       debug_socket("received", config.events.error, socket_error)
       error.set(socket_error)
+    })
+
+    socket.on(config.events.broadcast.distributions, function (socket_data) {
+      debug_socket("received", config.events.broadcast.distributions, socket_data)
+      welcome.set(socket_data)
     })
 
     socket.on(_e.distribution_packages.set, function (socket_data){

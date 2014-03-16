@@ -36,6 +36,10 @@
   margin: 0;
 }
 
+#welcome .btn-lg {
+  margin: 10px;
+}
+
 aside .nav-pills li {
   line-height: 10px;
 }
