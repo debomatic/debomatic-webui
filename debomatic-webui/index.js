@@ -43,11 +43,6 @@ if (config.routes.preferences)
 // Listening
 var server = app.listen(config.port, config.host, null, function(err){
 
-  if (err) {
-    console.log(err)
-    return
-  }
-
   // Checking nodejs with sudo:
   // Find out which user used sudo through the environment variable
   // and set his user id
@@ -72,4 +67,14 @@ var server = app.listen(config.port, config.host, null, function(err){
   });
 
   console.log("Debomatic-webui listening on %s:%d in %s mode", app.address().address, app.address().port, app.settings.env);
+});
+
+server.on('error', function (e) {
+  if (e.code == 'EADDRINUSE') {
+    console.log('Address in use %s:%d. Exit.', config.host, config.port);
+    process.exit(1);
+  }
+  else {
+    console.error(e);
+  }
 });
