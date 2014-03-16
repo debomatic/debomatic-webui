@@ -116,6 +116,12 @@ try {
   console.log("Reading user configutation ...")
   module.exports = _merge(config, user_config)
 } catch (err) {
-  consol.log("error reading user configutation", err)
-  module.exports = config
+  if (err.code == 'MODULE_NOT_FOUND') {
+    console.log("User configutation not found. Using global settings.")
+    module.exports = config
+  }
+  else {
+    console.error("Error reading user configutation", err)
+    process.exit(1)
+  }
 }
