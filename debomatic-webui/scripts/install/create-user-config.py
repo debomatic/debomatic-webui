@@ -11,7 +11,6 @@ user_config_file = os.path.join(base_path, '../user.config.js')
 
 if os.path.isfile(user_config_file):
   print ("A config user file already exists. Skipping creation.")
-  print user_config_file
   exit()
 
 export_header = """
@@ -35,7 +34,7 @@ with open(global_config_file) as fd:
       export_config.append(line)
 
 export_config.append('// DO NOT EDIT THIS LINE:\n')
-export_config.append('module.exports = config')
+export_config.append('module.exports = config\n')
 
 print ("Creating user configuration ...")
 
