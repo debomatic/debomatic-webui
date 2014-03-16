@@ -87,4 +87,35 @@ config.web.status = config.status
 config.web.host = config.host
 config.web.hostname = config.host + ((config.port == 80) ? '' : ':' + config.port)
 
-module.exports = config
+
+// read user configuration and merge it
+
+/*
+ * update object1 with object2 values
+ */
+function _merge(object1, object2) {
+  var result = {}
+  for (p in object1) {
+    if (object2.hasOwnProperty(p)) {
+      if (typeof object1[p] === 'object' && typeof object2[p] === 'object') {
+        result[p] = _merge(object1[p], object2[p])
+      }
+      else {
+        result[p] = object2[p]
+      }
+    }
+    else {
+      result[p] = object1[p]
+    }
+  }
+  return result
+}
+
+try {
+  user_config = require('../user.config.js')
+  console.log("Reading user configutation ...")
+  module.exports = _merge(config, user_config)
+} catch (err) {
+  consol.log("error reading user configutation", err)
+  module.exports = config
+}
