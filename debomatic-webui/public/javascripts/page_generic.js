@@ -30,7 +30,7 @@ function Page_Generic(socket)
       }
       else {
         distributions.forEach(function (name){
-          $('#distributions ul').append('<li id="distribution-' + name +'"><a href="'+ config.paths.distribution + '#'+ name + '">' + name + '</li>');
+          $('#distributions ul').append('<li id="distribution-' + name +'"><a href="'+ config.paths.distribution + '#'+ name + '">' + name + '</a></li>');
         });
         if (window.location.pathname == config.paths.distribution) {
           var data = Utils.from_hash_to_view()
