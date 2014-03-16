@@ -49,8 +49,13 @@ function Page_Distrubion(socket)
       error.set("Detected '..' God Is Watching You !")
       return false
     }
-    if (! window.location.hash)
-      window.location.pathname = '/'
+    if (! window.location.hash) {
+      title.set("Please select a distribution")
+      file.clean()
+      files.hide()
+      unselect()
+      return false
+    }
     var info = window.location.hash.split('/')
     if (info.length == 2)
       window.location.hash = info[0]
