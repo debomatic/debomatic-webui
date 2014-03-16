@@ -420,6 +420,7 @@ function Page_Distrubion(socket)
         || ! Utils.check_view_distribution(old_view)
         || ! Utils.check_view_distribution(view)
         || view.distribution.name != old_view.distribution.name 
+        || ! view.package.orig_name
         )
       { // new distribution view
         populate()
