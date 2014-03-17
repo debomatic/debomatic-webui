@@ -273,7 +273,7 @@ function Page_Distrubion(socket)
         $('.breadcrumb').html('<li class="active">' + label + '</li>')
         return
       }
-      hash = hash = window.location.hash.replace('#', '')
+      hash = window.location.hash.replace('#', '')
       var new_html = ''
       var new_hash = '#'
       var info = hash.split('/')
