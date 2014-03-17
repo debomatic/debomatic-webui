@@ -22,6 +22,8 @@ function Preferences() {
   // init prefence page
   this.initPage = function() {
 
+    page_generic.set_window_title("Preferences")
+
     // set view according with config.preferences
     for (key in config.preferences) {
       var element = $("#preferences #" + key)

@@ -63,11 +63,14 @@ function Page_Distrubion(socket)
     set: function(label) {
       if (label) {
         $('#title').html(label)
+        page_generic.set_window_title(label)
         return
       }
       var label = ''
+      var window_title = null
       if (Utils.check_view_file(view)) {
         var complete_name = view.package.orig_name + '.' + view.file.name
+        window_title = complete_name
         if (! view.file.path)
           view.file.path = config.paths.debomatic + '/' + view.distribution.name + '/pool/' + view.package.orig_name + '/' + complete_name
         label = complete_name + ' \
@@ -80,9 +83,13 @@ function Page_Distrubion(socket)
       else if (Utils.check_view_distribution(view))
         label = view.distribution.name
       $('#title').html(label)
+      if (window_title)
+        label = window_title
+      page_generic.set_window_title(label)
     },
     clean: function() {
       $('#title').html('')
+      page_generic.set_window_title()
     }
   }
 

@@ -106,6 +106,14 @@ function Page_Generic(socket)
     }
   }
 
+  this.set_window_title = function (label) {
+    var window_title_separator = ' \u00ab '
+    if (label)
+      window.document.title = label + window_title_separator + config.title
+    else
+      window.document.title = config.title
+  }
+
   // update distributions
   socket.on(_e.broadcast.distributions, function(socket_distributions) {
     debug_socket("received", _e.broadcast.distributions, socket_distributions)
