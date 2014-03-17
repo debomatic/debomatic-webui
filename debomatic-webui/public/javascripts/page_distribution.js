@@ -476,7 +476,6 @@ function Page_Distrubion(socket)
         if (view.packages[view.package.orig_name])
           view.package.status = view.packages[view.package.orig_name].status
         files.get()
-        file.clean()
         file.get()
       }
       else if ( ! Utils.check_view_file(old_view)
