@@ -21,7 +21,7 @@ config.socket.log = false
 
 config.debomatic = {}
 config.debomatic.path = '/srv/debomatic-amd64'
-config.debomatic.jsonfile = '/var/log/debomatic.json'
+config.debomatic.jsonfile = '/var/log/debomatic-json.log'
 
 config.routes = {}
 config.routes.debomatic = '/debomatic'

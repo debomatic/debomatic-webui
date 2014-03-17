@@ -5,22 +5,30 @@ debomatic-webui
 This interface is built up on [node](http://nodejs.org/) platform and uses intensely [socket.io](http://socket.io/) and [jquery](http://jquery.com/) technologies.
 Whenever you want to leave a suggestion or file a bug report, please open a [new issue](https://github.com/LeoIannacone/debomatic-webui/issues).
 
-## Installation
+## Requirements
 
-Installation is very simple.
+You need **JSONLogger** debomatic module (provided along with this interface) to get installed in debomatic.
+You can copy `debomatic-modules/JSONLogger.py` or link to the modules directory. In the most cases:
+```
+sudo cp debomatic-modules/JSONLogger.py /usr/share/debomatic/modules/
+```
+Restart debomatic service.
 
-1. First of all, you need `npm` and `nodejs` installed on your system. On debian like systems type this in a command line:
- ```
+
+Install **npm** and **nodejs** on your system. On debian like systems type this in a command line:
+```
 sudo apt-get install npm nodejs
 ```
 
-2. Then move to `debomatic-webui/` directory and type:
+## Installation
+
+Move to **debomatic-webui/** directory and type:
  ```
 npm install
 ```
- That command downloads node depenences locally and creates the `user.config.js` file.
+That command downloads node dependences locally and creates automatically user configuration file.
 
-2. Take a look at `user.config.js`. Edit as you wish and then run service with:
+Take a look at auto-generated **user.config.js**. Edit as you wish and then run service with:
  ```
 nodejs index.js
 ```
