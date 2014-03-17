@@ -53,7 +53,7 @@ function Page_Generic(socket)
     },
     append: function(status_package) {
       $('#status .idle').hide()
-      $("#status ul").html($("#status ul").html()  + " " + __get_status_html(status_package))
+      $("#status ul").append(__get_status_html(status_package))
     },
     update: function(status_package) {
 

@@ -137,7 +137,7 @@ function Page_Distrubion(socket)
       // and in html
       var p_html = $("#packages li[id='package-"+ status_data.package + "'] a")
       p_html.find('span.icon').remove()
-      p_html.html(p_html.html() + ' ' + Utils.get_status_icon_html(status_data))
+      p_html.append(Utils.get_status_icon_html(status_data))
       if (Utils.check_view_package(view)
         && view.package.orig_name == status_data.package
         && view.distribution.name == status_data.distribution)
@@ -243,7 +243,7 @@ function Page_Distrubion(socket)
     },
     append: function(new_content) {
       var content = $("#file pre")
-      content.html(content.html() + new_content)
+      content.append(new_content)
       
       if (config.preferences.autoscroll) {
         // scroll down if file is covering footer
@@ -352,7 +352,7 @@ function Page_Distrubion(socket)
         panel.addClass('panel panel-' + info.className)
         var div = $("#sticky-package .status")
         div.find('span.icon').remove()
-        div.html(div.html() + ' ' + Utils.get_status_icon_html(status_data))
+        div.append(Utils.get_status_icon_html(status_data))
       }
     }
   }
