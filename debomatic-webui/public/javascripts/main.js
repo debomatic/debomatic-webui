@@ -1,4 +1,4 @@
-var socket = io.connect('//' + config.hostname );
+var socket = io.connect('/');
 
 var preferences = new Preferences()
 
