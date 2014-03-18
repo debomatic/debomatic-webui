@@ -84,7 +84,7 @@ function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
 
       fs.stat(watch_path, function(err, stats) {
         if (err) {
-          utils.errors_handler("__watch_path_onsocket:fs.stat", err, socket)
+          __errors_handler("__watch_path_onsocket:fs.stat", err, socket)
           return
         }
         if (stats.isDirectory()) {
@@ -114,6 +114,22 @@ function __generic_handler_watcher(event_name, socket, data, watch_path, callbac
   callback(event_name, socket, data)
 }
 
+function __send_distributions(socket) {
+  __get_files_list(config.debomatic.path, true, function(directories) {
+    var distributions = []
+    directories.forEach(function(dir) {
+      var data = {}
+      data.distribution = {}
+      data.distribution.name = dir
+      var pool_path = __get_distribution_pool_path(data)
+      if (fs.existsSync(pool_path)) {
+        distributions.push(dir)
+      }
+    })
+    socket.emit(config.events.broadcast.distributions, distributions);
+  })
+}
+
 utils = {
   check_data_distribution: function(data) {
     return __check_data_distribution(data)
@@ -141,6 +157,9 @@ utils = {
   },
   generic_handler_watcher: function(event_name, socket, data, watch_path, callback) {
     return __generic_handler_watcher(event_name, socket, data, watch_path, callback);
+  },
+  send_distributions: function(socket) {
+    return __send_distributions(socket)
   },
   errors_handler: function(from, error, socket) {
     return __errors_handler(from, error, socket)

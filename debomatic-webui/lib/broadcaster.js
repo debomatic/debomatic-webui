@@ -50,9 +50,7 @@ function __watch_build_status (socket, status) {
 // watcher on new distributions
 function __watch_distributions (socket) {
   fs.watch(config.debomatic.path, { persistent: true }, function (event, fileName) {
-    utils.get_files_list(config.debomatic.path, true, function(distros) {
-      socket.emit(config.events.broadcast.distributions, distros);
-    })
+    utils.send_distributions(socket)
   })
 }
 

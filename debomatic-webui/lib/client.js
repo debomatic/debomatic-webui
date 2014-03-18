@@ -137,10 +137,8 @@ function Client (socket) {
   var socket = socket
 
   this.start = function () {
-    // init send distributions and status
-    utils.get_files_list(config.debomatic.path, true, function(distros) {
-      socket.emit(config.events.broadcast.distributions, distros);
-    })
+    // init send distributions
+    utils.send_distributions(socket)
 
     // init events
     socket.on(_e.distribution_packages.get, function (data) {
