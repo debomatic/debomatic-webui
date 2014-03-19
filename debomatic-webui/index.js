@@ -8,7 +8,6 @@ var express = require('express')
   , config = require('./lib/config.js')
   , utils = require('./lib/utils.js')
   , http = require('http')
-  , partials = require('express-partials')
   , app = module.exports = express()
   , Client = require('./lib/client.js')
   , Broadcaster = require('./lib/broadcaster.js')
@@ -18,7 +17,6 @@ var express = require('express')
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
-  app.use(partials());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
