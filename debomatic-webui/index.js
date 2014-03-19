@@ -7,23 +7,25 @@ var express = require('express')
   , routes = require('./routes')
   , config = require('./lib/config.js')
   , utils = require('./lib/utils.js')
+  , http = require('http')
+  , partials = require('express-partials')
+  , app = module.exports = express()
   , Client = require('./lib/client.js')
   , Broadcaster = require('./lib/broadcaster.js')
 
-var app = module.exports = express.createServer();
-
-var io = require('socket.io').listen(app, config.socket);
 
 // Configuration
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
+  app.use(partials());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
   app.use(config.routes.debomatic, express.directory(config.debomatic.path));
   app.use(config.routes.debomatic, express.static(config.debomatic.path));
+  //app.enable('trust proxy');
 });
 
 app.configure('development', function(){
@@ -40,8 +42,11 @@ app.get(config.routes.distribution, routes.distribution)
 if (config.routes.preferences)
   app.get(config.routes.preferences, routes.preferences)
 
+var server = http.createServer(app)
+  , io = require('socket.io').listen(server, config.socket)
+
 // Listening
-var server = app.listen(config.port, config.host, null, function(err){
+server.listen(config.port, config.host, null, function(err){
 
   // Checking nodejs with sudo:
   // Find out which user used sudo through the environment variable
@@ -66,7 +71,7 @@ var server = app.listen(config.port, config.host, null, function(err){
       client.send_status(status)
   });
 
-  console.log("Debomatic-webui listening on %s:%d in %s mode", app.address().address, app.address().port, app.settings.env);
+  console.log("Debomatic-webui listening on %s:%d in %s mode", server.address().address, server.address().port, app.settings.env);
 });
 
 server.on('error', function (e) {
