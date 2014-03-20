@@ -134,6 +134,5 @@ try {
   config.web.events = config.events
   config.web.status = config.status
   config.web.host = config.host
-  config.web.hostname = config.host + ((config.port == 80) ? '' : ':' + config.port)
   module.exports = config
 }
