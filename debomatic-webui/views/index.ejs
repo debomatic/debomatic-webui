@@ -27,7 +27,7 @@
           <h3 class="panel-title">Account Request</h3>
         </div>
         <div class="panel-body">
-          <p>For build account requests please mail <span subject="Build account request for <%= web.host %>" class="email"><%= web.debomatic.admin.email %></span>.</p>
+          <p>For build account requests please mail <span subject="Build account request for <%= web.debomatic.dput.host %>" class="email"><%= web.debomatic.admin.email %></span>.</p>
         </div>
       </div>
 
@@ -51,12 +51,12 @@
               </div>
               <div class="panel-body">
                 <pre>
-[debomatic-<%= web.debomatic.architecture %>]
-fqdn           = <%= web.host %>
-incoming       = <%= web.debomatic.incoming %>
-login          = debomatic
-method         = scp
-allow_unsigned_uploads  = 0
+[debomatic-<%=       web.debomatic.architecture %>]
+fqdn           = <%= web.debomatic.dput.host %>
+incoming       = <%= web.debomatic.dput.incoming %>
+login          = <%= web.debomatic.dput.login %>
+method         = <%= web.debomatic.dput.method %>
+allow_unsigned_uploads  = <%= web.debomatic.dput.unsigned_uploads ? '1' : '0' %>
 allow_dcut     = 1
 scp_compress   = 1
 
@@ -77,10 +77,10 @@ scp_compress   = 1
 {
     "allow_dcut": true,
     "meta": "debomatic",
-    "fqdn": "<%= web.host %>",
-    "incoming": "<%= web.debomatic.incoming %>",
-    "login": "debomatic",
-    "method": "scp",
+    "fqdn": "<%=      web.debomatic.dput.host %>",
+    "incoming": "<%=  web.debomatic.dput.incoming %>",
+    "login": "<%=     web.debomatic.dput.login %>",
+    "method": "<%=    web.debomatic.dput.method %>",
     "check-debs": { "skip": true }
 }</pre>
               </div>

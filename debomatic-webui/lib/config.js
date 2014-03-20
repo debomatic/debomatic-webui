@@ -29,7 +29,7 @@ config.routes.distribution = '/distribution'
 config.routes.preferences = '/preferences'
 
 config.web = {}
-config.web.title = "deb-o-matic web.ui"
+config.web.title = "Deb-o-Matic web.ui"
 config.web.description = "This is a web interface for debomatic"
 
 // debomatic configuration exportable for web
@@ -37,8 +37,14 @@ config.web.debomatic = {}
 config.web.debomatic.admin = {}
 config.web.debomatic.admin.name = "Your Name"
 config.web.debomatic.admin.email = "you AT debian DOT org" // please use this SPAMFREE form - it will be converted client side by javascript
-config.web.debomatic.incoming = config.debomatic.path
 config.web.debomatic.architecture = 'amd64'
+
+config.web.debomatic.dput = {}
+config.web.debomatic.dput.incoming = config.debomatic.path
+config.web.debomatic.dput.host = config.host
+config.web.debomatic.dput.login = "debomatic"
+config.web.debomatic.dput.method = "scp"
+config.web.debomatic.dput.unsigned_uploads = true
 
 // default ui settings
 config.web.preferences = {}
@@ -80,7 +86,7 @@ config.events.client.file = _event_get_set('file')
 config.events.client.file_newcontent = 'file_newcontent'
 config.events.client.status = 'status'
 
-// packages status according with debomatic.json file
+// packages status according with JSONLogger.py module
 config.status = {}
 config.status.package = {}
 config.status.package.building = 'building'
