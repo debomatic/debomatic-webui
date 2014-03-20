@@ -44,7 +44,7 @@ config.web.debomatic.dput.incoming = config.debomatic.path
 config.web.debomatic.dput.host = config.host
 config.web.debomatic.dput.login = "debomatic"
 config.web.debomatic.dput.method = "scp"
-config.web.debomatic.dput.unsigned_uploads = true
+config.web.debomatic.dput.unsigned_uploads = false
 
 // default ui settings
 config.web.preferences = {}
