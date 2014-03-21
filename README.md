@@ -23,14 +23,17 @@ sudo apt-get install npm nodejs
 ## Installation
 
 Move to **debomatic-webui/** directory and type:
- ```
+```
 npm install
 ```
 That command downloads node dependences locally and creates automatically user configuration file.
 
-Take a look at auto-generated **user.config.js**. Edit as you wish and then run service with:
- ```
-nodejs index.js
+
+## Usage
+
+Take a look at auto-generated **user.config.js**.  Edit as you wish and then run service with:
+```
+nodejs debomatic-webui -c user.config.js
 ```
 
 That's all.
