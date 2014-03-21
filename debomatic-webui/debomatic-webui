@@ -1,3 +1,4 @@
+#!/usr/bin/env nodejs
 
 /**
  * Module dependencies.
