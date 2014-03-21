@@ -117,12 +117,20 @@ function _merge(object1, object2) {
 }
 
 try {
-  user_config = require('../user.config.js')
-  console.log("Reading user configutation ...")
-  config = _merge(config, user_config)
+  var Parser = require('./parser.js')
+  var parser = new Parser()
+  var user_config = parser.getUserConfig()
+  if (user_config) {
+    console.log("Reading user configutation ...")
+    config = _merge(config, require(user_config))
+  }
+  else {
+    console.log("No user config specified. Using global settings.")
+  }
 } catch (err) {
   if (err.code == 'MODULE_NOT_FOUND') {
-    console.log("User configutation not found. Using global settings.")
+    console.log("File %s not found.", user_config)
+    process.exit(1)
   }
   else {
     console.error("Error reading user configutation", err);
