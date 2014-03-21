@@ -1,4 +1,4 @@
-function Page_Generic(socket)
+function Page_Generic()
 {
   var _e = config.events
 
@@ -114,25 +114,27 @@ function Page_Generic(socket)
       window.document.title = config.title
   }
 
-  // update distributions
-  socket.on(_e.broadcast.distributions, function(socket_distributions) {
-    debug_socket("received", _e.broadcast.distributions, socket_distributions)
-    distributions.set(socket_distributions)
-  });
+  this.start = function (socket) {
+    // update distributions
+    socket.on(_e.broadcast.distributions, function(socket_distributions) {
+      debug_socket("received", _e.broadcast.distributions, socket_distributions)
+      distributions.set(socket_distributions)
+    });
 
-  socket.on(_e.client.status, function(packages_status) {
-    debug_socket("received", _e.client.status, packages_status)
-    status.set(packages_status)
-  })
+    socket.on(_e.client.status, function(packages_status) {
+      debug_socket("received", _e.client.status, packages_status)
+      status.set(packages_status)
+    })
 
-  socket.on(_e.broadcast.status_update, function(package_status) {
-    debug_socket("received", _e.broadcast.status_update, package_status)
-    status.update(package_status)
-  })
+    socket.on(_e.broadcast.status_update, function(package_status) {
+      debug_socket("received", _e.broadcast.status_update, package_status)
+      status.update(package_status)
+    })
 
-  socket.on(_e.error, function(error) {
-    console.error("socket > " + error)
-  })
+    socket.on(_e.error, function(error) {
+      console.error("socket > " + error)
+    })
+  }
 
   // select current page in navbar
   if (window.location.pathname != config.paths.distribution) {
