@@ -16,8 +16,11 @@ if (window.location.pathname == '/') {
     if ($(this).attr('subject')) {
       subject = '?subject=' + $(this).attr('subject')
     }
-    var real_email = $(this).html().replace('AT','@').replace('DOT','.').replace(/ /g,'')
-    real_email = '<a href="mailto:' + real_email + subject + '">' + real_email + '</a>'
+    var real_email = $(this).attr('address').replace('AT','@').replace('DOT','.').replace(/ /g,'')
+    var label = real_email
+    if (config.debomatic.admin.name && config.debomatic.admin.name != 'Your Name')
+      label = config.debomatic.admin.name
+    real_email = '<a href="mailto:' + real_email + subject + '">' + label + '</a>'
     $(this).html(real_email)
   })
 }
