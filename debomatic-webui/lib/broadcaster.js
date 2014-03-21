@@ -50,7 +50,10 @@ function __watch_build_status (socket, status) {
 // watcher on new distributions
 function __watch_distributions (socket) {
   fs.watch(config.debomatic.path, { persistent: true }, function (event, fileName) {
-    utils.send_distributions(socket)
+    // wait half a second to get pool subdir created
+    setTimeout(function() {
+      utils.send_distributions(socket)
+    }, 500)
   })
 }
 
