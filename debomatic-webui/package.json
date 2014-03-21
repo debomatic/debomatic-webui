@@ -6,7 +6,6 @@
       "express": "3.4.8"
     , "ejs": ">= 0.0.1"
     , "socket.io": "*"
-    , "node-fs": "*"
     , "tailfd": "*"
   }
   , "scripts": {
