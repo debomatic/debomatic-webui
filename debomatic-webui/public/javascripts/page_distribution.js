@@ -269,6 +269,9 @@ function Page_Distrubion(socket)
         query_data.package = view.package
         query_data.file = view.file
         query_data.file.content = null
+        // get a feedback to user while downloading file
+        $("#file pre").html("Downloading file, please wait a while ...")
+        $("#file").show()
         debug_socket("emit", _e.file.get, query_data)
         socket.emit(_e.file.get, query_data)
       }
