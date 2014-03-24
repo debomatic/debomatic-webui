@@ -1,7 +1,7 @@
 var path = require('path')
   , fs = require('fs')
-  , tail = require('tailfd').tail
   , config = require('./config.js')
+  , Tail = require('./tail.js')
 
 function __errors_handler(from, err, socket) {
   if (! socket)
@@ -93,10 +93,14 @@ function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
             updater(event_name, socket, data)
           })
         }
-        else {
-          watcher = tail(watch_path,function(new_content, tailInfo) {
+        else if(stats.isFile()) {
+          watcher = new Tail(watch_path)
+          watcher.on('line', function(new_content, tailInfo) {
             data.file.new_content = new_content + '\n'
             updater(event_name, socket, data)
+          });
+          watcher.on('error', function(msg) {
+            socket.emit(config.events.error, msg);
           });
         }
         socket_watchers[event_name] = watcher

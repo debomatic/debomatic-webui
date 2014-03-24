@@ -1,12 +1,13 @@
 var config = require('./config.js')
   , fs = require('fs')
-  , tail = require('tailfd').tail
+  , Tail = require('./tail.js')
 
 
 // watcher on build_status
 function __watch_build_status (socket, status) {
 
-  tail(config.debomatic.jsonfile, function(new_content) {
+  var watcher = new Tail(config.debomatic.jsonfile)
+  watcher.on('line', function(new_content) {
     var data = null
     try {
       data = JSON.parse(new_content)
@@ -44,6 +45,9 @@ function __watch_build_status (socket, status) {
       }
       socket.emit(config.events.broadcast.status_update, data)
     }
+  })
+  watcher.on('error', function(msg) {
+    socket.emit(config.events.error, msg)
   })
 }
 
