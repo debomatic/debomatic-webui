@@ -110,8 +110,8 @@ function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
 }
 
 function __generic_handler_watcher(event_name, socket, data, watch_path, callback) {
-  __watch_path_onsocket(event_name, socket, data, watch_path, callback)
   callback(event_name, socket, data)
+  __watch_path_onsocket(event_name, socket, data, watch_path, callback)
 }
 
 function __send_distributions(socket) {
