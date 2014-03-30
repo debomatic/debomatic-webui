@@ -112,8 +112,8 @@ function Page_Distrubion(socket)
         $('#packages ul').append('<li class="text-muted">No packages yet</li>')
       }
       packages.show()
+      sticky.reset()
     },
-    
     clean: function () {
       $('#packages ul').html('')
     },
@@ -180,7 +180,7 @@ function Page_Distrubion(socket)
         $('#logs').show()
         files.select()
       }
-      
+
       if (socket_data.package.debs && socket_data.package.debs.length > 0) {
         // update view
         view.package.debs = Utils.clone(socket_data.package.debs)
@@ -190,7 +190,7 @@ function Page_Distrubion(socket)
         })
         $('#debs').show()
       }
-      
+
       if (socket_data.package.sources && socket_data.package.sources.length > 0) {
         // update view
         view.package.sources = Utils.clone(socket_data.package.sources)
@@ -201,6 +201,7 @@ function Page_Distrubion(socket)
         $('#sources').show()
       }
       files.show()
+      sticky.reset()
     },
     clean: function() {
       $('#logs ul').html('');
@@ -251,7 +252,7 @@ function Page_Distrubion(socket)
     append: function(new_content) {
       var content = $("#file pre")
       content.append(new_content)
-      
+
       if (config.preferences.autoscroll) {
         // scroll down if file is covering footer
         var file_height = $("#fileOffset").offset().top
@@ -432,7 +433,7 @@ function Page_Distrubion(socket)
     }
     $("#file pre").css('font-size', config.preferences.file_fontsize)
   }
-  
+
   var select = function() {
       unselect()
       if (Utils.check_view_distribution(view)) {
@@ -464,7 +465,7 @@ function Page_Distrubion(socket)
       if ( ! old_view
         || ! Utils.check_view_distribution(old_view)
         || ! Utils.check_view_distribution(view)
-        || view.distribution.name != old_view.distribution.name 
+        || view.distribution.name != old_view.distribution.name
         || ! view.package.orig_name
         )
       { // new distribution view
