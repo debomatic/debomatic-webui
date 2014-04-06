@@ -112,7 +112,7 @@ function Page_Distrubion(socket)
         $('#packages ul').append('<li class="text-muted">No packages yet</li>')
       }
       packages.show()
-      sticky.reset()
+      sticky.update()
     },
     clean: function () {
       $('#packages ul').html('')
@@ -201,7 +201,7 @@ function Page_Distrubion(socket)
         $('#sources').show()
       }
       files.show()
-      sticky.reset()
+      sticky.update()
     },
     clean: function() {
       $('#logs ul').html('');
@@ -344,6 +344,7 @@ function Page_Distrubion(socket)
         $("#sticky-package .name").html(view.package.name)
         $("#sticky-package .version").html(view.package.version)
         sticky.set_status()
+        sticky.show()
       }
     },
     set_status: function(status_data) {
