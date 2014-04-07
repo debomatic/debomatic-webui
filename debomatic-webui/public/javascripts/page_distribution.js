@@ -1,3 +1,23 @@
+// function to get all files in on click
+// event comes from HTML
+function download_all (div_id) {
+  frame_id = 'downloadAllFrame'
+  if ($("#" + frame_id).length > 0)
+    frame = $($("#" + frame_id)[0])
+  else {
+    frame = $('<iframe></iframe>')
+    frame.hide()
+    frame.attr('id', frame_id)
+    $('body').append(frame)
+  }
+  files = $(div_id).find('ul li a')
+  $.each(files, function(index, item) {
+    setTimeout(function() {
+      frame.attr('src', item.href)
+    }, index * 1000)
+  })
+}
+
 function Page_Distrubion(socket)
 {
 
@@ -35,7 +55,8 @@ function Page_Distrubion(socket)
       status_data = {}
       status_data.distribution                --- the distribution name
       status_data.package                     --- the package name as name_version
-      status_data.status                      --- one of config.status.*.*
+      status_data.status                      --- one of config.status.[build|create|update]
+      status_data.success                     --- true | false
 
     */
 
