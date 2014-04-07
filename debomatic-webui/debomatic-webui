@@ -59,15 +59,14 @@ server.listen(config.port, config.host, null, function(err){
   }
 
   // statuses
-  var status = {}
-  status.packages = []
+  var status = []
 
   var broadcast = new Broadcaster(io.sockets, status)
 
   io.sockets.on('connection', function(socket) {
     var client = new Client(socket)
     client.start()
-    if (status.packages.length > 0)
+    if (status.length > 0)
       client.send_status(status)
   });
 

@@ -18,14 +18,18 @@
     var config = <%- JSON.stringify(web) %>
 
     config.status.className = {}
-    config.status.className.building = 'info'
-    config.status.className.successed = 'success'
-    config.status.className.failed = 'danger'
+    config.status.className.build = 'info'
+    config.status.className.create = 'warning'
+    config.status.className.update = 'default'
+    config.status.className.success = 'success'
+    config.status.className.fail = 'danger'
 
     config.status.icons = {}
-    config.status.icons.building = 'refresh'
-    config.status.icons.successed = 'ok'
-    config.status.icons.failed = 'remove'
+    config.status.icons.build = 'refresh'
+    config.status.icons.create = 'asterisk'
+    config.status.icons.update = 'upload'
+    config.status.icons.success = 'ok'
+    config.status.icons.fail = 'remove'
 
     config.status.delay = {}
     config.status.delay.remove = 10000

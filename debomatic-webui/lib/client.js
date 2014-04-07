@@ -52,6 +52,7 @@ function __send_package_status(socket, data, package_data) {
   new_data.package = package_data
 
   var status_data = {}
+  status_data.status = config.status.build
   status_data.distribution = data.distribution.name
   status_data.package = package_data.orig_name
 
@@ -62,9 +63,9 @@ function __send_package_status(socket, data, package_data) {
   //  + building: wc -l .datestamp == 1 (FIX_ME)
   //  + failed: else
   var base_path = path.join(package_path, package_data.orig_name)
-  fs.exists(base_path + '.dsc', function(changes_exists){
-    if (changes_exists) {
-      status_data.status = config.status.package.successed
+  fs.exists(base_path + '.dsc', function(dsc_exists){
+    if (dsc_exists) {
+      status_data.success = config.status.success
       socket.emit(event_name, status_data)
     }
     else {
@@ -80,10 +81,8 @@ function __send_package_status(socket, data, package_data) {
               if (chunk[i] == 10) count++;
             })
           .on('end', function() {
-            if (count <= 1)
-              status_data.status = config.status.package.building
-            else
-              status_data.status = config.status.package.failed
+            if (count > 1)
+              status_data.success = config.status.fail
             socket.emit(event_name, status_data)
           });
         }

@@ -2,20 +2,49 @@ function Page_Generic()
 {
   var _e = config.events
 
-  function __get_status_html(status_package) {
-    var s = status_package
+  function __get_status_html_id(status_data) {
+    var result = 'status-' + status_data.status + '-' + status_data.distribution
+    if (status_data.hasOwnProperty('package'))
+      result += '-' + status_data.package
+    return result
+  }
+
+  function __get_status_html_href(status_data) {
+    result = config.paths.distribution + '#' + status_data.distribution
+    if (status_data.hasOwnProperty('package'))
+      result += '/' + status_data.package.replace('_', '/') + '/datestamp'
+    return result
+  }
+
+  function __get_status_html_title(status_data) {
+    result = status_data.status + ': ' + status_data.distribution 
+    if (status_data.hasOwnProperty('package'))
+      result += ' > ' + status_data.package
+    if (status_data.hasOwnProperty('uploader') && status_data.uploader.length > 0)
+      result += ' by ' + status_data.uploader
+    return result 
+  }
+
+  function __get_status_html_inner(status_data) {
+    if (status_data.hasOwnProperty('package'))
+      return status_data.package;
+    return status_data.distribution
+  }
+
+  function __get_status_html(status_data) {
+    var _s = status_data
     var li = $('<li></li>')
-    li.attr('id', 'status-' + s.distribution + "-" + s.package)
+    li.attr('id', __get_status_html_id(status_data))
     var button = $('<a></a>')
     button.addClass('btn btn-xs')
-    button.addClass(s.status)
-    button.attr('title', s.status + ': ' + s.distribution + ' > ' + s.package)
-    button.attr('href', config.paths.distribution + '#' + s.distribution + '/' + s.package.replace('_', '/') + '/datestamp')
-    button.html(s.package.split('_')[0])
-    var info = Utils.get_status_icon_and_class(s)
+    button.addClass(_s.status)
+    button.attr('title', __get_status_html_title(_s))
+    button.attr('href', __get_status_html_href(_s))
+    button.html(__get_status_html_inner(_s))
+    var info = Utils.get_status_icon_and_class(_s)
     button.addClass('btn-' + info.className)
     // add icon
-    button.html(button.html() + ' ' + Utils.get_status_icon_html(s))
+    button.html(button.html() + ' ' + Utils.get_status_icon_html(_s))
     li.html(button)
     var result = $('<div></div>')
     result.html(li)
@@ -45,24 +74,25 @@ function Page_Generic()
   var status =  {
     set: function(data_status) {
       $("#status ul").html('')
-      if (data_status.packages.length > 0) {
-        data_status.packages.forEach(function(p){
-          status.append(p)
+      if (data_status.length > 0) {
+        data_status.forEach(function(s){
+          status.append(s)
         })
       }
     },
-    append: function(status_package) {
+    append: function(status_data) {
       $('#status .idle').hide()
-      $("#status ul").append(__get_status_html(status_package))
+      $("#status ul").append(__get_status_html(status_data))
     },
-    update: function(status_package) {
+    update: function(status_data) {
 
-      var li = $("#status li[id='status-" + status_package.distribution + "-" + status_package.package + "']")
+      var li = $("#status li[id='" + __get_status_html_id(status_data) + "']")
       if (li.length > 0
-        && status_package.status != config.status.package.building)
+        && status_data.hasOwnProperty('success'))
       {
         // Update color and icon
-        li.html($(__get_status_html(status_package)).children())
+        li = $(li[0])
+        li.html($(__get_status_html(status_data)).children())
         li.attr('id', '')
         // This is a chain to have a fadeOut and correctly
         // delete package from list.
@@ -82,8 +112,8 @@ function Page_Generic()
             }, config.status.delay.remove + 2000) // more delay on remove html
           }, config.status.delay.remove)
       }
-      else if (status_package.status == config.status.package.building) {
-        status.append(status_package)
+      else if (!status_data.hasOwnProperty('success')) {
+        status.append(status_data)
       }
     },
   }
@@ -121,9 +151,9 @@ function Page_Generic()
       distributions.set(socket_distributions)
     });
 
-    socket.on(_e.client.status, function(packages_status) {
-      debug_socket("received", _e.client.status, packages_status)
-      status.set(packages_status)
+    socket.on(_e.client.status, function(socket_status) {
+      debug_socket("received", _e.client.status, socket_status)
+      status.set(socket_status)
     })
 
     socket.on(_e.broadcast.status_update, function(package_status) {

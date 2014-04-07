@@ -2,9 +2,24 @@ var config = require('./config.js')
   , fs = require('fs')
   , Tail = require('./tail.js')
 
+function __watch_status_check_same_obj (obj1, obj2) {
+  if (obj1.status == obj2.status) {
+    if (obj1.distribution == obj2.distribution) {
+      if (obj1.hasOwnProperty('package') && 
+          obj2.hasOwnProperty('package')) 
+      {
+        if (obj1.package == obj2.package)
+          return true;
+        return false
+      }
+      return true
+    }
+  }
+  return false
+}
 
 // watcher on build_status
-function __watch_build_status (socket, status) {
+function __watch_status (socket, status) {
 
   var watcher = new Tail(config.debomatic.jsonfile)
   watcher.on('line', function(new_content) {
@@ -12,39 +27,24 @@ function __watch_build_status (socket, status) {
     try {
       data = JSON.parse(new_content)
     } catch (err) {
-      utils.errors_handler('Broadcaster:__watch_build_status:JSON.parse(new_content) - ', err, socket)
+      utils.errors_handler('Broadcaster:__watch_status:JSON.parse(new_content) - ', err, socket)
       return
     }
-
-    // looking for same package already in status.packages
-    var index = -1
-    for(i = 0; i < status.packages.length; i++)
-    {
-      p = status.packages[i]
-      if ( p.package == data.package
-        && p.distribution == data.distribution )
-      {
-        index = i
-        break
+    // looking for same status already in statuses lists
+    if (data.hasOwnProperty('success')) {
+      for(i = 0; i < status.length; i++) {
+        if (__watch_status_check_same_obj(data, status[i])) {
+          status.splice(i, 1)
+          break;
+        }
+        else
+          continue;
       }
     }
-
-    if (data.status == config.status.package.building) {
-      if (index == -1) { // not found in status.packages
-        status.packages.push(data)
-        socket.emit(config.events.broadcast.status_update, data)
-        return
-      }
+    else {
+      status.push(data)
     }
-
-    if (data.status == config.status.package.successed
-      || data.status == config.status.package.failed ) 
-    {
-      if (index >= 0) { // found in status.packages - remove
-        status.packages.splice(index, 1)
-      }
-      socket.emit(config.events.broadcast.status_update, data)
-    }
+    socket.emit(config.events.broadcast.status_update, data)
   })
   watcher.on('error', function(msg) {
     socket.emit(config.events.error, msg)
@@ -65,7 +65,7 @@ function Broadcaster (sockets, status) {
 
   var sockets = sockets
 
-  __watch_build_status(sockets, status)
+  __watch_status(sockets, status)
 
   __watch_distributions(sockets)
 

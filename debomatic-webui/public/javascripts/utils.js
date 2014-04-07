@@ -56,17 +56,19 @@ var Utils = {
     var _s = status_data
     var className = null
     var icon = null
-    if (_s.status == config.status.package.building) {
-      className = _c.building
-      icon = _i.building
-    }
-    else if (_s.status == config.status.package.failed) {
-      className = _c.failed
-      icon = _i.failed
+    if (_s.hasOwnProperty('success')) {
+      if (_s.success == true) {
+        className = _c.success
+        icon = _i.success
+      }
+      else {
+        className = _c.fail
+        icon = _i.fail
+      }
     }
     else {
-      className = _c.successed
-      icon = _i.successed
+      className = _c[_s.status]
+      icon = _i[_s.status]
     }
     return {
       className: className,
