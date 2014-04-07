@@ -95,16 +95,16 @@ function Page_Generic()
         li.html($(__get_status_html(status_data)).children())
         li.attr('id', '')
         // This is a chain to have a fadeOut and correctly
-        // delete package from list.
-        // The first timemout fades out the package.
+        // delete status li from list.
+        // The first timemout fades out the status element.
         setTimeout(function() {
           li.children().fadeOut(config.status.delay.fadeOut)
-          // Then resize packages list.
+          // Then resize list.
           setTimeout(function() {
             li.animate({width: 'toggle'})
             }, config.status.delay.fadeOut)
-            // Finally remove package html
-            // and show idle status if necessary.
+            // Finally remove status html
+            // and show idle label if necessary.
             setTimeout(function() {
               li.remove()
               if ($('#status li').length == 0)
