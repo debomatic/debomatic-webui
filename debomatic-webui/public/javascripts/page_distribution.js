@@ -16,6 +16,7 @@ function Page_Distrubion(socket)
       view.package.version
       view.package.orig_name
       view.package.status
+      view.package.success
       view.package.files    = [file]
       view.package.debs     = [file]
       view.package.sources  = [file]
@@ -112,7 +113,6 @@ function Page_Distrubion(socket)
         $('#packages ul').append('<li class="text-muted">No packages yet</li>')
       }
       packages.show()
-      sticky.update()
     },
     clean: function () {
       $('#packages ul').html('')
@@ -139,7 +139,11 @@ function Page_Distrubion(socket)
       if ( view.distribution.name == status_data.distribution
         && view.packages[status_data.package] )
       {
-        view.packages[status_data.package].status = Utils.clone(status_data.status)
+        view.packages[status_data.package].status = status_data.status
+        if (status_data.hasOwnProperty('success'))
+          view.packages[status_data.package].success = status_data.success
+        else
+          delete(view.packages[status_data.package].success)
       }
       // and in html
       var p_html = $("#packages li[id='package-"+ status_data.package + "'] a")
@@ -150,7 +154,7 @@ function Page_Distrubion(socket)
         && view.distribution.name == status_data.distribution)
       {
         // in case user is watching this package, update also view.package
-        view.package.status = Utils.clone(status_data.status)
+        view.package = Utils.clone(view.packages[status_data.package])
       }
     },
     show: function() {
@@ -201,7 +205,6 @@ function Page_Distrubion(socket)
         $('#sources').show()
       }
       files.show()
-      sticky.update()
     },
     clean: function() {
       $('#logs ul').html('');
@@ -315,14 +318,14 @@ function Page_Distrubion(socket)
     start: function() {
       $(window).scroll(sticky.init)
     },
+    stop: function() {
+      $(window).off("scroll")
+    },
     reset: function() {
       sticky.stop()
       sticky.update()
       sticky.init()
       sticky.start()
-    },
-    stop: function() {
-      $(window).off("scroll")
     },
     show: function() {
       if (config.preferences.sidebar) {
@@ -344,7 +347,6 @@ function Page_Distrubion(socket)
         $("#sticky-package .name").html(view.package.name)
         $("#sticky-package .version").html(view.package.version)
         sticky.set_status()
-        sticky.show()
       }
     },
     set_status: function(status_data) {
@@ -353,6 +355,8 @@ function Page_Distrubion(socket)
         status_data.distribution = view.distribution.name
         status_data.package = view.package.orig_name
         status_data.status = view.package.status
+        if (view.package.hasOwnProperty('success'))
+          status_data.success = view.package.success
       }
       if ( Utils.check_view_package(view)
         && status_data.distribution == view.distribution.name
@@ -473,21 +477,16 @@ function Page_Distrubion(socket)
         populate()
         return
       }
-      else if ( ! Utils.check_view_package(old_view)
-        || ! Utils.check_view_package(view)
-        || view.package.orig_name != old_view.package.orig_name
-      )
+      else if ( ! Utils.check_view_package(old_view) ||
+                ! Utils.check_view_package(view) ||
+                view.package.orig_name != old_view.package.orig_name )
       { // new package view
-        // set status from packages
-        if (view.packages[view.package.orig_name])
-          view.package.status = view.packages[view.package.orig_name].status
         files.get()
         file.get()
       }
-      else if ( ! Utils.check_view_file(old_view)
-        || ! Utils.check_view_file(view)
-        || view.file.name != old_view.file.name
-      )
+      else if ( ! Utils.check_view_file(old_view) ||
+                ! Utils.check_view_file(view) ||
+                view.file.name != old_view.file.name )
       { // new file view
         file.get()
       }
@@ -561,12 +560,12 @@ function Page_Distrubion(socket)
       // reset current view
       view.distribution = Utils.clone(new_view.distribution)
       view.package = Utils.clone(new_view.package)
-      if (view.packages[view.package.orig_name])
-        view.package.status = view.packages[view.package.orig_name].status
+      if (view.packages[new_view.package.orig_name])
+        view.package = Utils.clone(view.packages[new_view.package.orig_name])
       view.file = Utils.clone(new_view.file)
       update.page(old_view)
       $('html,body').animate({scrollTop: 0}, 0);
-      debug(1, "changing view", "old:", old_view, "new:", new_view)
+      debug(1, "changing view", "old:", old_view, "new:", view)
     });
 
     if (! __check_hash_makes_sense())
