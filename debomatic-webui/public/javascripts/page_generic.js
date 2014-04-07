@@ -129,7 +129,8 @@ function Page_Generic()
     }
 
     if (config.preferences.glossy_theme) {
-      $("head").append('<link rel="stylesheet" href="/external_libs/bootstrap-3.1.1-dist/css/bootstrap-theme.min.css">')
+      if ($("head").find("link[href='/external_libs/bootstrap-3.1.1-dist/css/bootstrap-theme.min.css']").length == 0)
+        $("head").append('<link rel="stylesheet" href="/external_libs/bootstrap-3.1.1-dist/css/bootstrap-theme.min.css">')
     }
     else {
       $("head").find("link[href='/external_libs/bootstrap-3.1.1-dist/css/bootstrap-theme.min.css']").remove()
