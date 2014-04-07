@@ -113,6 +113,7 @@ function Page_Distrubion(socket)
         $('#packages ul').append('<li class="text-muted">No packages yet</li>')
       }
       packages.show()
+      sticky.updateOffset()
     },
     clean: function () {
       $('#packages ul').html('')
@@ -205,6 +206,7 @@ function Page_Distrubion(socket)
         $('#sources').show()
       }
       files.show()
+      sticky.updateOffset()
     },
     clean: function() {
       $('#logs ul').html('');
@@ -313,6 +315,7 @@ function Page_Distrubion(socket)
         sticky.show()
       } else {
         sticky.hide()
+        sticky.updateOffset()
       }
     },
     start: function() {
@@ -339,8 +342,7 @@ function Page_Distrubion(socket)
       $("#sticky-package").fadeOut(150)
     },
     update: function() {
-      var sidebar = $("#files")
-      sidebarOffset = sidebar.offset().top
+      sticky.updateOffset()
       if (Utils.check_view_distribution(view))
         $("#sticky-package .distribution").html(view.distribution.name)
       if (Utils.check_view_package(view)) {
@@ -348,6 +350,10 @@ function Page_Distrubion(socket)
         $("#sticky-package .version").html(view.package.version)
         sticky.set_status()
       }
+    },
+    updateOffset: function() {
+      var sidebar = $("#files")
+      sidebarOffset = sidebar.offset().top
     },
     set_status: function(status_data) {
       if (! status_data) {
