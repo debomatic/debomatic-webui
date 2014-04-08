@@ -70,6 +70,14 @@ var Utils = {
       className = _c[_s.status]
       icon = _i[_s.status]
     }
+
+    // do not change color if update or create and successed
+    if (_s.success == true &&
+        _s.status != config.status.build)
+    {
+      className = _c[_s.status]
+    }
+
     return {
       className: className,
       icon: icon
