@@ -82,6 +82,10 @@ aside .nav-pills li {
   padding: 8px 15px;
 }
 
+#sticky-package .name {
+  margin-right: 10px;
+}
+
 footer {
   height: 40px;
 }
