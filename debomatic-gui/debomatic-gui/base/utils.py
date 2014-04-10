@@ -34,3 +34,20 @@ def obj2dict(obj):
 
 def obj2json(obj):
     return dumps(obj2dict(obj))
+
+def get_query(distribution, package=None, d_file=None):
+    query = {}
+    query["distribution"] = {}
+    query["distribution"]["name"] = distribution.name
+
+    if package:
+        query["package"] = {}
+        query["package"]["orig_name"] = package.orig_name
+        query["package"]["name"] = package.name
+        query["package"]["version"] = package.version
+
+        if d_file:
+            query["file"] = {}
+            query["file"]["name"] = d_file.name
+
+    return query
