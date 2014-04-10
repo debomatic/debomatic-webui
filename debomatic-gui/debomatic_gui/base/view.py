@@ -1,17 +1,34 @@
-from events import Events
-from utils import get_query
-from debug import debug_socket
-from observers import Observable
+from debomatic_gui.base.events import Events
+from debomatic_gui.base.utils import get_query, dict2obj
+from debomatic_gui.base.debug import debug_socket
+from debomatic_gui.base.observers import Observable
+
+from socketIO_client import SocketIO
+from threading import Thread
+
 
 class View(Observable):
 
-    def __init__(self, socket):
+    def __init__(self, host, port=3000):
         self.distribution = None
         self.package = None
         self.file = None
-        self.socket = socket
+        self.thread = None
+        self.is_started = False
+        self.socket = SocketIO(host, port)
         self.events = Events.getInstance()
         self.configure_socket()
+
+    def start(self):
+        self.thread = Thread(target=self.socket.wait)
+        self.thread.start()
+        self.is_started = True
+
+    def stop(self):
+        if self.is_started:
+            self.socket.disconnect()
+            self.thread._Thread__stop()
+            self.is_started = False
 
     def configure_socket(self):
         _e_client = self.events.client
@@ -35,8 +52,15 @@ class View(Observable):
             self.received_file_newcontent)
 
     def set_distribution(self, distribution):
+
+        if isinstance(distribution, str) or isinstance(distribution, unicode):
+            name = "%s" % distribution
+            distribution = {}
+            distribution['name'] = name
+
         if isinstance(distribution, dict):
             distribution = dict2obj(distribution)
+
         self.distribution = distribution
         event = self.events.client.distribution_packages.get
         query = get_query(self.distribution)
@@ -112,14 +136,3 @@ class View(Observable):
         debug_socket("received", _e_client.file_newcontent, arg)
         for obs in self.observers:
             obs.update_file_new_content(arg)
-
-
-if __name__ == '__main__':
-    from socketIO_client import SocketIO
-    from utils import dict2obj
-    socket = SocketIO('localhost', 3000)
-    view = View(socket)
-    distribution = {}
-    distribution['name'] = 'trusty'
-    view.set_distribution(dict2obj(distribution))
-    view.socket.wait()
