@@ -8,7 +8,7 @@ class Singleton:
     that takes only the `self` argument. Other than that, there are
     no restrictions that apply to the decorated class.
 
-    To get the singleton instance, use the `Instance` method. Trying
+    To get the singleton instance, use the `getInstance` method. Trying
     to use `__call__` will result in a `TypeError` being raised.
 
     """
@@ -37,4 +37,4 @@ class Singleton:
 
         """
         raise TypeError(
-            'Singletons must be accessed through the `Instance` method.')
+            'Singletons must be accessed through the `getInstance` method.')
