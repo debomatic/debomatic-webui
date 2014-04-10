@@ -5,7 +5,7 @@ class ExceptionSubjectImplementation(Exception):
     pass
 
 
-class Observer():
+class Observer(object):
     subject = None
     def register_subject(self, subject):
         if not isinstance(subject, Observable):
@@ -16,27 +16,27 @@ class Observer():
     def unregister_subject(self):
         self.subject = None
 
-    def update_distributions(distributions):
+    def update_distributions(self, distributions):
         pass
-    def update_packages(packages):
+    def update_packages(self, packages):
         pass
-    def update_package_status(package_status):
+    def update_package_status(self, package_status):
         pass
-    def update_status(status):
+    def update_status(self, status):
         pass
-    def update_sigle_status(status):
+    def update_sigle_status(self, status):
         pass
-    def update_package_files(files):
+    def update_package_files(self, files):
         pass
-    def update_file(file):
+    def update_file(self, file):
         pass
-    def update_file_new_content(new_content):
+    def update_file_new_content(self, new_content):
         pass
-    def update_error(error):
+    def update_error(self, error):
         pass
 
 
-class Observable():
+class Observable(object):
     observers = []
 
     def set_distribution(self, distribution):
