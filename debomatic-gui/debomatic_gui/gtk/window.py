@@ -1,15 +1,24 @@
 from gi.repository import Gtk
 from debomatic_gui.gtk.headerbar import HeaderBar
+from debomatic_gui.gtk.sidebar import Sibebar
 
 class MyWindow(Gtk.Window):
 
     def __init__(self, view):
         Gtk.Window.__init__(self)
-        self.headerbar = HeaderBar()
         self.view = view
+        # header bar
+        self.headerbar = HeaderBar()
         self.headerbar.set_title("Hello World")
         self.set_titlebar(self.headerbar)
         self.view.attach_observer(self.headerbar)
+        self.set_size_request(400, 500)
+
+        # sidebar
+        self.sidebar = Sibebar()
+        self.view.attach_observer(self.sidebar)
+        self.add(self.sidebar)
+
         self.connect('delete-event', self.on_delete)
 
         if not self.view.is_started:
