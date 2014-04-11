@@ -69,20 +69,30 @@ class View(Observable):
         self.socket.emit(event, query)
 
     def set_package(self, package):
+        if isinstance(package, str) or isinstance(package, unicode):
+            orig_name = "%s" % package
+            package = {}
+            package["name"] = orig_name.split('_')[0]
+            package["version"] = orig_name.split('_')[1]
+            package['orig_name'] = orig_name
+
         if isinstance(package, dict):
             package = dict2obj(package)
+
         self.package = package
-        event = self.events.client.package_files.get
+        event = self.events.client.package_files_list.get
         query = get_query(self.distribution, self.package)
         debug_socket("emit", event, query)
         self.socket.emit(event, query)
 
         # by default get datestamp file
-        d_file = {}
-        d_file["orig_name"] = "%s.datestamp" % package.orig_name
-        self.set_file()
+        self.set_file("datestamp")
     
     def set_file(self, d_file):
+        if isinstance(d_file, str) or isinstance(d_file, unicode):
+            name = "%s" % d_file
+            d_file = {}
+            d_file['name'] = name
         if isinstance(d_file, dict):
             d_file = dict2obj(d_file)
         self.file = d_file
