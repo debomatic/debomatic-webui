@@ -1,6 +1,6 @@
 from gi.repository import Gtk
 from debomatic_gui.gtk.headerbar import HeaderBar
-from debomatic_gui.gtk.sidebar import Sibebar
+from debomatic_gui.gtk.sidebar import Sidebar
 
 class MyWindow(Gtk.Window):
 
@@ -15,9 +15,14 @@ class MyWindow(Gtk.Window):
         self.set_size_request(400, 500)
 
         # sidebar
-        self.sidebar = Sibebar()
-        self.view.attach_observer(self.sidebar)
-        self.add(self.sidebar)
+        sidebar = Sidebar(view)
+
+        scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER,
+                          Gtk.PolicyType.AUTOMATIC)
+        scroll.add(sidebar)
+
+        self.add(scroll)
 
         self.connect('delete-event', self.on_delete)
 
