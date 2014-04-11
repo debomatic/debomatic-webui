@@ -5,12 +5,12 @@ class HeaderBar(Gtk.HeaderBar, Observer):
 
     def __init__(self):
         Gtk.HeaderBar.__init__(self)
-        self._group = []
-        self._buttons = None
         self.props.show_close_button = True
+        self._group = []
         self._buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         Gtk.StyleContext.add_class(self._buttons.get_style_context(), "linked")
         self.pack_start(self._buttons)
+        self.auto_populated = False
 
     def update_distributions(self, distributions):
 
@@ -32,16 +32,26 @@ class HeaderBar(Gtk.HeaderBar, Observer):
             button.join_group(self._group[0])
         self._group.append(button)
         button.name = distribution
-        button.connect("toggled", self.radiobutton_toggled)
+        # auto active button according with current view
+        if self.subject.distribution and \
+                self.subject.distribution.name == button.name:
+            button.set_active(True)
+        button.connect("toggled", self._radiobutton_toggled)
         button.props.draw_indicator = False
         self._buttons.add(button)
         button.show()
+        # only at startup
+        if not self.auto_populated:
+            self.auto_populated = True
+            self.subject.set_distribution(self._group[0].name)
+
 
     def _show_no_distributions_label(self):
-        label = "No distributions at the moment"
+        label = Gtk.Label("No distribution at the moment")
         self._buttons.add(label)
+        label.show()
 
 
-    def radiobutton_toggled(self, radiobutton):
-        if radiobutton.get_active():
-            self.subject.set_distribution(radiobutton.name)
+    def _radiobutton_toggled(self, button):
+        if button.get_active():
+            self.subject.set_distribution(button.name)
