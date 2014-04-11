@@ -76,6 +76,11 @@ class View(Observable):
         query = get_query(self.distribution, self.package)
         debug_socket("emit", event, query)
         self.socket.emit(event, query)
+
+        # by default get datestamp file
+        d_file = {}
+        d_file["orig_name"] = "%s.datestamp" % package.orig_name
+        self.set_file()
     
     def set_file(self, d_file):
         if isinstance(d_file, dict):
