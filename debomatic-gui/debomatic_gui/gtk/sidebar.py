@@ -1,7 +1,7 @@
 from gi.repository import Gtk
 from debomatic_gui.base.observers import Observer
 from debomatic_gui.base.utils import dict2obj
-from debomatic_gui.base.debug import debug, LEVEL
+from debomatic_gui.base.debug import debug
 
 class Sidebar(Gtk.Box):
     def __init__(self, view):
@@ -11,13 +11,13 @@ class Sidebar(Gtk.Box):
         self.packages = PackagesList()
         view.attach_observer(self.packages)
 
+        hbox = Gtk.Box()
         self.files = FilesList()
         view.attach_observer(self.files)
-        self.files.set_hexpand_set(False)
-        self.files.set_hexpand(False)
+        hbox.add(self.files)
 
         self.add(self.packages)
-        self.add(self.files)
+        self.add(hbox)
 
 
 class PackagesList(Gtk.ListBox, Observer):
@@ -27,6 +27,7 @@ class PackagesList(Gtk.ListBox, Observer):
         self.set_header_func(self._list_header_func, None)
         Gtk.StyleContext.add_class(self.get_style_context(), \
             "debomatic-packages")
+        self._packages = []
 
     # FIX_ME: se no packages -> label "No packages yet"
     def update_packages(self, socket_data):
@@ -35,14 +36,16 @@ class PackagesList(Gtk.ListBox, Observer):
             package = dict2obj(package)
             socket_list.append(package)
 
-        for child in self.get_children():
+        for child in self._packages:
             self.remove(child)
+        self._packages = []
 
         for package in socket_list:
             debug(2, "adding package", package.orig_name)
             row = PackageRow(package)
             self.subject.attach_observer(row)
             self.add(row)
+            self._packages.append(row)
 
         # select current package
         if self.subject.package:
@@ -101,7 +104,6 @@ class FilesList(Gtk.Box, Observer):
         self.logs.set_list(socket_data['package']['files'])
         self.sources.set_list(socket_data['package']['sources'])
         self.debs.set_list(socket_data['package']['debs'], show_extension=True)
-        self.show_all()
 
 
 class LogFilesList(Gtk.Box):
@@ -114,7 +116,13 @@ class LogFilesList(Gtk.Box):
         self.subject = subject
 
     def set_list(self, files_list):
-        for child in self.get_children():
+        if len(files_list) == len(self.get_children()):
+            for child in self.get_children():
+                if self.subject.file.name == child.name:
+                    child.set_active(True)
+            return
+
+        for child in self._group:
             self.remove(child)
         self._group = []
 
@@ -134,6 +142,8 @@ class LogFilesList(Gtk.Box):
             button.props.draw_indicator = False
             self.add(button)
 
+        self.show_all()
+
     def _radiobutton_toggled(self, button):
         if button.get_active():
             self.subject.set_file(button.name)
@@ -143,14 +153,17 @@ class FilesExpander(Gtk.Expander):
     def __init__(self, label):
         Gtk.Expander.__init__(self)
         self.set_label(label)
-        self.list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.files = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         Gtk.StyleContext.add_class(self.get_style_context(),\
             "debomatic-expander")
-        self.add(self.list)
+        self.add(self.files)
+        self._list = []
+        self.hide()
 
     def set_list(self, files_list, show_extension=False):
-        for child in self.list.get_children():
-            self.list.remove(child)
+        for child in self._list:
+            self.files.remove(child)
+        self._list = []
 
         if len(files_list) == 0:
             self.hide()
@@ -158,11 +171,15 @@ class FilesExpander(Gtk.Expander):
         else:
             for d_file in files_list:
                 d_file = dict2obj(d_file)
-                name = d_file.name
-                if show_extension:
+                if not d_file.name:
+                    return
+                name = "%s" % d_file.name
+                if show_extension and d_file.extension:
                     name = "%s %s" % (name, d_file.extension)
                 url = d_file.path
                 debug(2, "adding bin", d_file.name)
                 button = Gtk.LinkButton(url, name, xalign=0.0)
                 button.set_tooltip_markup(d_file.orig_name)
-                self.list.add(button)
+                self.files.add(button)
+                self._list.append(button)
+            self.show_all()
