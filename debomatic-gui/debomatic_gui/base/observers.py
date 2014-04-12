@@ -24,11 +24,11 @@ class Observer(object):
         pass
     def update_status(self, status):
         pass
-    def update_sigle_status(self, status):
+    def update_single_status(self, status):
         pass
     def update_package_files(self, files):
         pass
-    def update_file(self, file):
+    def update_file(self, d_file):
         pass
     def update_file_new_content(self, new_content):
         pass
