@@ -10,19 +10,20 @@ from threading import Thread
 class View(Observable):
 
     def __init__(self, host, port=3000):
-        self.distribution = None
-        self.package = None
-        self.file = None
+        self.socket = None
         self.thread = None
         self.is_started = False
-        self.socket = SocketIO(host, port)
         self.events = Events.getInstance()
-        self.configure_socket()
+        self.host = host
+        self.port = port
 
     def start(self):
-        self.thread = Thread(target=self.socket.wait)
-        self.thread.start()
-        self.is_started = True
+        if not self.is_started:
+            self.socket = SocketIO(self.host, self.port)
+            self._configure_socket()
+            self.thread = Thread(target=self.socket.wait)
+            self.thread.start()
+            self.is_started = True
 
     def stop(self):
         if self.is_started:
@@ -30,7 +31,7 @@ class View(Observable):
             self.thread._Thread__stop()
             self.is_started = False
 
-    def configure_socket(self):
+    def _configure_socket(self):
         _e_client = self.events.client
         self.socket.on(self.events.error, \
             self.received_error)
@@ -87,7 +88,7 @@ class View(Observable):
 
         # by default get datestamp file
         self.set_file("datestamp")
-    
+
     def set_file(self, d_file):
         if isinstance(d_file, str) or isinstance(d_file, unicode):
             name = "%s" % d_file
@@ -100,7 +101,7 @@ class View(Observable):
         query = get_query(self.distribution, self.package, self.file)
         self.socket.emit(event, query)
         debug_socket("emit", event, query)
-    
+
     def received_error(self, arg):
         debug_socket("received", self.events.error, arg)
         for obs in self.observers:

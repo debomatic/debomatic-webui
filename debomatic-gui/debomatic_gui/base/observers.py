@@ -38,6 +38,9 @@ class Observer(object):
 
 class Observable(object):
     observers = []
+    distribution = None
+    package = None
+    file = None
 
     def set_distribution(self, distribution):
         pass
@@ -62,4 +65,4 @@ class Observable(object):
         if self._checkObserverImplements(observer):
             if observer in self.observers:
                 self.observers.remove(observer)
-                observer.unregister_subject()   
+                observer.unregister_subject()
