@@ -50,15 +50,15 @@ class PackagesList(Gtk.ListBox, Observer):
         # select current package
         if self.subject.package:
             for child in self.get_children():
-                if self.subject.package.orig_name == child.name:
+                if self.subject.package.orig_name == child.tag:
                     self.select_row(child)
                     break
         self.show_all()
 
     def _on_row_select(self, listbox, row):
-        if row and "name" in row.__dict__ and (self.subject.package is None or \
-                self.subject.package.orig_name != row.name):
-            self.subject.set_package(row.name)
+        if row and (self.subject.package is None or \
+                self.subject.package.orig_name != row.tag):
+            self.subject.set_package(row.tag)
 
     def _list_header_func(self, row, before, user_data):
         if before and not row.get_header():
@@ -69,7 +69,7 @@ class PackagesList(Gtk.ListBox, Observer):
 class PackageRow(Gtk.ListBoxRow, Observer):
     def __init__(self, package):
         Gtk.ListBoxRow.__init__(self)
-        self.name = package.orig_name
+        self.tag = "%s" % package.orig_name
         Gtk.StyleContext.add_class(self.get_style_context(), \
             "debomatic-package")
 
@@ -118,7 +118,7 @@ class LogFilesList(Gtk.Box):
     def set_list(self, files_list):
         if len(files_list) == len(self.get_children()):
             for child in self.get_children():
-                if self.subject.file.name == child.name:
+                if self.subject.file.name == child.tag:
                     child.set_active(True)
             return
 
@@ -130,13 +130,13 @@ class LogFilesList(Gtk.Box):
             d_file = dict2obj(d_file)
             debug(2, "adding log", d_file.name)
             button = Gtk.RadioButton(d_file.name)
+            setattr(button, 'tag', "%s" % d_file.name)
             if len(self._group) > 0:
                 button.join_group(self._group[0])
             self._group.append(button)
-            button.name = d_file.name
             # auto active button according with current view
             if self.subject.file and \
-                    self.subject.file.name == button.name:
+                    self.subject.file.name == button.tag:
                 button.set_active(True)
             button.connect("toggled", self._radiobutton_toggled)
             button.props.draw_indicator = False
@@ -146,7 +146,7 @@ class LogFilesList(Gtk.Box):
 
     def _radiobutton_toggled(self, button):
         if button.get_active():
-            self.subject.set_file(button.name)
+            self.subject.set_file(button.tag)
 
 
 class FilesExpander(Gtk.Expander):
@@ -179,7 +179,7 @@ class FilesExpander(Gtk.Expander):
                 url = d_file.path
                 debug(2, "adding bin", d_file.name)
                 button = Gtk.LinkButton(url, name, xalign=0.0)
-                button.set_tooltip_markup(d_file.orig_name)
+                button.set_tooltip_markup("%s" % d_file.orig_name)
                 self.files.add(button)
                 self._list.append(button)
             self.show_all()
