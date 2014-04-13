@@ -34,7 +34,7 @@ class HeaderBar(Gtk.HeaderBar, Observer):
         setattr(button, 'tag', "%s" % distribution)
         # auto active button according with current view
         if self.subject.distribution and \
-                self.subject.distribution.name == button.name:
+                self.subject.distribution.name == button.tag:
             button.set_active(True)
         button.connect("toggled", self._radiobutton_toggled)
         button.props.draw_indicator = False
