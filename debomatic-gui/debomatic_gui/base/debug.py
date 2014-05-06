@@ -1,8 +1,10 @@
 LEVEL = 4
 
+
 def debug(level, *args):
     if level <= LEVEL:
         print("debug [%s]" % level, args)
+
 
 def debug_socket(what, event, data):
     level = 3

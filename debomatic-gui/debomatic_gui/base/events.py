@@ -1,6 +1,7 @@
 from utils import json2obj
 from singleton import Singleton
 
+
 @Singleton
 class Events():
     def __init__(self):

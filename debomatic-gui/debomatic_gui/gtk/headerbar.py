@@ -1,6 +1,7 @@
 from gi.repository import Gtk
 from debomatic_gui.base.observers import Observer
 
+
 class HeaderBar(Gtk.HeaderBar, Observer):
 
     def __init__(self):
@@ -45,12 +46,10 @@ class HeaderBar(Gtk.HeaderBar, Observer):
             self.auto_populated = True
             self.subject.set_distribution(self._group[0].tag)
 
-
     def _show_no_distributions_label(self):
         label = Gtk.Label("No distribution at the moment")
         self._buttons.add(label)
         label.show()
-
 
     def _radiobutton_toggled(self, button):
         if button.get_active():

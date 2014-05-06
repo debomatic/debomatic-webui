@@ -23,8 +23,8 @@ class MyWindow(Gtk.Window):
         hbox.add(sidebar)
 
         # separator
-        hbox.add(Gtk.Separator(orientation=\
-                Gtk.Orientation.VERTICAL))
+        hbox.add(Gtk.Separator(orientation=
+                 Gtk.Orientation.VERTICAL))
 
         # body
         body = Body()
@@ -45,9 +45,8 @@ class MyWindow(Gtk.Window):
 if __name__ == '__main__':
     from debomatic_gui.base.view import View
 
-    # view = View('debomatic-amd64.debian.net', 80)
-    view = View('localhost')
+    view = View('debomatic-amd64.debian.net', 80)
+    #view = View('localhost')
     win = MyWindow(view)
     win.show_all()
     Gtk.main()
-

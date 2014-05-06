@@ -3,11 +3,12 @@ from debomatic_gui.base.observers import Observer
 from debomatic_gui.base.utils import dict2obj
 from debomatic_gui.base.debug import debug
 
+
 class Sidebar(Gtk.Box):
     def __init__(self, view):
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
-        Gtk.StyleContext.add_class(self.get_style_context(), \
-            "debomatic-sidebar")
+        Gtk.StyleContext.add_class(self.get_style_context(),
+                                   "debomatic-sidebar")
         self.packages = PackagesList()
         view.attach_observer(self.packages)
 
@@ -25,8 +26,8 @@ class PackagesList(Gtk.ListBox, Observer):
         Gtk.ListBox.__init__(self)
         self.connect("row-selected", self._on_row_select)
         self.set_header_func(self._list_header_func, None)
-        Gtk.StyleContext.add_class(self.get_style_context(), \
-            "debomatic-packages")
+        Gtk.StyleContext.add_class(self.get_style_context(),
+                                   "debomatic-packages")
         self._packages = []
 
     # FIX_ME: se no packages -> label "No packages yet"
@@ -56,27 +57,27 @@ class PackagesList(Gtk.ListBox, Observer):
         self.show_all()
 
     def _on_row_select(self, listbox, row):
-        if row and (self.subject.package is None or \
-                self.subject.package.orig_name != row.tag):
+        if row and (self.subject.package is None or
+                    self.subject.package.orig_name != row.tag):
             self.subject.set_package(row.tag)
 
     def _list_header_func(self, row, before, user_data):
         if before and not row.get_header():
-            row.set_header(Gtk.Separator(orientation=\
-                Gtk.Orientation.HORIZONTAL))
+            row.set_header(Gtk.Separator(orientation=
+                           Gtk.Orientation.HORIZONTAL))
 
 
 class PackageRow(Gtk.ListBoxRow, Observer):
     def __init__(self, package):
         Gtk.ListBoxRow.__init__(self)
         self.tag = "%s" % package.orig_name
-        Gtk.StyleContext.add_class(self.get_style_context(), \
-            "debomatic-package")
+        Gtk.StyleContext.add_class(self.get_style_context(),
+                                   "debomatic-package")
 
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         hbox.set_border_width(8)
-        label = Gtk.Label("%s %s" % (package.name, package.version),\
-            xalign=0.0)
+        label = Gtk.Label("%s %s" % (package.name, package.version),
+                          xalign=0.0)
         hbox.add(label)
         self.add(hbox)
 
@@ -154,8 +155,8 @@ class FilesExpander(Gtk.Expander):
         Gtk.Expander.__init__(self)
         self.set_label(label)
         self.files = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        Gtk.StyleContext.add_class(self.get_style_context(),\
-            "debomatic-expander")
+        Gtk.StyleContext.add_class(self.get_style_context(),
+                                   "debomatic-expander")
         self.add(self.files)
         self._list = []
         self.hide()

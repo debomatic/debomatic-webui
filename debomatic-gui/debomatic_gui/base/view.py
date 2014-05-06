@@ -33,24 +33,24 @@ class View(Observable):
 
     def _configure_socket(self):
         _e_client = self.events.client
-        self.socket.on(self.events.error, \
-            self.received_error)
-        self.socket.on(self.events.broadcast.distributions, \
-            self.received_distributions)
-        self.socket.on(_e_client.status, \
-            self.received_status)
-        self.socket.on(_e_client.distribution_packages.set, \
-            self.received_packages)
-        self.socket.on(_e_client.distribution_packages.status, \
-            self.received_package_status)
-        self.socket.on(self.events.broadcast.status_update, \
-            self.received_status_update)
-        self.socket.on(_e_client.package_files_list.set, \
-            self.received_files_list)
-        self.socket.on(_e_client.file.set, \
-            self.received_file)
-        self.socket.on(_e_client.file_newcontent, \
-            self.received_file_newcontent)
+        self.socket.on(self.events.error,
+                       self.received_error)
+        self.socket.on(self.events.broadcast.distributions,
+                       self.received_distributions)
+        self.socket.on(_e_client.status,
+                       self.received_status)
+        self.socket.on(_e_client.distribution_packages.set,
+                       self.received_packages)
+        self.socket.on(_e_client.distribution_packages.status,
+                       self.received_package_status)
+        self.socket.on(self.events.broadcast.status_update,
+                       self.received_status_update)
+        self.socket.on(_e_client.package_files_list.set,
+                       self.received_files_list)
+        self.socket.on(_e_client.file.set,
+                       self.received_file)
+        self.socket.on(_e_client.file_newcontent,
+                       self.received_file_newcontent)
 
     def set_distribution(self, distribution):
 
