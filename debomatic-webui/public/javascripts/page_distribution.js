@@ -1,25 +1,27 @@
+'use strict';
+
 // function to get all files in on click
 // event comes from HTML
-function download_all (div_id) {
-  frame_id = 'downloadAllFrame'
-  if ($("#" + frame_id).length > 0)
-    frame = $($("#" + frame_id)[0])
-  else {
-    frame = $('<iframe></iframe>')
-    frame.hide()
-    frame.attr('id', frame_id)
-    $('body').append(frame)
-  }
-  files = $(div_id).find('ul li a')
-  $.each(files, function(index, item) {
-    setTimeout(function() {
-      frame.attr('src', item.href)
-    }, index * 1000)
-  })
+function download_all(div_id) {
+    var frame_id = 'downloadAllFrame';
+    var frame = null;
+    if ($('#' + frame_id).length > 0)
+        frame = $($('#' + frame_id)[0]);
+    else {
+        frame = $('<iframe></iframe>');
+        frame.hide();
+        frame.attr('id', frame_id);
+        $('body').append(frame);
+    }
+    var files = $(div_id).find('ul li a');
+    $.each(files, function (index, item) {
+        setTimeout(function () {
+            frame.attr('src', item.href);
+        }, index * 1000);
+    });
 }
 
-function Page_Distrubion(socket)
-{
+function Page_Distrubion(socket) {
 
     /*
 
@@ -60,570 +62,554 @@ function Page_Distrubion(socket)
 
     */
 
-  var socket = socket
-  var _e = config.events.client
-  var view = Utils.from_hash_to_view()
-  var sidebarOffset = 0
-  var new_lines = []
+    var _e = config.events.client;
+    var view = Utils.from_hash_to_view();
+    var sidebarOffset = 0;
+    var new_lines = [];
 
-  function __check_hash_makes_sense() {
-    if (window.location.hash.indexOf('..') >= 0) {
-      error.set("Detected '..' God Is Watching You !")
-      return false
-    }
-    if (! window.location.hash) {
-      welcome.show()
-      return false
-    }
-    var info = window.location.hash.split('/')
-    if (info.length == 2)
-      window.location.hash = info[0]
-    return true
-  }
-
-  var title = {
-    set: function(label) {
-      if (label) {
-        $('#title').html(label)
-        page_generic.set_window_title(label)
-        return
-      }
-      var label = ''
-      var window_title = null
-      if (Utils.check_view_file(view)) {
-        var complete_name = view.package.orig_name + '.' + view.file.name
-        window_title = complete_name
-        if (! view.file.path)
-          view.file.path = config.paths.debomatic + '/' + view.distribution.name + '/pool/' + view.package.orig_name + '/' + complete_name
-        label = complete_name + ' \
-          <a class="btn btn-link btn-lg" title="Download" href="' + view.file.path + '">\
-            <span class="glyphicon glyphicon-download-alt"></span>\
-          </a>'
-      }
-      else if (Utils.check_view_package(view))
-        label = view.package.orig_name
-      else if (Utils.check_view_distribution(view))
-        label = view.distribution.name
-      $('#title').html(label)
-      if (window_title)
-        label = window_title
-      page_generic.set_window_title(label)
-    },
-    clean: function() {
-      $('#title').html('')
-      page_generic.set_window_title()
-    }
-  }
-
-  var packages = {
-    set: function (socket_data) {
-      packages.clean()
-      var tmp = Utils.clone(socket_data)
-      tmp.file = null
-      view.packages = {}
-      if (socket_data.distribution.packages && socket_data.distribution.packages.length > 0) {
-        socket_data.distribution.packages.forEach(function(p){
-          tmp.package = p
-          // get datestamp if package is clicked
-          $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' + Utils.from_view_to_hash(tmp) + '/datestamp">'+ p.name + ' <span>'+p.version+'</span></a></li>')
-          view.packages[p.orig_name] = Utils.clone(p)
-        })
-        packages.select()
-      }
-      else {
-        $('#packages ul').append('<li class="text-muted">No packages yet</li>')
-      }
-      packages.show()
-      sticky.updateOffset()
-    },
-    clean: function () {
-      $('#packages ul').html('')
-    },
-    get: function () {
-      if (Utils.check_view_distribution(view)) {
-        var query_data = {}
-        query_data.distribution = view.distribution
-        debug_socket("emit", _e.distribution_packages.get, query_data)
-        socket.emit(_e.distribution_packages.get, query_data)
-      }
-    },
-    select: function() {
-      packages.unselect()
-      if (Utils.check_view_package(view)) {
-        $("#packages li[id='package-"+ view.package.orig_name + "']").addClass('active')
-      }
-    },
-    unselect: function() {
-      $('#packages li').removeClass('active')
-    },
-    set_status: function (status_data) {
-      // set status in view
-      if ( view.distribution.name == status_data.distribution
-        && view.packages[status_data.package] )
-      {
-        view.packages[status_data.package].status = status_data.status
-        if (status_data.hasOwnProperty('success'))
-          view.packages[status_data.package].success = status_data.success
-        else
-          delete(view.packages[status_data.package].success)
-      }
-      // and in html
-      var p_html = $("#packages li[id='package-"+ status_data.package + "'] a")
-      p_html.find('span.icon').remove()
-      p_html.append(Utils.get_status_icon_html(status_data))
-      if (Utils.check_view_package(view)
-        && view.package.orig_name == status_data.package
-        && view.distribution.name == status_data.distribution)
-      {
-        // in case user is watching this package, update also view.package
-        view.package = Utils.clone(view.packages[status_data.package])
-      }
-    },
-    show: function() {
-      $("#packages").show()
-    },
-    hide: function() {
-      $("#packages").hide()
-    }
-  }
-
-  var files = {
-    set: function (socket_data) {
-      files.clean()
-      var tmp = Utils.clone(socket_data)
-      if (socket_data.package.files && socket_data.package.files.length > 0) {
-        // update view
-        view.package.files = Utils.clone(socket_data.package.files)
-        // update html
-        socket_data.package.files.forEach(function(f){
-          tmp.file = f
-          var html_file = $('<li id="file-'+ f.orig_name +'"><a title="'+ f.orig_name +'" href="'+ Utils.from_view_to_hash(tmp) + '">' + f.name + '</a></li>')
-          html_file.on("click", function(){
-            files.select(this)
-          })
-          $('#logs ul').append(html_file)
-        })
-        $('#logs').show()
-        files.select()
-      }
-
-      if (socket_data.package.debs && socket_data.package.debs.length > 0) {
-        // update view
-        view.package.debs = Utils.clone(socket_data.package.debs)
-        // update.html
-        socket_data.package.debs.forEach(function(f){
-          $('#debs ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a> <span>.' + f.extension + '</span></li>')
-        })
-        $('#debs').show()
-      }
-
-      if (socket_data.package.sources && socket_data.package.sources.length > 0) {
-        // update view
-        view.package.sources = Utils.clone(socket_data.package.sources)
-        // update html
-        socket_data.package.sources.forEach(function(f){
-          $('#sources ul').append('<li><a title="'+ f.orig_name +'" href="' + f.path + '">' + f.name  +'</a></li>')
-        })
-        $('#sources').show()
-      }
-      files.show()
-      sticky.updateOffset()
-    },
-    clean: function() {
-      $('#logs ul').html('');
-      $('#logs').hide()
-      $('#debs ul').html('');
-      $('#debs').hide();
-      $('#sources ul').html('')
-      $('#sources').hide()
-      files.hide()
-    },
-    get: function () {
-      if (Utils.check_view_package(view)) {
-        var query_data = {}
-        query_data.distribution = view.distribution
-        query_data.package = view.package
-        debug_socket("emit", _e.package_files_list.get, query_data)
-        socket.emit(_e.package_files_list.get, query_data)
-      }
-    },
-    select: function() {
-      files.show()
-      files.unselect()
-      if (Utils.check_view_file(view)) {
-        $("#logs li[id='file-" + view.file.orig_name + "']").addClass('active')
-      }
-    },
-    unselect: function() {
-        $('#logs li').removeClass('active');
-    },
-    hide: function() {
-      $('#files').hide()
-    },
-    show: function() {
-      $('#files').show()
-    },
-  }
-
-  var file = {
-    set: function(socket_data) {
-      view.file = Utils.clone(socket_data.file)
-      $("#file pre").html(socket_data.file.content)
-      $("#file").show()
-    },
-    clean: function() {
-      $('#file pre').html('')
-      $('#file').hide()
-    },
-    append: function(new_content) {
-      var content = $("#file pre")
-      content.append(new_content)
-
-      if (config.preferences.autoscroll) {
-        // scroll down if file is covering footer
-        var file_height = $("#fileOffset").offset().top
-        var footerOffset = $("footer").offset().top
-        if (file_height > footerOffset) {
-          debug(2, 'scoll down on new content')
-          $('html,body').animate({ scrollTop: file_height }, 0);
+    function __check_hash_makes_sense() {
+        if (window.location.hash.indexOf('..') >= 0) {
+            error.set('Detected ".." God Is Watching You !');
+            return false;
         }
-      }
-    },
-    get: function() {
-      if (Utils.check_view_file(view)) {
-        var query_data = {}
-        query_data.distribution = view.distribution
-        query_data.package = view.package
-        query_data.file = view.file
-        query_data.file.content = null
-        // get a feedback to user while downloading file
-        $("#file pre").html("Downloading file, please wait a while ...")
-        $("#file").show()
-        debug_socket("emit", _e.file.get, query_data)
-        socket.emit(_e.file.get, query_data)
-      }
+        if (!window.location.hash) {
+            welcome.show();
+            return false;
+        }
+        var info = window.location.hash.split('/');
+        if (info.length == 2)
+            window.location.hash = info[0];
+        return true;
     }
-  }
 
-  var breadcrumb = {
-    update: function(label) {
-      if (label) {
-        $('.breadcrumb').html('<li class="active">' + label + '</li>')
-        return
-      }
-      hash = window.location.hash.replace('#', '')
-      var new_html = ''
-      var new_hash = '#'
-      var info = hash.split('/')
-      for (var i = 0; i < info.length ; i++) {
-        new_hash += info[i]
-        if (i == (info.length - 1))
-          new_html += '<li class="active">' + info[i] + '</li>'
-        else
-          new_html += '<li><a href="' + new_hash + '">' + info[i] + '</a>'
-        new_hash += '/'
-      }
-      $('.breadcrumb').html(new_html)
-    }
-  }
+    var title = {
+        set: function (label) {
+            if (label) {
+                $('#title').html(label);
+                page_generic.set_window_title(label);
+                return;
+            }
+            label = '';
+            var window_title = null;
+            if (Utils.check_view_file(view)) {
+                var complete_name = view.package.orig_name + '.' + view.file.name;
+                window_title = complete_name;
+                if (!view.file.path);
+                view.file.path = config.paths.debomatic + '/' + view.distribution.name + '/pool/' + view.package.orig_name + '/' + complete_name;
+                label = complete_name + '<a class="btn btn-link btn-lg" title="Download" href="' + view.file.path + '"> ' +
+                    '<span class="glyphicon glyphicon-download-alt"></span></a>';
+            } else if (Utils.check_view_package(view))
+                label = view.package.orig_name;
+            else if (Utils.check_view_distribution(view))
+                label = view.distribution.name;
+            $('#title').html(label);
+            if (window_title)
+                label = window_title;
+            page_generic.set_window_title(label);
+        },
+        clean: function () {
+            $('#title').html('');
+            page_generic.set_window_title();
+        }
+    };
 
-  // sticky sidebar
-  var sticky = {
-    init: function() {
-      if (sidebarOffset == 0)
-          return
-      if ($(window).scrollTop() > sidebarOffset) {
-        sticky.show()
-      } else {
-        sticky.hide()
-        sticky.updateOffset()
-      }
-    },
-    start: function() {
-      $(window).scroll(sticky.init)
-    },
-    stop: function() {
-      $(window).off("scroll")
-    },
-    reset: function() {
-      sticky.stop()
-      sticky.update()
-      sticky.init()
-      sticky.start()
-    },
-    show: function() {
-      if (config.preferences.sidebar) {
-        $("#sticky").addClass('fixed')
-      }
-      debug(2, "showing sticky")
-      $("#sticky-package").fadeIn()
-    },
-    hide: function() {
-      $("#sticky").removeClass('fixed')
-      $("#sticky-package").fadeOut(150)
-    },
-    update: function() {
-      sticky.updateOffset()
-      if (Utils.check_view_distribution(view))
-        $("#sticky-package .distribution").html(view.distribution.name)
-      if (Utils.check_view_package(view)) {
-        $("#sticky-package .name").html(view.package.name)
-        $("#sticky-package .version").html(view.package.version)
-        sticky.set_status()
-      }
-    },
-    updateOffset: function() {
-      var sidebar = $("#files")
-      sidebarOffset = sidebar.offset().top
-    },
-    set_status: function(status_data) {
-      if (! status_data) {
-        status_data = {}
-        status_data.distribution = view.distribution.name
-        status_data.package = view.package.orig_name
-        status_data.status = view.package.status
-        if (view.package.hasOwnProperty('success'))
-          status_data.success = view.package.success
-      }
-      if ( Utils.check_view_package(view)
-        && status_data.distribution == view.distribution.name
-        && status_data.package == view.package.orig_name)
-      {
-        // update html
-        var info = Utils.get_status_icon_and_class(status_data)
-        var panel = $("#sticky-package-content")
-        panel.removeClass()
-        panel.addClass('panel panel-' + info.className)
-        var div = $("#sticky-package .status")
-        div.find('span.icon').remove()
-        div.append(Utils.get_status_icon_html(status_data))
-      }
-    }
-  }
+    var packages = {
+        set: function (socket_data) {
+            packages.clean();
+            var tmp = Utils.clone(socket_data);
+            tmp.file = null;
+            view.packages = {};
+            if (socket_data.distribution.packages && socket_data.distribution.packages.length > 0) {
+                socket_data.distribution.packages.forEach(function (p) {
+                    tmp.package = p;
+                    // get datestamp if package is clicked
+                    $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' +
+                        Utils.from_view_to_hash(tmp) + '/datestamp">' + p.name + ' <span>' + p.version + '</span></a></li>');
+                    view.packages[p.orig_name] = Utils.clone(p);
+                });
+                packages.select();
+            } else {
+                $('#packages ul').append('<li class="text-muted">No packages yet</li>');
+            }
+            packages.show();
+            sticky.updateOffset();
+        },
+        clean: function () {
+            $('#packages ul').html('');
+        },
+        get: function () {
+            if (Utils.check_view_distribution(view)) {
+                var query_data = {};
+                query_data.distribution = view.distribution;
+                debug_socket('emit', _e.distribution_packages.get, query_data);
+                socket.emit(_e.distribution_packages.get, query_data);
+            }
+        },
+        select: function () {
+            packages.unselect();
+            if (Utils.check_view_package(view)) {
+                $('#packages li[id="package-' + view.package.orig_name + '"]').addClass('active');
+            }
+        },
+        unselect: function () {
+            $('#packages li').removeClass('active');
+        },
+        set_status: function (status_data) {
+            // set status in view
+            if (view.distribution.name == status_data.distribution && view.packages[status_data.package]) {
+                view.packages[status_data.package].status = status_data.status;
+                if (status_data.hasOwnProperty('success'))
+                    view.packages[status_data.package].success = status_data.success;
+                else
+                    delete(view.packages[status_data.package].success);
+            }
+            // and in html
+            var p_html = $('#packages li[id="package-' + status_data.package + '"] a');
+            p_html.find('span.icon').remove();
+            p_html.append(Utils.get_status_icon_html(status_data));
+            if (Utils.check_view_package(view) && view.package.orig_name == status_data.package && view.distribution.name == status_data.distribution) {
+                // in case user is watching this package, update also view.package
+                view.package = Utils.clone(view.packages[status_data.package]);
+            }
+        },
+        show: function () {
+            $('#packages').show();
+        },
+        hide: function () {
+            $('#packages').hide();
+        }
+    };
 
-  var error = {
-    set: function(socket_error) {
-      $("#error span").html(socket_error)
-      error.view()
-    },
-    clean: function() {
-      $("#error").hide()
-      $("#error span").html('')
-    },
-    view: function() {
-      $("#error").fadeIn(100)
-      title.set("Something is wrong ...")
-      breadcrumb.update('Something is wrong ...')
-      file.clean()
-      files.hide()
-      unselect()
-    },
-  }
+    var files = {
+        set: function (socket_data) {
+            files.clean();
+            var tmp = Utils.clone(socket_data);
+            if (socket_data.package.files && socket_data.package.files.length > 0) {
+                // update view
+                view.package.files = Utils.clone(socket_data.package.files);
+                // update html
+                socket_data.package.files.forEach(function (f) {
+                    tmp.file = f;
+                    var html_file = $('<li id="file-' + f.orig_name + '"><a title="' + f.orig_name + '" href="' +
+                        Utils.from_view_to_hash(tmp) + '">' + f.name + '</a></li>');
+                    html_file.on('click', function () {
+                        files.select(this);
+                    });
+                    $('#logs ul').append(html_file);
+                });
+                $('#logs').show();
+                files.select();
+            }
 
-  var welcome = {
-    set: function(distributions) {
-      welcome.clean()
-      if(distributions.length < 1) {
-        $('#welcome').append('<p class="lead text-muted">There is no distribution at the moment</p>')
-      }
-      else {
-        distributions.forEach(function (name){
-          $('#welcome').append('<a class="btn btn-lg btn-primary" href="'+ config.paths.distribution + '#'+ name + '">' + name + '</a>');
+            if (socket_data.package.debs && socket_data.package.debs.length > 0) {
+                // update view
+                view.package.debs = Utils.clone(socket_data.package.debs);
+                // update.html
+                socket_data.package.debs.forEach(function (f) {
+                    $('#debs ul').append('<li><a title="' + f.orig_name + '" href="' + f.path + '">' +
+                        f.name + '</a> <span>.' + f.extension + '</span></li>');
+                });
+                $('#debs').show();
+            }
+
+            if (socket_data.package.sources && socket_data.package.sources.length > 0) {
+                // update view
+                view.package.sources = Utils.clone(socket_data.package.sources);
+                // update html
+                socket_data.package.sources.forEach(function (f) {
+                    $('#sources ul').append('<li><a title="' + f.orig_name + '" href="' + f.path + '">' + f.name + '</a></li>');
+                })
+                $('#sources').show();
+            }
+            files.show();
+            sticky.updateOffset();
+        },
+        clean: function () {
+            $('#logs ul').html('');
+            $('#logs').hide();
+            $('#debs ul').html('');
+            $('#debs').hide();
+            $('#sources ul').html('');
+            $('#sources').hide();
+            files.hide();
+        },
+        get: function () {
+            if (Utils.check_view_package(view)) {
+                var query_data = {};
+                query_data.distribution = view.distribution;
+                query_data.package = view.package;
+                debug_socket('emit', _e.package_files_list.get, query_data);
+                socket.emit(_e.package_files_list.get, query_data);
+            }
+        },
+        select: function () {
+            files.show();
+            files.unselect();
+            if (Utils.check_view_file(view)) {
+                $('#logs li[id="file-' + view.file.orig_name + '"]').addClass('active');
+            }
+        },
+        unselect: function () {
+            $('#logs li').removeClass('active');
+        },
+        hide: function () {
+            $('#files').hide();
+        },
+        show: function () {
+            $('#files').show();
+        },
+    };
+
+    var file = {
+        set: function (socket_data) {
+            view.file = Utils.clone(socket_data.file);
+            $('#file pre').html(socket_data.file.content);
+            $('#file').show();
+        },
+        clean: function () {
+            $('#file pre').html('');
+            $('#file').hide();
+        },
+        append: function (new_content) {
+            var content = $('#file pre');
+            content.append(new_content);
+
+            if (config.preferences.autoscroll) {
+                // scroll down if file is covering footer
+                var file_height = $('#fileOffset').offset().top;
+                var footerOffset = $('footer').offset().top;
+                if (file_height > footerOffset) {
+                    debug(2, 'scoll down on new content');
+                    $('html,body').animate({
+                        scrollTop: file_height
+                    }, 0);
+                }
+            }
+        },
+        get: function () {
+            if (Utils.check_view_file(view)) {
+                var query_data = {};
+                query_data.distribution = view.distribution;
+                query_data.package = view.package;
+                query_data.file = view.file;
+                query_data.file.content = null;
+                // get a feedback to user while downloading file
+                $('#file pre').html('Downloading file, please wait a while ...');
+                $('#file').show();
+                debug_socket('emit', _e.file.get, query_data);
+                socket.emit(_e.file.get, query_data);
+            }
+        }
+    };
+
+    var breadcrumb = {
+        update: function (label) {
+            if (label) {
+                $('.breadcrumb').html('<li class="active">' + label + '</li>');
+                return;
+            }
+            var hash = window.location.hash.replace('#', '');
+            var new_html = '';
+            var new_hash = '#';
+            var info = hash.split('/');
+            for (var i = 0; i < info.length; i++) {
+                new_hash += info[i];
+                if (i == (info.length - 1))
+                    new_html += '<li class="active">' + info[i] + '</li>';
+                else
+                    new_html += '<li><a href="' + new_hash + '">' + info[i] + '</a>';
+                new_hash += '/';
+            }
+            $('.breadcrumb').html(new_html);
+        }
+    };
+
+    // sticky sidebar
+    var sticky = {
+        init: function () {
+            if (sidebarOffset === 0)
+                return;
+            if ($(window).scrollTop() > sidebarOffset) {
+                sticky.show();
+            } else {
+                sticky.hide();
+                sticky.updateOffset();
+            }
+        },
+        start: function () {
+            $(window).scroll(sticky.init);
+        },
+        stop: function () {
+            $(window).off('scroll');
+        },
+        reset: function () {
+            sticky.stop();
+            sticky.update();
+            sticky.init();
+            sticky.start();
+        },
+        show: function () {
+            if (config.preferences.sidebar) {
+                $('#sticky').addClass('fixed');
+            }
+            debug(2, 'showing sticky');
+            $('#sticky-package').fadeIn();
+        },
+        hide: function () {
+            $('#sticky').removeClass('fixed');
+            $('#sticky-package').fadeOut(150);
+        },
+        update: function () {
+            sticky.updateOffset();
+            if (Utils.check_view_distribution(view))
+                $('#sticky-package .distribution').html(view.distribution.name);
+            if (Utils.check_view_package(view)) {
+                $('#sticky-package .name').html(view.package.name);
+                $('#sticky-package .version').html(view.package.version);
+                sticky.set_status();
+            }
+        },
+        updateOffset: function () {
+            var sidebar = $('#files');
+            sidebarOffset = sidebar.offset().top;
+        },
+        set_status: function (status_data) {
+            if (!status_data) {
+                status_data = {};
+                status_data.distribution = view.distribution.name;
+                status_data.package = view.package.orig_name;
+                status_data.status = view.package.status;
+                if (view.package.hasOwnProperty('success'))
+                    status_data.success = view.package.success;
+            }
+            if (Utils.check_view_package(view) && status_data.distribution == view.distribution.name && status_data.package == view.package.orig_name) {
+                // update html
+                var info = Utils.get_status_icon_and_class(status_data);
+                var panel = $('#sticky-package-content');
+                panel.removeClass();
+                panel.addClass('panel panel-' + info.className);
+                var div = $('#sticky-package .status');
+                div.find('span.icon').remove();
+                div.append(Utils.get_status_icon_html(status_data));
+            }
+        }
+    };
+
+    var error = {
+        set: function (socket_error) {
+            $('#error span').html(socket_error);
+            error.view();
+        },
+        clean: function () {
+            $('#error').hide();
+            $('#error span').html('');
+        },
+        view: function () {
+            $('#error').fadeIn(100);
+            title.set('Something is wrong ...');
+            breadcrumb.update('Something is wrong ...');
+            file.clean();
+            files.hide();
+            unselect();
+        },
+    };
+
+    var welcome = {
+        set: function (distributions) {
+            welcome.clean();
+            if (distributions.length < 1) {
+                $('#welcome').append('<p class="lead text-muted">There is no distribution at the moment</p>');
+            } else {
+                distributions.forEach(function (name) {
+                    $('#welcome').append('<a class="btn btn-lg btn-primary" href="' + config.paths.distribution +
+                        '# ' + name + '">' + name + '</a>');
+                });
+            }
+        },
+        show: function () {
+            title.set('Please select a distribution');
+            breadcrumb.update('Select a distribution');
+            packages.hide();
+            file.clean();
+            files.hide();
+            unselect();
+            $('#welcome').show();
+        },
+        clean: function () {
+            $('#welcome').html('');
+        },
+        hide: function () {
+            $('#welcome').hide();
+        }
+    };
+
+    var preferences = function () {
+        if (!config.preferences.sidebar) {
+            debug(2, 'no sidebar - updating html');
+            $('#sidebar').removeClass();
+            $('#sidebar').addClass('col-md-12 row');
+            $('#packages').addClass('col-md-4');
+            $('#logs').addClass('col-md-4');
+            $('#files .others').addClass('col-md-4');
+            $('#main').removeClass().addClass('col-md-12');
+            $('#sticky-package').addClass('on-top');
+        }
+        if (!config.preferences.file_background) {
+            $('#file pre').addClass('no-background');
+        }
+        $('#file pre').css('font-size', config.preferences.file_fontsize);
+    };
+
+    var select = function () {
+        unselect();
+        if (Utils.check_view_distribution(view)) {
+            $('#distributions li[id="distribution-' + view.distribution.name + '"]').addClass('active');
+        }
+        packages.select();
+        files.select();
+    };
+
+    var unselect = function () {
+        $('#distributions li').removeClass('active');
+        files.unselect();
+        packages.unselect();
+    };
+
+    var clean = function () {
+        welcome.hide();
+        title.clean();
+        packages.clean();
+        files.clean();
+        file.clean();
+        unselect();
+        breadcrumb.update();
+        error.clean();
+    };
+
+    var update = {
+        page: function (old_view) {
+            if (!old_view || !Utils.check_view_distribution(old_view) || !Utils.check_view_distribution(view) || view.distribution.name != old_view.distribution.name || !view.package.orig_name) { // new distribution view
+                populate();
+                return;
+            } else if (!Utils.check_view_package(old_view) || !Utils.check_view_package(view) ||
+                view.package.orig_name != old_view.package.orig_name) { // new package view
+                files.get();
+                file.get();
+            } else if (!Utils.check_view_file(old_view) || !Utils.check_view_file(view) ||
+                view.file.name != old_view.file.name) { // new file view
+                file.get();
+            }
+            update.view(view);
+        },
+        view: function () {
+            error.clean();
+            title.set();
+            breadcrumb.update();
+            select();
+            sticky.reset();
+        }
+    };
+
+    var populate = function () {
+        clean();
+        packages.get();
+        files.get();
+        file.get();
+        update.view();
+    };
+
+    this.start = function () {
+
+        socket.on(config.events.error, function (socket_error) {
+            debug_socket('received', config.events.error, socket_error);
+            error.set(socket_error);
         });
-      }
-    },
-    show: function() {
-      title.set("Please select a distribution")
-      breadcrumb.update("Select a distribution")
-      packages.hide()
-      file.clean()
-      files.hide()
-      unselect()
-      $("#welcome").show()
-    },
-    clean: function() {
-      $("#welcome").html('')
-    },
-    hide: function() {
-      $("#welcome").hide()
-    }
-  }
 
-  var preferences = function() {
-    if (! config.preferences.sidebar) {
-      debug(2, "no sidebar - updating html")
-      $("#sidebar").removeClass()
-      $("#sidebar").addClass("col-md-12 row")
-      $("#packages").addClass("col-md-4")
-      $("#logs").addClass("col-md-4")
-      $("#files .others").addClass("col-md-4")
-      $("#main").removeClass().addClass("col-md-12")
-      $("#sticky-package").addClass("on-top")
-    }
-    if (! config.preferences.file_background) {
-      $("#file pre").addClass("no-background")
-    }
-    $("#file pre").css('font-size', config.preferences.file_fontsize)
-  }
+        socket.on(config.events.broadcast.distributions, function (socket_data) {
+            debug_socket('received', config.events.broadcast.distributions, socket_data);
+            welcome.set(socket_data);
+        });
 
-  var select = function() {
-      unselect()
-      if (Utils.check_view_distribution(view)) {
-        $("#distributions li[id='distribution-"  + view.distribution.name + "']").addClass('active')
-      }
-      packages.select()
-      files.select()
-  }
+        socket.on(_e.distribution_packages.set, function (socket_data) {
+            debug_socket('received', _e.distribution_packages.set, socket_data);
+            packages.set(socket_data);
+        });
 
-  var unselect = function() {
-    $('#distributions li').removeClass('active')
-    files.unselect()
-    packages.unselect()
-  }
+        socket.on(_e.distribution_packages.status, function (socket_data) {
+            debug_socket('received', _e.distribution_packages.set, socket_data);
+            packages.set_status(socket_data);
+            sticky.set_status(socket_data);
+        });
 
-  var clean = function() {
-    welcome.hide()
-    title.clean()
-    packages.clean()
-    files.clean()
-    file.clean()
-    unselect()
-    breadcrumb.update()
-    error.clean()
-  }
+        socket.on(config.events.broadcast.status_update, function (socket_data) {
+            packages.set_status(socket_data);
+            sticky.set_status(socket_data);
+        });
 
-  var update = {
-    page: function(old_view) {
-      if ( ! old_view
-        || ! Utils.check_view_distribution(old_view)
-        || ! Utils.check_view_distribution(view)
-        || view.distribution.name != old_view.distribution.name
-        || ! view.package.orig_name
-        )
-      { // new distribution view
-        populate()
-        return
-      }
-      else if ( ! Utils.check_view_package(old_view) ||
-                ! Utils.check_view_package(view) ||
-                view.package.orig_name != old_view.package.orig_name )
-      { // new package view
-        files.get()
-        file.get()
-      }
-      else if ( ! Utils.check_view_file(old_view) ||
-                ! Utils.check_view_file(view) ||
-                view.file.name != old_view.file.name )
-      { // new file view
-        file.get()
-      }
-      update.view(view)
-    },
-    view : function() {
-      error.clean()
-      title.set()
-      breadcrumb.update()
-      select()
-      sticky.reset()
-    }
-  }
+        socket.on(_e.package_files_list.set, function (socket_data) {
+            debug_socket('received', _e.package_files_list.set, socket_data);
+            files.set(socket_data);
+        });
 
-  var populate = function () {
-    clean()
-    packages.get()
-    files.get()
-    file.get()
-    update.view()
-  }
+        socket.on(_e.file.set, function (socket_data) {
+            debug_socket('received', _e.file.set, socket_data);
+            file.set(socket_data);
+        });
 
-  this.start = function () {
+        socket.on(_e.file_newcontent, function (socket_data) {
+            debug_socket('received', _e.file_newcontent, socket_data);
+            new_lines.push(socket_data.file.new_content);
+        });
 
-    socket.on(config.events.error, function(socket_error) {
-      debug_socket("received", config.events.error, socket_error)
-      error.set(socket_error)
-    })
+        $(window).on('hashchange', function () {
+            if (!__check_hash_makes_sense())
+                return;
+            var old_view = Utils.clone(view);
+            var new_view = Utils.from_hash_to_view();
+            // reset current view
+            view.distribution = Utils.clone(new_view.distribution);
+            view.package = Utils.clone(new_view.package);
+            if (view.packages[new_view.package.orig_name])
+                view.package = Utils.clone(view.packages[new_view.package.orig_name]);
+            view.file = Utils.clone(new_view.file);
+            update.page(old_view);
+            $('html,body').animate({
+                scrollTop: 0
+            }, 0);
+            debug(1, 'changing view', 'old:', old_view, 'new:', view);
+        });
 
-    socket.on(config.events.broadcast.distributions, function (socket_data) {
-      debug_socket("received", config.events.broadcast.distributions, socket_data)
-      welcome.set(socket_data)
-    })
+        if (!__check_hash_makes_sense())
+            return;
+        populate();
 
-    socket.on(_e.distribution_packages.set, function (socket_data){
-      debug_socket("received", _e.distribution_packages.set, socket_data)
-      packages.set(socket_data)
-    })
+        // Init sticky-package back_on_top on click
+        $('#sticky-package').on('click', function () {
+            $('html,body').animate({
+                scrollTop: 0
+            }, 100);
+        });
 
-    socket.on(_e.distribution_packages.status, function (socket_data){
-      debug_socket("received", _e.distribution_packages.set, socket_data)
-      packages.set_status(socket_data)
-      sticky.set_status(socket_data)
-    })
+        // WORKAROUND:
+        // when page is loaded sidebar has offset().top
+        // equals 0. This is because html is loaded on socket
+        // events. Sleep a while and call stiky.reset()
+        setTimeout(sticky.reset, 500);
 
-    socket.on(config.events.broadcast.status_update, function (socket_data){
-      packages.set_status(socket_data)
-      sticky.set_status(socket_data)
-    })
+        // WORKAROUND:
+        // On incoming hundred of lines browser goes crazy.
+        // Append lines every 200 mills.
+        function watch_for_new_lines() {
+            if (new_lines.length > 0) {
+                file.append(new_lines.join(''));
+                new_lines = [];
+            }
+            setTimeout(watch_for_new_lines, 200);
+        }
+        watch_for_new_lines();
 
-    socket.on(_e.package_files_list.set, function (socket_data){
-      debug_socket("received", _e.package_files_list.set, socket_data)
-      files.set(socket_data)
-    })
+        // Update html according with preferences
+        preferences();
 
-    socket.on(_e.file.set, function (socket_data) {
-      debug_socket("received", _e.file.set, socket_data)
-      file.set(socket_data)
-    })
-
-    socket.on(_e.file_newcontent, function (socket_data) {
-      debug_socket("received", _e.file_newcontent, socket_data)
-      new_lines.push(socket_data.file.new_content)
-    })
-
-    $(window).on('hashchange', function() {
-      if (! __check_hash_makes_sense())
-        return
-      var old_view = Utils.clone(view)
-      var new_view = Utils.from_hash_to_view()
-      // reset current view
-      view.distribution = Utils.clone(new_view.distribution)
-      view.package = Utils.clone(new_view.package)
-      if (view.packages[new_view.package.orig_name])
-        view.package = Utils.clone(view.packages[new_view.package.orig_name])
-      view.file = Utils.clone(new_view.file)
-      update.page(old_view)
-      $('html,body').animate({scrollTop: 0}, 0);
-      debug(1, "changing view", "old:", old_view, "new:", view)
-    });
-
-    if (! __check_hash_makes_sense())
-      return
-    populate()
-
-    // Init sticky-package back_on_top on click
-    $("#sticky-package").on("click", function(){
-      $('html,body').animate({scrollTop: 0}, 100);
-    })
-
-    // WORKAROUND:
-    // when page is loaded sidebar has offset().top
-    // equals 0. This is because html is loaded on socket
-    // events. Sleep a while and call stiky.reset()
-    setTimeout(sticky.reset, 500);
-
-    // WORKAROUND:
-    // On incoming hundred of lines browser goes crazy.
-    // Append lines every 200 mills.
-    function watch_for_new_lines() {
-      if (new_lines.length > 0) {
-        file.append(new_lines.join(''))
-        new_lines = []
-      }
-      setTimeout(watch_for_new_lines, 200);
-    }
-    watch_for_new_lines()
-
-    // Update html according with preferences
-    preferences()
-
-  }
+    };
 }
