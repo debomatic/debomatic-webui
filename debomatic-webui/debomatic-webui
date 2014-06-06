@@ -19,6 +19,11 @@ var express = require('express'),
     Broadcaster = require('./lib/broadcaster.js');
 
 
+// serve dsc files as octet-stream
+serve_static.mime.define({
+    'application/octet-stream': ['dsc']
+});
+
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(serve_static(__dirname + '/public'));

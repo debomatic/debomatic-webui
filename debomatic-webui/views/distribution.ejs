@@ -15,7 +15,7 @@
       <h2>Packages</h2>
       <ul class="nav nav-pills nav-stacked"></ul>
     </nav>
-    
+
     <div id="sticky" >
       <section id="files">
         <nav id="logs">
@@ -24,7 +24,11 @@
         </nav>
         <div class="others">
           <nav id="sources">
-            <h4>Sources</h4>
+            <h4>Sources
+              <a class="btn btn-link" title="Get all sources in one click"  onclick="download_all('#sources')">
+                <span class="glyphicon glyphicon-download-alt"></span>
+              </a>
+            </h4>
             <ul></ul>
           </nav>
           <nav id="debs">
