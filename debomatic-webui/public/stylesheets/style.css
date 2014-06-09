@@ -45,7 +45,7 @@ aside .nav-pills li {
 }
 
 #sidebar {
-  position: relative; 
+  position: relative;
 }
 
 #sidebar .fixed {
@@ -150,4 +150,9 @@ footer {
   background: none;
   border: none;
   color: #101010;
+}
+
+#title a.btn {
+  padding-right: 0;
+  float: right;
 }

@@ -94,10 +94,17 @@ function Page_Distrubion(socket) {
             if (Utils.check_view_file(view)) {
                 var complete_name = view.package.orig_name + '.' + view.file.name;
                 window_title = complete_name;
-                if (!view.file.path);
-                view.file.path = config.paths.debomatic + '/' + view.distribution.name + '/pool/' + view.package.orig_name + '/' + complete_name;
-                label = complete_name + '<a class="btn btn-link btn-lg" title="Download" href="' + view.file.path + '"> ' +
+                label = complete_name;
+                if (!view.file.path)
+                    view.file.path = config.paths.debomatic + '/' + view.distribution.name + '/pool/' + view.package.orig_name + '/' + complete_name;
+                label += ' <a class="btn btn-link btn-lg" title="Download" href="' + view.file.path + '"> ' +
                     '<span class="glyphicon glyphicon-download-alt"></span></a>';
+                if (config.file.preview.indexOf(view.file.name) >= 0) {
+                    var view_all = $('<a id="get-whole-file" class="btn btn-link btn-lg" title="View the whole file"></a>');
+                    view_all.html('<span class="glyphicon glyphicon-eye-open"></span>');
+                    label += view_all.get(0).outerHTML;
+                }
+
             } else if (Utils.check_view_package(view))
                 label = view.package.orig_name;
             else if (Utils.check_view_distribution(view))
@@ -106,6 +113,11 @@ function Page_Distrubion(socket) {
             if (window_title)
                 label = window_title;
             page_generic.set_window_title(label);
+
+            // set onclick get-whole-file
+            $("#get-whole-file").on('click', function () {
+                file.get(true);
+            });
         },
         clean: function () {
             $('#title').html('');
@@ -286,13 +298,14 @@ function Page_Distrubion(socket) {
                 }
             }
         },
-        get: function () {
+        get: function (force) {
             if (Utils.check_view_file(view)) {
                 var query_data = {};
                 query_data.distribution = view.distribution;
                 query_data.package = view.package;
                 query_data.file = view.file;
                 query_data.file.content = null;
+                query_data.file.force = force;
                 // get a feedback to user while downloading file
                 $('#file pre').html('Downloading file, please wait a while ...');
                 $('#file').show();
