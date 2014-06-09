@@ -7,5 +7,6 @@
         "debug_socket": false
     },
     "globalstrict": true,
-    "browser": true
+    "browser": true,
+    "node": true
 }
