@@ -62,7 +62,7 @@ config.web.preferences.debug = 0; // debug level - 0 means disabled
 
 // DO NOT TOUCH these ones
 
-config.version = '0.2.3';
+config.version = '0.2.4';
 
 // A simple function to quickly have
 // get and set strings for client events
