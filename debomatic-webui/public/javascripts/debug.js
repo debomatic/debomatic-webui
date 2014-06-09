@@ -23,7 +23,7 @@ var debug = function () {
         else
             console.log.apply(console, arguments);
     }
-}
+};
 
 /*
   An helper debug function for socket events
@@ -38,4 +38,4 @@ var debug_socket = function () {
     if (arguments[0] == "received")
         level = 4;
     debug(level, "socket", arguments[0], "event:", arguments[1], "data:", arguments[2]);
-}
+};
