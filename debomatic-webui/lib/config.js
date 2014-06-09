@@ -47,6 +47,11 @@ config.web.debomatic.dput.login = 'debomatic';
 config.web.debomatic.dput.method = 'scp';
 config.web.debomatic.dput.unsigned_uploads = false;
 
+// list of files get preview
+config.web.file = {};
+config.web.file.preview = ['buildlog'];
+config.web.file.num_lines = 25;
+
 // default ui settings
 config.web.preferences = {};
 config.web.preferences.autoscroll = true;

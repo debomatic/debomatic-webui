@@ -106,7 +106,7 @@ function __send_distribution_packages(event_name, socket, data) {
     });
 }
 
-function __send_file(event_name, socket, data) {
+function __send_file(event_name, socket, data, last_lines) {
     var file_path = utils.get_file_path(data);
     fs.readFile(file_path, 'utf8', function (err, content) {
         if (err) {
@@ -114,7 +114,10 @@ function __send_file(event_name, socket, data) {
             return;
         }
         data.file.orig_name = file_path.split('/').pop();
-        data.file.content = content;
+        if (last_lines > 0)
+            data.file.content = content.split('\n').slice(-25).join('\n');
+        else
+            data.file.content = content;
         data.file.path = file_path.replace(config.debomatic.path, config.routes.debomatic);
         socket.emit(event_name, data);
     });
@@ -126,7 +129,10 @@ function __handler_get_file(socket, data) {
         data.file.content = null;
         socket.emit(event_name, data);
     });
-    __send_file(_e.file.set, socket, data);
+    if (config.web.file.preview.indexOf(data.file.name) >= 0 && !data.file.force)
+        __send_file(_e.file.set, socket, data, config.web.file.num_lines);
+    else
+        __send_file(_e.file.set, socket, data);
 }
 
 function Client(socket) {
@@ -165,7 +171,7 @@ function Client(socket) {
                 for (var key in socket_watchers) {
                     try {
                         socket_watchers[key].close();
-                    } catch (err) {}
+                    } catch (error_watch) {}
                 }
             });
         });
