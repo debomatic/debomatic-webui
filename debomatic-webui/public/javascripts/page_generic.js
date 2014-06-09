@@ -11,14 +11,14 @@ function Page_Generic() {
     }
 
     function __get_status_html_href(status_data) {
-        result = config.paths.distribution + '#' + status_data.distribution;
+        var result = config.paths.distribution + '#' + status_data.distribution;
         if (status_data.hasOwnProperty('package'))
             result += '/' + status_data.package.replace('_', '/') + '/datestamp';
         return result;
     }
 
     function __get_status_html_title(status_data) {
-        result = status_data.status + ': ' + status_data.distribution;
+        var result = status_data.status + ': ' + status_data.distribution;
         if (status_data.hasOwnProperty('package'))
             result += ' > ' + status_data.package;
         if (status_data.hasOwnProperty('uploader') && status_data.uploader.length > 0)
@@ -69,20 +69,20 @@ function Page_Generic() {
                 }
             }
         },
-    }
+    };
 
     var status = {
         set: function (data_status) {
-            $("#status ul").html('');
+            $('#status ul').html('');
             if (data_status.length > 0) {
                 data_status.forEach(function (s) {
                     status.append(s);
-                })
+                });
             }
         },
         append: function (status_data) {
             $('#status .idle').hide();
-            $("#status ul").append(__get_status_html(status_data));
+            $('#status ul').append(__get_status_html(status_data));
         },
         update: function (status_data) {
 
