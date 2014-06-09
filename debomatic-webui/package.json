@@ -13,5 +13,8 @@
     },
     "scripts": {
         "install": "bash scripts/install.sh"
+    },
+    "bin": {
+        "debomatic-webui": "./debomatic-webui"
     }
 }
