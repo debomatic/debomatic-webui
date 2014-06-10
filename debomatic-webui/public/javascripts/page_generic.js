@@ -107,8 +107,8 @@ function Page_Generic() {
                     // and show idle label if necessary.
                     setTimeout(function () {
                         li.remove();
-                        if ($('#status li').length === 0);
-                        $('#status .idle').show();
+                        if ($('#status li').length === 0)
+                            $('#status .idle').show();
                     }, config.status.delay.remove + 2000); // more delay on remove html
                 }, config.status.delay.remove);
             } else if (!status_data.hasOwnProperty('success')) {
