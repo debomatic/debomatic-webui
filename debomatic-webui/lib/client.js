@@ -181,6 +181,14 @@ function Client(socket) {
     this.send_status = function (status) {
         socket.emit(_e.status, status);
     };
+
+    this.send_status_debomatic = function () {
+        fs.exists(config.debomatic.pidfile, function (exists) {
+            socket.emit(config.events.broadcast.status_debomatic, {
+                'running': exists
+            });
+        });
+    };
 }
 
 module.exports = Client;

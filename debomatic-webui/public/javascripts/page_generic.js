@@ -2,6 +2,7 @@
 
 function Page_Generic() {
     var _e = config.events;
+    var status_debomatic = {};
 
     function __get_status_html_id(status_data) {
         var result = 'status-' + status_data.status + '-' + status_data.distribution;
@@ -73,11 +74,21 @@ function Page_Generic() {
 
     var status = {
         set: function (data_status) {
-            $('#status ul').html('');
-            if (data_status.length > 0) {
-                data_status.forEach(function (s) {
-                    status.append(s);
-                });
+            if (!data_status) {
+                if (status_debomatic.running) {
+                    $('#status .idle').show();
+                    $('#status .norunning').hide();
+                } else {
+                    $('#status .idle').hide();
+                    $('#status .norunning').show();
+                }
+            } else {
+                $('#status ul').html('');
+                if (data_status.length > 0) {
+                    data_status.forEach(function (s) {
+                        status.append(s);
+                    });
+                }
             }
         },
         append: function (status_data) {
@@ -107,8 +118,9 @@ function Page_Generic() {
                     // and show idle label if necessary.
                     setTimeout(function () {
                         li.remove();
-                        if ($('#status li').length === 0)
-                            $('#status .idle').show();
+                        if ($('#status li').length === 0) {
+                            status.set();
+                        }
                     }, config.status.delay.remove + 2000); // more delay on remove html
                 }, config.status.delay.remove);
             } else if (!status_data.hasOwnProperty('success')) {
@@ -157,6 +169,12 @@ function Page_Generic() {
         socket.on(_e.broadcast.status_update, function (package_status) {
             debug_socket('received', _e.broadcast.status_update, package_status);
             status.update(package_status);
+        });
+
+        socket.on(_e.broadcast.status_debomatic, function (socket_status_debomatic) {
+            debug_socket('received', _e.broadcast.status_debomatic, socket_status_debomatic);
+            status_debomatic = socket_status_debomatic;
+            status.set();
         });
 
         socket.on(_e.error, function (error) {

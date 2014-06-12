@@ -67,7 +67,7 @@ config.web.preferences.debug = 0; // debug level - 0 means disabled
 
 // DO NOT TOUCH these ones
 
-config.version = '0.3.1';
+config.version = '0.4.0';
 
 // A simple function to quickly have
 // get and set strings for client events
@@ -78,11 +78,18 @@ function _event_get_set(event_name) {
     };
 }
 
+config.debomatic.pidfile = "/var/run/debomatic-" +
+    require('crypto')
+    .createHash('sha256')
+    .update(config.debomatic.path)
+    .digest('hex');
+
 config.events = {};
 config.events.error = 'error';
 config.events.broadcast = {};
 config.events.broadcast.distributions = 'distributions';
 config.events.broadcast.status_update = 'status_update';
+config.events.broadcast.status_debomatic = 'status_debomatic';
 
 config.events.client = {};
 config.events.client.distribution_packages = _event_get_set('distribution_packages');

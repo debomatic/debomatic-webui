@@ -116,6 +116,10 @@ footer {
   margin-right: 10px;
 }
 
+#status .debomatic {
+  display: none;
+}
+
 #status .packages {
   display: inline;
 }

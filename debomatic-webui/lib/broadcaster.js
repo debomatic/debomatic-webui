@@ -63,11 +63,28 @@ function __watch_distributions(socket) {
     });
 }
 
+function __watch_pidfile(socket) {
+    fs.watchFile(config.debomatic.pidfile, {
+            persistent: false,
+            interval: 1007
+        },
+        function (curr, prev) {
+            var status_debomatic = {
+                "running": curr.ino !== 0 // if === 0 means pidfile does not exists
+            };
+            try {
+                socket.emit(socket.emit(config.events.broadcast.status_debomatic, status_debomatic));
+            } catch (err) {}
+        });
+}
+
 function Broadcaster(sockets, status) {
 
     __watch_status(sockets, status);
 
     __watch_distributions(sockets);
+
+    __watch_pidfile(sockets);
 
     return {
 

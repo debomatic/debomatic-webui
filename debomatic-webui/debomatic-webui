@@ -72,6 +72,7 @@ server.listen(config.port, config.host, null, function (err) {
         client.start();
         if (status.length > 0)
             client.send_status(status);
+        client.send_status_debomatic();
     });
 
     console.log('Debomatic-webui listening on %s:%d in %s mode', server.address().address, server.address().port, app.settings.env);
