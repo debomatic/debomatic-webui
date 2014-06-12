@@ -115,7 +115,7 @@ function __send_file(event_name, socket, data, last_lines) {
         }
         data.file.orig_name = file_path.split('/').pop();
         if (last_lines > 0)
-            data.file.content = content.split('\n').slice(-25).join('\n');
+            data.file.content = content.split('\n').slice(-last_lines).join('\n');
         else
             data.file.content = content;
         data.file.path = file_path.replace(config.debomatic.path, config.routes.debomatic);
