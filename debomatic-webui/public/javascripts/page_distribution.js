@@ -121,6 +121,7 @@ function Page_Distrubion(socket) {
             // set onclick get-whole-file
             $("#get-whole-file").on('click', function () {
                 file.get(true);
+                current_file_in_preview = false;
             });
         },
         clean: function () {
