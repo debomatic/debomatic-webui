@@ -14,7 +14,7 @@ function Page_Generic() {
     function __get_status_html_href(status_data) {
         var result = config.paths.distribution + '#' + status_data.distribution;
         if (status_data.hasOwnProperty('package'))
-            result += '/' + status_data.package.replace('_', '/') + '/datestamp';
+            result += '/' + status_data.package.replace('_', '/') + '/buildlog';
         return result;
     }
 
