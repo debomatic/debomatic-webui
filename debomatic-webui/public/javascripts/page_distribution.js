@@ -448,7 +448,7 @@ function Page_Distrubion(socket) {
             } else {
                 distributions.forEach(function (name) {
                     $('#welcome').append('<a class="btn btn-lg btn-primary" href="' + config.paths.distribution +
-                        '# ' + name + '">' + name + '</a>');
+                        '#' + name + '">' + name + '</a>');
                 });
             }
         },
