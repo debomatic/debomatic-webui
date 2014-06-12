@@ -1,0 +1,37 @@
+# 0.4.0 (2014-06-12)
+ * [new] always show only max_lines in preview, also when new_content is recevied
+ * [new] get debomatic real status by reading pidfile in /var/run directory
+ * [new] add History file
+
+# 0.3.0 (2014-06-09)
+ * [new] files can have a preview
+
+# 0.2.4 (2014-06-09)
+ * [fix] bugs relative to jshint validation
+
+# 0.2.3 (2014-06-06)
+ * [new] get all sources in one click
+ * [fix] code valdiatation via jshint
+
+# 0.2.2 (2014-06-04)
+ * [fix] upgrade to express 4.x
+
+# 0.2.1 (2014-04-13)
+ * [fix] some style bugs
+
+# 0.2.0 (2014-04-08)
+ * [new] get all debs in one click
+ * [new] enaled glossy theme by default
+ * [new] window with has a rationale title
+ * [new] improved welcome messages
+ * [new] upgrade to express 3.x
+ * [new] handle with debomatic pre_chroot and post_chroot hooks
+ * [new] add options -c and -h to cli script
+ * [fix] back on tail module instead of tailfd
+ * [fix] sticky bar
+ * [fix] serve js and css with a version number
+ * [fix] add new content to file using append() - reduce cpu usage
+ * [fix] many other bugs fix
+
+# 0.1.0 (2014-04-07)
+ * Initial release
