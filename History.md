@@ -1,6 +1,7 @@
 # 0.4.0 (2014-06-12)
  * [new] always show only max_lines in preview, also when new_content is recevied
  * [new] get debomatic real status by reading pidfile in /var/run directory
+ * [new] by default package in status bar links to buildlog file instead of datestamp
  * [new] add History file
 
 # 0.3.0 (2014-06-09)
