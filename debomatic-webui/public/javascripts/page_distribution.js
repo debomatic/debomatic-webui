@@ -159,8 +159,8 @@ function Page_Distrubion(socket) {
             if (Utils.check_view_distribution(view)) {
                 var query_data = {};
                 query_data.distribution = view.distribution;
-                debug_socket('emit', _e.distribution_packages.get, query_data);
-                socket.emit(_e.distribution_packages.get, query_data);
+                debug_socket('emit', _e.distribution_packages, query_data);
+                socket.emit(_e.distribution_packages, query_data);
             }
         },
         select: function () {
@@ -256,8 +256,8 @@ function Page_Distrubion(socket) {
                 var query_data = {};
                 query_data.distribution = view.distribution;
                 query_data.package = view.package;
-                debug_socket('emit', _e.package_files_list.get, query_data);
-                socket.emit(_e.package_files_list.get, query_data);
+                debug_socket('emit', _e.package_files_list, query_data);
+                socket.emit(_e.package_files_list, query_data);
             }
         },
         select: function () {
@@ -331,8 +331,8 @@ function Page_Distrubion(socket) {
                 // get a feedback to user while downloading file
                 $('#file pre').html('Downloading file, please wait a while ...');
                 $('#file').show();
-                debug_socket('emit', _e.file.get, query_data);
-                socket.emit(_e.file.get, query_data);
+                debug_socket('emit', _e.file, query_data);
+                socket.emit(_e.file, query_data);
             }
         },
         set_preview: function (preview) {
@@ -584,13 +584,13 @@ function Page_Distrubion(socket) {
             welcome.set(socket_data);
         });
 
-        socket.on(_e.distribution_packages.set, function (socket_data) {
-            debug_socket('received', _e.distribution_packages.set, socket_data);
+        socket.on(_e.distribution_packages, function (socket_data) {
+            debug_socket('received', _e.distribution_packages, socket_data);
             packages.set(socket_data);
         });
 
         socket.on(_e.distribution_packages.status, function (socket_data) {
-            debug_socket('received', _e.distribution_packages.set, socket_data);
+            debug_socket('received', _e.distribution_packages, socket_data);
             packages.set_status(socket_data);
             sticky.set_status(socket_data);
         });
@@ -600,13 +600,13 @@ function Page_Distrubion(socket) {
             sticky.set_status(socket_data);
         });
 
-        socket.on(_e.package_files_list.set, function (socket_data) {
-            debug_socket('received', _e.package_files_list.set, socket_data);
+        socket.on(_e.package_files_list, function (socket_data) {
+            debug_socket('received', _e.package_files_list, socket_data);
             files.set(socket_data);
         });
 
-        socket.on(_e.file.set, function (socket_data) {
-            debug_socket('received', _e.file.set, socket_data);
+        socket.on(_e.file, function (socket_data) {
+            debug_socket('received', _e.file, socket_data);
             file.set(socket_data);
         });
 
@@ -648,7 +648,7 @@ function Page_Distrubion(socket) {
         // when page is loaded sidebar has offset().top
         // equals 0. This is because html is loaded on socket
         // events. Sleep a while and call stiky.reset()
-        setTimeout(sticky.reset, 500);
+        setTimeout(sticky.r, 500);
 
         // WORKAROUND:
         // On incoming hundred of lines browser goes crazy.

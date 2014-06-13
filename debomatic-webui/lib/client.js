@@ -130,9 +130,9 @@ function __handler_get_file(socket, data) {
         socket.emit(event_name, data);
     });
     if (config.web.file.preview.indexOf(data.file.name) >= 0 && !data.file.force)
-        __send_file(_e.file.set, socket, data, config.web.file.num_lines);
+        __send_file(_e.file, socket, data, config.web.file.num_lines);
     else
-        __send_file(_e.file.set, socket, data);
+        __send_file(_e.file, socket, data);
 }
 
 function Client(socket) {
@@ -142,21 +142,21 @@ function Client(socket) {
         utils.send_distributions(socket);
 
         // init events
-        socket.on(_e.distribution_packages.get, function (data) {
+        socket.on(_e.distribution_packages, function (data) {
             if (!utils.check_data_distribution(data))
                 return;
             var distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool');
-            utils.generic_handler_watcher(_e.distribution_packages.set, socket, data, distribution_path, __send_distribution_packages);
+            utils.generic_handler_watcher(_e.distribution_packages, socket, data, distribution_path, __send_distribution_packages);
         });
 
-        socket.on(_e.package_files_list.get, function (data) {
+        socket.on(_e.package_files_list, function (data) {
             if (!utils.check_data_package(data))
                 return;
             var package_path = utils.get_package_path(data);
-            utils.generic_handler_watcher(_e.package_files_list.set, socket, data, package_path, __send_package_files_list);
+            utils.generic_handler_watcher(_e.package_files_list, socket, data, package_path, __send_package_files_list);
         });
 
-        socket.on(_e.file.get, function (data) {
+        socket.on(_e.file, function (data) {
             if (!utils.check_data_file(data))
                 return;
             __handler_get_file(socket, data);
