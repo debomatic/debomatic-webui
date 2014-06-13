@@ -156,6 +156,10 @@ footer {
   color: #101010;
 }
 
+#file pre.preview {
+  overflow:hidden;
+}
+
 #title a.btn {
   padding-right: 0;
   float: right;
