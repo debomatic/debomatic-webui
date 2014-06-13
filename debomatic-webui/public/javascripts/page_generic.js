@@ -75,12 +75,14 @@ function Page_Generic() {
     var status = {
         set: function (data_status) {
             if (!data_status) {
-                if (status_debomatic.running) {
-                    $('#status .idle').show();
-                    $('#status .norunning').hide();
-                } else {
-                    $('#status .idle').hide();
-                    $('#status .norunning').show();
+                if ($('#status li').length === 0) {
+                    if (status_debomatic.running) {
+                        $('#status .idle').show();
+                        $('#status .norunning').hide();
+                    } else {
+                        $('#status .idle').hide();
+                        $('#status .norunning').show();
+                    }
                 }
             } else {
                 $('#status ul').html('');
@@ -92,7 +94,7 @@ function Page_Generic() {
             }
         },
         append: function (status_data) {
-            $('#status .idle').hide();
+            $('#status .debomatic').hide();
             $('#status ul').append(__get_status_html(status_data));
         },
         update: function (status_data) {
