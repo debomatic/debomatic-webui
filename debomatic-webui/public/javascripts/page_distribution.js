@@ -658,7 +658,7 @@ function Page_Distrubion(socket) {
                 file.append(new_lines.join(''));
                 new_lines = [];
             }
-            setTimeout(watch_for_new_lines, 200);
+            setTimeout(watch_for_new_lines, 150);
         }
         watch_for_new_lines();
 
