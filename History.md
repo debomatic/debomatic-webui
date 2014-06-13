@@ -1,3 +1,8 @@
+# 0.4.1 (2014-06-13)
+ * [fix] preview file using a fixed max-height on new content
+ * [fix] show and hide correctly debomatic status when build packages
+ * [fix] reduce update delay when get new content (now 150 ms)
+
 # 0.4.0 (2014-06-12)
  * [new] always show only max_lines in preview, also when new_content is recevied
  * [new] get debomatic real status by reading pidfile in /var/run directory
