@@ -281,6 +281,26 @@ function Page_Distrubion(socket) {
                 query_data.package = view.package;
                 debug_socket('emit', _e.package_files_list, query_data);
                 socket.emit(_e.package_files_list, query_data);
+                files.get_datestamp();
+            }
+        },
+        get_datestamp: function (socket_data) {
+            if (Utils.check_view_package(view)) {
+                if (socket_data && socket_data.package != view.package.orig_name)
+                    return;
+                var url = config.paths.debomatic + '/' +
+                    view.distribution.name + '/pool/' +
+                    view.package.orig_name + '/' +
+                    view.package.orig_name + '.datestamp';
+                debug(2, 'getting datestamp');
+                $.get(url, function (data) {
+                    data = data.replace('Build finished', 'finished');
+                    data = data.replace('Elapsed', 'elapsed');
+                    data = data.replace(/\n$/g, '');
+                    data = data.replace(/\n/g, ' - ');
+                    data = data.replace(/at /g, '');
+                    $("#file .datestamp").html(data);
+                });
             }
         },
         select: function () {
@@ -621,6 +641,7 @@ function Page_Distrubion(socket) {
         socket.on(config.events.broadcast.status_update, function (socket_data) {
             packages.set_status(socket_data);
             sticky.set_status(socket_data);
+            files.get_datestamp(socket_data);
         });
 
         socket.on(_e.package_files_list, function (socket_data) {
