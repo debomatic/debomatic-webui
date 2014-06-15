@@ -102,6 +102,10 @@ footer {
   border-top: 1px solid #f0f0f0;
 }
 
+#packages .search {
+  margin-bottom: 5px;
+}
+
 #packages li .icon {
   float: right;
   margin-top: -3px;

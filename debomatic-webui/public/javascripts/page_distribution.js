@@ -142,7 +142,8 @@ function Page_Distrubion(socket) {
                     tmp.package = p;
                     // get datestamp if package is clicked
                     $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' +
-                        Utils.from_view_to_hash(tmp) + '/datestamp">' + p.name + ' <span>' + p.version + '</span></a></li>');
+                        Utils.from_view_to_hash(tmp) + '/datestamp"><span class="name">' + p.name + '</span> ' +
+                        '<span class="version">' + p.version + '</span></a></li>');
                     view.packages[p.orig_name] = Utils.clone(p);
                 });
                 packages.select();
@@ -154,6 +155,7 @@ function Page_Distrubion(socket) {
         },
         clean: function () {
             $('#packages ul').html('');
+            $('#packages .search').val('');
         },
         get: function () {
             if (Utils.check_view_distribution(view)) {
@@ -168,6 +170,7 @@ function Page_Distrubion(socket) {
             if (Utils.check_view_package(view)) {
                 $('#packages li[id="package-' + view.package.orig_name + '"]').addClass('active');
             }
+            packages.search();
         },
         unselect: function () {
             $('#packages li').removeClass('active');
@@ -195,6 +198,26 @@ function Page_Distrubion(socket) {
         },
         hide: function () {
             $('#packages').hide();
+        },
+        search: function (token) {
+            if (!token)
+                token = $("#packages .search").val();
+            if (!token) {
+                debug(2, "packages search token empty - showing all");
+                $("#packages li").show();
+            } else {
+                $("#packages li").not('.active').each(function (index) {
+                    var p_name = $(this).find('a span.name').text();
+                    if (p_name.indexOf(token) < 0) {
+                        debug(2, "packages search token:", token, "hiding:", this);
+                        $(this).hide();
+                    } else {
+                        debug(2, "packages search token:", token, "showing:", this);
+                        $(this).show();
+                    }
+                });
+            }
+            sticky.updateOffset();
         }
     };
 
@@ -661,6 +684,11 @@ function Page_Distrubion(socket) {
             setTimeout(watch_for_new_lines, 150);
         }
         watch_for_new_lines();
+
+        // Handle search packages
+        $('#packages .search').on('keyup', function (event) {
+            packages.search($(event.target).val());
+        });
 
         // Update html according with preferences
         preferences();
