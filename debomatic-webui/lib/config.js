@@ -68,13 +68,7 @@ config.web.preferences.debug = 0; // debug level - 0 means disabled
 
 // DO NOT TOUCH these ones
 
-config.version = '0.4.1';
-
-config.debomatic.pidfile = "/var/run/debomatic-" +
-    require('crypto')
-    .createHash('sha256')
-    .update(config.debomatic.path)
-    .digest('hex');
+config.version = '0.4.2';
 
 config.events = {};
 config.events.error = 'error';
@@ -143,5 +137,13 @@ try {
     config.web.events = config.events;
     config.web.status = config.status;
     config.web.host = config.host;
+
+    // calculate pidfile
+    config.debomatic.pidfile = "/var/run/debomatic-" +
+        require('crypto')
+        .createHash('sha256')
+        .update(config.debomatic.path)
+        .digest('hex');
+
     module.exports = config;
 }

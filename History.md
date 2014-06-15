@@ -1,3 +1,6 @@
+# 0.4.2 (2014-06-15)
+ * [fix] calculate pidfile for debomatic status check after merging configurations
+
 # 0.4.1 (2014-06-13)
  * [fix] preview file using a fixed max-height on new content
  * [fix] show and hide correctly debomatic status when build packages
