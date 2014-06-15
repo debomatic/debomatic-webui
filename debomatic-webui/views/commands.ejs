@@ -1,0 +1,100 @@
+<% include header.ejs %>
+
+<article class="page">
+    <!-- <header><h2>Commands</h2></header>
+    <p class="lead text-muted">
+        Simple maker for .commands file
+    </p> -->
+    <section>
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#introduction" data-toggle="tab">Introduction</a></li>
+  <li><a href="#remove-packages" data-toggle="tab">Remove</a></li>
+  <li><a href="#rebuild-packages" data-toggle="tab">Rebuild</a></li>
+  <li><a href="#porter-uploads" data-toggle="tab">Porter</a></li>
+  <li><a href="#rebuild-packages-with-extra-build-dependencies" data-toggle="tab">Rebuild with extra</a></li>
+</ul>
+
+
+<!-- Tab panes -->
+<div class="tab-content">
+<div class="tab-pane active" id="introduction">
+<h3>Commands</h3>
+<p><b>Deb-o-Matic</b> provides an interface to perform specific tasks into the
+Deb-o-Matic <code>packagedir</code> directory such as removing uploaded files or
+rebuilding packages. These operations are handled by commands stored in
+<code>.commands</code> files, and uploaded into Deb-o-Matic <code>packagedir</code> by using
+<code>dcut</code> utility, or by hand.</p>
+<p>Using dcut is usually simpler, just launch the following command:</p>
+<pre>dcut -U mydebomatic commandfile.commands</pre>
+<p>where <code>mydebomatic</code> is a dput host as described in dput.cf (5) man page, and
+<code>commandfile.commands</code> is the file containing the commands to be executed by
+Deb-o-Matic.</p>
+<p>Multiple commands can be stored in a single <code>.commands</code> file, but it is
+usually safer to issue a single command per file.</p>
+<div class="alert alert-warning">
+<b>Caution:</b> If signature checking support is enabled, .commands files must be signed otherwise they will be deleted and no action will be taken.
+</div>
+</div>
+<div class="tab-pane" id="remove-packages">
+<h3>Remove packages</h3>
+<p>It could happen some files are kept into Deb-o-Matic <code>packagedir</code> and you
+need to remove them. In order to do so, you must use the <code>rm</code> command:</p>
+<pre>echo "rm foo*" &gt; foo.commands</pre>
+<p>where <code>foo*</code> is a regular expression matching the files you want to remove.</p>
+</div>
+<div class="tab-pane" id="rebuild-packages">
+<h3>Rebuild packages</h3>
+<p>You could want to rebuild a package already in the mirrors to see whether it
+compiles with newer packages, to analyze its content, and so on. In order to do
+so, you must use the <code>rebuild</code> command:</p>
+<pre>echo "rebuild foo_version dist" &gt; foo.commands</pre>
+<p>where <code>foo</code> is the name of the source package you want to rebuild,
+<code>version</code> is the version of the package you want to rebuild, and <code>dist</code> is
+the distribution which rebuild the package for.</p>
+<p>Deb-o-Matic can also rebuild packages available in other distributions. The
+syntax is similar, you just have to indicate which distribution to pick
+packages from:</p>
+<pre>echo "rebuild foo_version dist origin" &gt; foo.commands</pre>
+<p>where <code>origin</code> is the distribution to pick packages from.</p>
+<div class="alert alert-warning">
+<b>Caution:</b> Make sure packages are available in the distribution mirrors, otherwise they
+cannot be downloaded and processed by Deb-o-Matic.
+</div>
+</div>
+<div class="tab-pane" id="porter-uploads">
+<h3>Porter uploads</h3>
+<p>You could want to prepare a porter upload, a binary-only upload which generates
+architecture dependent binaries only. Additional information can be found in
+<a class="reference external" href="http://www.debian.org/doc/manuals/developers-reference/pkgs.html#porter-guidelines">Debian Developer’s Reference</a>.</p>
+<p>In order to do so, you must use the <code>rebuild</code> command:</p>
+<pre>echo "porter foo_version dist Joe Doe &lt;j.doe@acme.com&gt;" &gt; foo.commands</pre>
+<p>where foo is the name of the source package you want to rebuild, version is
+the version of the package you want to rebuild, dist is the distribution which
+rebuild package for, and the element between quotes is the address to be used
+as maintainer field, which is usually the developer who is preparing the
+upload.</p>
+<div class="alert alert-warning">
+<b>Caution:</b> Make sure packages are available in the distribution mirrors, otherwise they
+cannot be downloaded and processed by Deb-o-Matic.
+</div>
+</div>
+<div class="tab-pane" id="rebuild-packages-with-extra-build-dependencies">
+<h3>Rebuild packages with extra build-dependencies</h3>
+<p>You could want to rebuild a package already in the mirrors also adding a
+specific build-dependency to see whether it compiles with a newer library
+version. In order to do so, you must use the <code>builddep</code> command:</p>
+<pre>echo "builddep foo_version dist extrapackage=packageversion" &gt; foo.commands</pre>
+<p>where <code>extrapackage</code> is the name of the package you want to install before
+the compilation takes place, and <code>packageversion</code> is the optional version of
+the package you want to install.</p>
+<div class="alert alert-warning">
+<b>Caution:</b> Make sure packages are available in the distribution mirrors, otherwise they
+cannot be downloaded and processed by Deb-o-Matic.
+</div>
+</div>
+</div>
+    </section>
+</article>
+
+<% include footer.ejs %>

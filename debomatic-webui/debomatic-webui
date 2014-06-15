@@ -45,6 +45,8 @@ app.get('/', routes.index);
 app.get(config.routes.distribution, routes.distribution);
 if (config.routes.preferences)
     app.get(config.routes.preferences, routes.preferences);
+if (config.routes.commands)
+    app.get(config.routes.commands, routes.commands);
 
 var server = http.createServer(app),
     io = require('socket.io').listen(server, config.socket);

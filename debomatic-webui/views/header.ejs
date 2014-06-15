@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/external_libs/bootstrap-3.1.1-dist/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/stylesheets/style.css?<%= version %>">
   </head>
-  
+
   <body>
     <div id="wrapper" class="container-fluid">
 
@@ -27,6 +27,9 @@
           </div>
           <div id="pages">
             <ul class="nav navbar-nav pull-right">
+              <% if (web.paths.commands) { %>
+              <li><a href="<%= web.paths.commands %>">Commands</a></li>
+              <% } %>
               <% if (web.paths.preferences) { %>
               <li><a href="<%= web.paths.preferences %>">Preferences</a></li>
               <% } %>

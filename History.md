@@ -1,5 +1,6 @@
 # 0.5.0
- * [new] packages search bar
+ * [new] add packages search bar
+ * [new] add page commands
 
 # 0.4.2 (2014-06-15)
  * [fix] calculate pidfile for debomatic status check after merging configurations
