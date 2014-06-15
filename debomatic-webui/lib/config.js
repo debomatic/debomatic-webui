@@ -72,17 +72,17 @@ config.version = '0.4.2';
 config.events = {};
 config.events.error = 'error';
 config.events.broadcast = {};
-config.events.broadcast.distributions = 'distributions';
-config.events.broadcast.status_update = 'status_update';
-config.events.broadcast.status_debomatic = 'status_debomatic';
+config.events.broadcast.distributions = 'b.distributions';
+config.events.broadcast.status_update = 'b.status_update';
+config.events.broadcast.status_debomatic = 'b.status_debomatic';
 
 config.events.client = {};
-config.events.client.distribution_packages = 'distribution_packages';
-config.events.client.distribution_packages.status = 'package_status';
-config.events.client.package_files_list = 'package_files_list';
-config.events.client.file = 'file';
-config.events.client.file_newcontent = 'file_newcontent';
-config.events.client.status = 'status';
+config.events.client.distribution_packages = 'c.distribution_packages';
+config.events.client.distribution_packages_status = 'c.distribution_packages_status';
+config.events.client.package_files_list = 'c.package_files_list';
+config.events.client.file = 'c.file';
+config.events.client.file_newcontent = 'c.file_newcontent';
+config.events.client.status = 'c.status';
 
 // debomatic status according with JSONLogger.py module
 config.status = {};

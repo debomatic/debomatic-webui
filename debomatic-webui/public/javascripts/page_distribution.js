@@ -589,8 +589,8 @@ function Page_Distrubion(socket) {
             packages.set(socket_data);
         });
 
-        socket.on(_e.distribution_packages.status, function (socket_data) {
-            debug_socket('received', _e.distribution_packages, socket_data);
+        socket.on(_e.distribution_packages_status, function (socket_data) {
+            debug_socket('received', _e.distribution_packages_status, socket_data);
             packages.set_status(socket_data);
             sticky.set_status(socket_data);
         });

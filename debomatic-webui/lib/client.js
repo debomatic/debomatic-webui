@@ -44,7 +44,7 @@ function __send_package_files_list(event_name, socket, data) {
 
 function __send_package_status(socket, data, package_data) {
 
-    var event_name = config.events.client.distribution_packages.status;
+    var event_name = config.events.client.distribution_packages_status;
 
     var new_data = {};
     new_data.distribution = data.distribution;
