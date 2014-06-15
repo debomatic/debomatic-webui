@@ -18,7 +18,7 @@ function __get_files_list_from_package(data, callback) {
             file.orig_name = f;
             file.name = f.split('_')[0];
             file.extension = f.split('.').pop();
-            if (file.extension == 'deb' || file.extension == 'ddeb') {
+            if (file.extension == 'deb' || file.extension == 'ddeb' || file.extension == 'udeb') {
                 data.package.debs.push(file);
             } else if (f.indexOf('.tar') >= 0 || file.extension == 'changes' || file.extension == 'dsc') {
                 file.name = f.replace(data.package.name + '_' + data.package.version + '.', '');
