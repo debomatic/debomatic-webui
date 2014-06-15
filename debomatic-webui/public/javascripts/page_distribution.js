@@ -648,7 +648,7 @@ function Page_Distrubion(socket) {
         // when page is loaded sidebar has offset().top
         // equals 0. This is because html is loaded on socket
         // events. Sleep a while and call stiky.reset()
-        setTimeout(sticky.r, 500);
+        setTimeout(sticky.reset, 500);
 
         // WORKAROUND:
         // On incoming hundred of lines browser goes crazy.
