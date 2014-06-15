@@ -5,6 +5,13 @@ debomatic-webui
 This interface is built up on [node](http://nodejs.org/) platform and uses intensely [socket.io](http://socket.io/) and [jquery](http://jquery.com/) technologies.
 Whenever you want to leave a suggestion or file a bug report, please open a [new issue](https://github.com/LeoIannacone/debomatic-webui/issues).
 
+Some **debomatic-webui** instances are already running over:
+ * http://debomatic-amd64.debian.net
+ * http://debomatic-i386.debian.net
+ * http://debomatic-armel.debian.net
+ * http://debomatic-armhf.debian.net
+ * http://debomatic-powerpc.debian.net
+
 ## Requirements
 
 You need **JSONLogger** debomatic module (provided along with this interface) to get installed in debomatic.
