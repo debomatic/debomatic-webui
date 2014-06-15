@@ -28,6 +28,7 @@ config.routes = {};
 config.routes.debomatic = '/debomatic';
 config.routes.distribution = '/distribution';
 config.routes.preferences = '/preferences';
+config.routes.commands = '/commands';
 
 config.web = {};
 config.web.title = 'Deb-o-Matic web.ui';

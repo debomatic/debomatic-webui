@@ -13,3 +13,7 @@ exports.distribution = function (req, res) {
 exports.preferences = function (req, res) {
     res.render('preferences', config);
 };
+
+exports.commands = function (req, res) {
+    res.render('commands', config);
+};
