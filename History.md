@@ -1,6 +1,8 @@
 # 0.5.0
  * [new] add packages search bar
- * [new] add page commands
+ * [new] get buildlog preview by default instead of datestamp
+ * [new] always show datestamp information below the file title
+ * [new] add page commands which documents the tasks interface of Deb-o-Matic
 
 # 0.4.2 (2014-06-15)
  * [fix] calculate pidfile for debomatic status check after merging configurations
