@@ -140,9 +140,9 @@ function Page_Distrubion(socket) {
             if (socket_data.distribution.packages && socket_data.distribution.packages.length > 0) {
                 socket_data.distribution.packages.forEach(function (p) {
                     tmp.package = p;
-                    // get datestamp if package is clicked
+                    // get buildlog if package is clicked
                     $('#packages ul').append('<li id="package-' + p.orig_name + '"><a href="' +
-                        Utils.from_view_to_hash(tmp) + '/datestamp"><span class="name">' + p.name + '</span> ' +
+                        Utils.from_view_to_hash(tmp) + '/buildlog"><span class="name">' + p.name + '</span> ' +
                         '<span class="version">' + p.version + '</span></a></li>');
                     view.packages[p.orig_name] = Utils.clone(p);
                 });
