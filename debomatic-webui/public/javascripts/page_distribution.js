@@ -340,7 +340,7 @@ function Page_Distrubion(socket) {
                 file.append(new_content);
             } else {
                 // always show only config.file.num_lines lines in preview
-                var content = content.html().replace(/\n$/, '').split('\n');
+                var content = file_content.html().replace(/\n$/, '').split('\n');
                 content = content.concat(new_content.replace(/\n$/, '').split('\n'));
                 content = content.slice(-config.file.num_lines).join('\n');
                 file_content.html(content);
