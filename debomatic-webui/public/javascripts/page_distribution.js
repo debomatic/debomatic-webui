@@ -324,7 +324,7 @@ function Page_Distrubion(socket) {
     var file = {
         set: function (socket_data) {
             view.file = Utils.clone(socket_data.file);
-            $('#file pre').html(socket_data.file.content);
+            $('#file pre').text(socket_data.file.content);
             $('#file').show();
             if (current_file_in_preview)
                 $('#file pre').scrollTop($('#file pre')[0].scrollHeight);
