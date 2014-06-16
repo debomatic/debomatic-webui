@@ -1,11 +1,11 @@
 # 0.5.0
  * [new] add packages search bar
- * [new] get buildlog preview by default instead of datestamp
- * [new] always show datestamp information below the file title
- * [new] add page commands which documents the tasks interface of Deb-o-Matic
- * [new] better tooltip on action buttons (such as Download, View al file, Get all)
- * [new] focus debomatic architecture in header description
- * [new] if header is hidden show architecture and version in footer
+ * [new] get buildlog preview by default instead of datestamp when click on a package
+ * [new] always show datestamp information below the title
+ * [new] add page Commands which documents out the tasks interface of Deb-o-Matic
+ * [new] better tooltip over the action buttons (such as Download, View al file, Get all)
+ * [new] show the debomatic architecture in the header description
+ * [new] show architecture and version in footer if header is hidden in preferences
 
 # 0.4.2 (2014-06-15)
  * [fix] calculate pidfile for debomatic status check after merging configurations
@@ -29,7 +29,7 @@
 
 # 0.2.3 (2014-06-06)
  * [new] get all sources in one click
- * [fix] code valdiatation via jshint
+ * [fix] code validatation via jshint
 
 # 0.2.2 (2014-06-04)
  * [fix] upgrade to express 4.x
