@@ -4,6 +4,7 @@
  * [new] always show datestamp information below the file title
  * [new] add page commands which documents the tasks interface of Deb-o-Matic
  * [new] better tooltip on action buttons (such as Download, View al file, Get all)
+ * [new] focus debomatic architecture in header description
 
 # 0.4.2 (2014-06-15)
  * [fix] calculate pidfile for debomatic status check after merging configurations
