@@ -323,19 +323,19 @@ function Page_Distrubion(socket) {
 
     var file = {
         set: function (socket_data) {
-            var file = $('#file pre');
+            var file_content = $('#file pre');
             view.file = Utils.clone(socket_data.file);
-            file.text(socket_data.file.content);
-            file.show();
+            file_content.text(socket_data.file.content);
+            file_content.show();
             if (current_file_in_preview)
-                file.scrollTop(file[0].scrollHeight);
+                file_content.scrollTop(file_content[0].scrollHeight);
         },
         clean: function () {
             $('#file pre').html('');
             $('#file').hide();
         },
         append: function (new_content) {
-            var file = $('#file pre');
+            var file_content = $('#file pre');
             if (!current_file_in_preview) {
                 file.append(new_content);
             } else {
@@ -343,8 +343,8 @@ function Page_Distrubion(socket) {
                 var content = content.html().replace(/\n$/, '').split('\n');
                 content = content.concat(new_content.replace(/\n$/, '').split('\n'));
                 content = content.slice(-config.file.num_lines).join('\n');
-                file.html(content);
-                file.scrollTop(file[0].scrollHeight);
+                file_content.html(content);
+                file_content.scrollTop(file_content[0].scrollHeight);
             }
 
             if (config.preferences.autoscroll) {
