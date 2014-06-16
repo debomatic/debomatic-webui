@@ -166,9 +166,11 @@ footer .info {
 
 #file .datestamp {
   display: inline-block;
-  margin-top: -3px;
-  margin-bottom: 0px;
-  color: inherit;
+  background: #f4f4f4;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  font-size: 75%;
 }
 
 #file pre.preview {
