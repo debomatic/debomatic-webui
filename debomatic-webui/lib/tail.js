@@ -10,6 +10,7 @@ Tail.prototype.watchEvent = function (e) {
         return fs.stat(this.filename, function (err, stats) {
             if (err) {
                 _this.emit('error', err);
+                return;
             }
             if (stats.size < _this.pos) {
                 _this.pos = stats.size;
