@@ -323,27 +323,28 @@ function Page_Distrubion(socket) {
 
     var file = {
         set: function (socket_data) {
+            var file = $('#file pre');
             view.file = Utils.clone(socket_data.file);
-            $('#file pre').text(socket_data.file.content);
-            $('#file').show();
+            file.text(socket_data.file.content);
+            file.show();
             if (current_file_in_preview)
-                $('#file pre').scrollTop($('#file pre')[0].scrollHeight);
+                file.scrollTop(file[0].scrollHeight);
         },
         clean: function () {
             $('#file pre').html('');
             $('#file').hide();
         },
         append: function (new_content) {
-            var content = $('#file pre');
+            var file = $('#file pre');
             if (!current_file_in_preview) {
-                content.append(new_content);
+                file.append(new_content);
             } else {
                 // always show only config.file.num_lines lines in preview
-                content = content.html().replace(/\n$/, '').split('\n');
+                var content = content.html().replace(/\n$/, '').split('\n');
                 content = content.concat(new_content.replace(/\n$/, '').split('\n'));
                 content = content.slice(-config.file.num_lines).join('\n');
-                $('#file pre').html(content);
-                $('#file pre').scrollTop($('#file pre')[0].scrollHeight);
+                file.html(content);
+                file.scrollTop(file[0].scrollHeight);
             }
 
             if (config.preferences.autoscroll) {
@@ -384,16 +385,17 @@ function Page_Distrubion(socket) {
             }
             debug(2, "file set preview", preview);
             current_file_in_preview = preview;
+            var file = $('#file pre');
             if (preview) {
                 $('#file pre').addClass('preview');
                 var height = (config.file.num_lines) *
-                    parseInt($('#file pre').css('line-height').replace(/[^-\d\.]/g, '')) +
-                    parseInt($('#file pre').css('padding-top').replace(/[^-\d\.]/g, '')) +
-                    parseInt($('#file pre').css('padding-bottom').replace(/[^-\d\.]/g, ''));
-                $('#file pre').css('max-height', height);
+                    parseInt(file.css('line-height').replace(/[^-\d\.]/g, '')) +
+                    parseInt(file.css('padding-top').replace(/[^-\d\.]/g, '')) +
+                    parseInt(file.css('padding-bottom').replace(/[^-\d\.]/g, ''));
+                file.css('max-height', height);
             } else {
-                $('#file pre').removeClass('preview');
-                $('#file pre').css('max-height', 'auto');
+                file.removeClass('preview');
+                file.css('max-height', 'auto');
             }
         }
 
