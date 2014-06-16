@@ -6,7 +6,8 @@
  * [new] better tooltip over the action buttons (such as Download, View al file, Get all)
  * [new] show the debomatic architecture in the header description
  * [new] show architecture and version in footer if header is hidden in preferences
- * [fix] when watching a file which gets deletion tail lib crashes
+ * [fix] system crashes when watch a file and it gets deletion
+ * [fix] never loses first errors received client side
 
 # 0.4.2 (2014-06-15)
  * [fix] calculate pidfile for debomatic status check after merging configurations
