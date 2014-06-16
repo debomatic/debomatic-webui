@@ -168,6 +168,7 @@ footer .info {
   padding-top: 3px;
   margin-top: 2px;
   display: inline-block;
+  font-weight: normal;
 }
 
 #file pre.preview {

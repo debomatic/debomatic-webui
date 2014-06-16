@@ -294,6 +294,7 @@ function Page_Distrubion(socket) {
                     view.package.orig_name + '.datestamp';
                 debug(2, 'getting datestamp');
                 $.get(url, function (data) {
+                    data = data.replace(/ (\d+:\d+(:\d+)?)$/mg, ' <b>$1</b>');
                     data = data.replace('Build finished', 'finished');
                     data = data.replace('Elapsed', 'elapsed');
                     data = data.replace(/\n$/g, '');
