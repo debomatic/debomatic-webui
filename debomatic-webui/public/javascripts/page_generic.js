@@ -134,9 +134,11 @@ function Page_Generic() {
     this.preferences = function () {
         if (config.preferences.header) {
             $('#pageheader').show();
+            $('footer .info').hide();
             $('.navbar .home-link').hide();
         } else {
             $('#pageheader').hide();
+            $('footer .info').show();
             $('.navbar .home-link').show();
         }
 
