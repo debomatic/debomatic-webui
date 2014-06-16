@@ -101,10 +101,10 @@ function Page_Distrubion(socket) {
                 label = complete_name;
                 if (!view.file.path)
                     view.file.path = config.paths.debomatic + '/' + view.distribution.name + '/pool/' + view.package.orig_name + '/' + complete_name;
-                label += ' <a class="btn btn-link btn-lg" title="Download" href="' + view.file.path + '"> ' +
+                label += ' <a class="btn btn-link btn-lg" data-toggle="tooltip" title="Download" href="' + view.file.path + '"> ' +
                     '<span class="glyphicon glyphicon-download-alt"></span></a>';
                 if (current_file_in_preview) {
-                    var view_all = $('<a id="get-whole-file" class="btn btn-link btn-lg" title="View the whole file"></a>');
+                    var view_all = $('<a id="get-whole-file" data-toggle="tooltip" class="btn btn-link btn-lg" title="View the whole file"></a>');
                     view_all.html('<span class="glyphicon glyphicon-eye-open"></span>');
                     label += view_all.get(0).outerHTML;
                 }
@@ -122,7 +122,7 @@ function Page_Distrubion(socket) {
             $("#get-whole-file").on('click', function () {
                 debug(1, "get the whole file");
                 file.get(true);
-                $(this).remove();
+                $(this).fadeOut('fast');
             });
         },
         clean: function () {
@@ -604,6 +604,8 @@ function Page_Distrubion(socket) {
             breadcrumb.update();
             select();
             sticky.reset();
+            // active tooltip
+            $("[data-toggle='tooltip']").tooltip();
         }
     };
 
