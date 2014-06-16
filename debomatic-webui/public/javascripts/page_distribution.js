@@ -496,6 +496,8 @@ function Page_Distrubion(socket) {
 
     var error = {
         set: function (socket_error) {
+            if ($('#error').is(':visible'))
+                return;
             $('#error span').html(socket_error);
             error.view();
         },
