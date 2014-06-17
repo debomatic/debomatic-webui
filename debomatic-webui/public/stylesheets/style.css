@@ -18,6 +18,10 @@
   margin-left: 10px;
 }
 
+.breadcrumb {
+  margin-bottom:10px;
+}
+
 #error {
   display: none;
 }
