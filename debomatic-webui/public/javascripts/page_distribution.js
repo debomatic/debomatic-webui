@@ -86,6 +86,25 @@ function Page_Distrubion(socket) {
         return true;
     }
 
+    var page = {
+        go: {
+            down: function (height) {
+                if (height === undefined)
+                    height = $('body').offset().top;
+                debug(2, 'scrolling page down - height', height);
+                $('html,body').animate({
+                    scrollTop: height
+                }, 0);
+            },
+            up: function () {
+                debug(2, 'scrolling page up');
+                $('html,body').animate({
+                    scrollTop: 0
+                }, 0);
+            }
+        }
+    };
+
     var title = {
         set: function (label) {
             if (label) {
@@ -339,6 +358,13 @@ function Page_Distrubion(socket) {
             var file_content = $('#file pre');
             if (!current_file_in_preview) {
                 file_content.append(new_content);
+                if (config.preferences.autoscroll) {
+                    // scroll down if file is covering footer
+                    var file_height = $('#fileOffset').offset().top;
+                    var footerOffset = $('footer').offset().top;
+                    if (file_height > footerOffset)
+                        page.go.down(file_height);
+                }
             } else {
                 // always show only config.file.num_lines lines in preview
                 var content = file_content.html().replace(/\n$/, '').split('\n');
@@ -346,18 +372,6 @@ function Page_Distrubion(socket) {
                 content = content.slice(-config.file.num_lines).join('\n');
                 file_content.html(content);
                 file_content.scrollTop(file_content[0].scrollHeight);
-            }
-
-            if (config.preferences.autoscroll) {
-                // scroll down if file is covering footer
-                var file_height = $('#fileOffset').offset().top;
-                var footerOffset = $('footer').offset().top;
-                if (file_height > footerOffset) {
-                    debug(2, 'scoll down on new content');
-                    $('html,body').animate({
-                        scrollTop: file_height
-                    }, 0);
-                }
             }
         },
         get: function (force) {
@@ -678,9 +692,7 @@ function Page_Distrubion(socket) {
                 view.package = Utils.clone(view.packages[new_view.package.orig_name]);
             view.file = Utils.clone(new_view.file);
             update.page(old_view);
-            $('html,body').animate({
-                scrollTop: 0
-            }, 0);
+            page.go.up();
             debug(1, 'changing view', 'old:', old_view, 'new:', view);
         });
 
@@ -689,11 +701,7 @@ function Page_Distrubion(socket) {
         populate();
 
         // Init sticky-package back_on_top on click
-        $('#sticky-package').on('click', function () {
-            $('html,body').animate({
-                scrollTop: 0
-            }, 100);
-        });
+        $('#sticky-package').on('click', page.go.up);
 
         // WORKAROUND:
         // when page is loaded sidebar has offset().top
