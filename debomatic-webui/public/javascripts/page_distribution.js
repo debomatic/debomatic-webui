@@ -338,7 +338,7 @@ function Page_Distrubion(socket) {
         append: function (new_content) {
             var file_content = $('#file pre');
             if (!current_file_in_preview) {
-                file.append(new_content);
+                file_content.append(new_content);
             } else {
                 // always show only config.file.num_lines lines in preview
                 var content = file_content.html().replace(/\n$/, '').split('\n');
