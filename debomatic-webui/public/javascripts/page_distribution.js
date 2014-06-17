@@ -88,19 +88,23 @@ function Page_Distrubion(socket) {
 
     var page = {
         go: {
-            down: function (height) {
+            down: function (height, delay) {
                 if (height === undefined)
                     height = $('body').height();
+                if (delay === undefined)
+                    delay = 0;
                 debug(2, 'scrolling page down - height', height);
                 $('html,body').animate({
                     scrollTop: height
                 }, 0);
             },
-            up: function () {
+            up: function (delay) {
+                if (delay === undefined)
+                    delay = 0;
                 debug(2, 'scrolling page up');
                 $('html,body').animate({
                     scrollTop: 0
-                }, 0);
+                }, delay);
             }
         }
     };
@@ -701,7 +705,9 @@ function Page_Distrubion(socket) {
         populate();
 
         // Init sticky-package back_on_top on click
-        $('#sticky-package').on('click', page.go.up);
+        $('#sticky-package').on('click', function () {
+            page.go.up(100);
+        });
 
         // WORKAROUND:
         // when page is loaded sidebar has offset().top
