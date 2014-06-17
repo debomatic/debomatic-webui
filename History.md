@@ -1,3 +1,8 @@
+# 0.5.1 (2015-06-17)
+ * [fix] recursive call on receive file new_content while view the whole file
+ * [fix] improved style for file view and datestamp
+ * [fix] documentation set porter command instead of rebuild
+
 # 0.5.0 (2014-06-16)
  * [new] add packages search bar
  * [new] get buildlog preview by default instead of datestamp when click on a package
