@@ -90,7 +90,7 @@ function Page_Distrubion(socket) {
         go: {
             down: function (height) {
                 if (height === undefined)
-                    height = $('body').offset().top;
+                    height = $('body').height();
                 debug(2, 'scrolling page down - height', height);
                 $('html,body').animate({
                     scrollTop: height
