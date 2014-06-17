@@ -162,6 +162,11 @@ footer .info {
   line-height: 35px;
 }
 
+#file pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 #file .no-background {
   background: none;
   border: none;
