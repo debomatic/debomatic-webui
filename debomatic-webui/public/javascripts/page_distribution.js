@@ -174,8 +174,8 @@ function Page_Distrubion(socket) {
                 $('#packages ul li').on('dblclick', function (event) {
                     var name = $(this).find('.name').html();
                     debug(1, 'double click - selecting:', name);
-                    $('#packages .search').val(name);
-                    $('#packages .search').keyup();
+                    $('#packages .search .text').val(name);
+                    $('#packages .search .text').keyup();
                 });
                 packages.select();
             } else {
@@ -186,7 +186,7 @@ function Page_Distrubion(socket) {
         },
         clean: function () {
             $('#packages ul').html('');
-            $('#packages .search').val('');
+            $('#packages .search .text').val('');
         },
         get: function () {
             if (Utils.check_view_distribution(view)) {
@@ -232,7 +232,7 @@ function Page_Distrubion(socket) {
         },
         search: function (token) {
             if (!token)
-                token = $('#packages .search').val();
+                token = $('#packages .search .text').val();
             if (!token) {
                 debug(2, 'packages search token empty - showing all');
                 $('#packages li').show();
@@ -736,9 +736,15 @@ function Page_Distrubion(socket) {
         watch_for_new_lines();
 
         // Handle search packages
-        $('#packages .search').on('keyup', function (event) {
+        $('#packages .search .text').on('keyup', function (event) {
             packages.search($(event.target).val());
         });
+        $('#packages .search .reset').on('click', function (event) {
+            debug(1, 'packages search reset');
+            $('#packages .search .text').val('');
+            $('#packages .search .text').keyup();
+        });
+
 
         // Update html according with preferences
         preferences();
