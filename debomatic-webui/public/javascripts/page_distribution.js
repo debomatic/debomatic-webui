@@ -96,7 +96,7 @@ function Page_Distrubion(socket) {
                 debug(2, 'scrolling page down - height', height);
                 $('html,body').animate({
                     scrollTop: height
-                }, 0);
+                }, delay);
             },
             up: function (delay) {
                 if (delay === undefined)
