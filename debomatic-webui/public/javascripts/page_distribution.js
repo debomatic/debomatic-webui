@@ -169,6 +169,14 @@ function Page_Distrubion(socket) {
                         '<span class="version">' + p.version + '</span></a></li>');
                     view.packages[p.orig_name] = Utils.clone(p);
                 });
+                // on double click set search value to package name, in other words
+                // on double click show only that package
+                $('#packages ul li').on('dblclick', function (event) {
+                    var name = $(this).find('.name').html();
+                    debug(1, 'double click - selecting:', name);
+                    $('#packages .search').val(name);
+                    $('#packages .search').keyup();
+                });
                 packages.select();
             } else {
                 $('#packages ul').append('<li class="text-muted">No packages yet</li>');
@@ -224,18 +232,18 @@ function Page_Distrubion(socket) {
         },
         search: function (token) {
             if (!token)
-                token = $("#packages .search").val();
+                token = $('#packages .search').val();
             if (!token) {
-                debug(2, "packages search token empty - showing all");
-                $("#packages li").show();
+                debug(2, 'packages search token empty - showing all');
+                $('#packages li').show();
             } else {
-                $("#packages li").not('.active').each(function (index) {
+                $('#packages li').not('.active').each(function (index) {
                     var p_name = $(this).find('a span.name').text();
                     if (p_name.indexOf(token) < 0) {
-                        debug(2, "packages search token:", token, "hiding:", this);
+                        debug(2, 'packages search token:', token, 'hiding:', this);
                         $(this).hide();
                     } else {
-                        debug(2, "packages search token:", token, "showing:", this);
+                        debug(2, 'packages search token:', token, 'showing:', this);
                         $(this).show();
                     }
                 });
