@@ -35,7 +35,7 @@ class DebomaticModule_JSONLogger:
         self.jsonfile = '/var/log/debomatic-json.log'
 
     def _set_jsonfile(self, args):
-        """If debomatic config file has section [jsonlogger] try to get 
+        """If debomatic config file has section [jsonlogger] try to get
         'jsonfile' option and override the default value."""
         if 'opts' in args and args['opts'].has_section('jsonlogger'):
             self.jsonfile = args['opts'].get('jsonlogger', 'jsonfile').strip()
@@ -62,7 +62,7 @@ class DebomaticModule_JSONLogger:
         keys = ['package', 'distribution', 'uploader']
         info = {}
         for k in keys:
-            if k in args: 
+            if k in args:
                 info[k] = args[k]
         return info
 
