@@ -235,16 +235,16 @@ function Page_Distrubion(socket) {
                 token = $('#packages .search .text').val();
             if (!token) {
                 debug(2, 'packages search token empty - showing all');
-                $('#packages li').show();
+                $('#packages li').slideDown('fast');
             } else {
                 $('#packages li').not('.active').each(function (index) {
                     var p_name = $(this).find('a span.name').text();
                     if (p_name.indexOf(token) < 0) {
                         debug(2, 'packages search token:', token, 'hiding:', this);
-                        $(this).hide();
+                        $(this).slideUp('fast');
                     } else {
                         debug(2, 'packages search token:', token, 'showing:', this);
-                        $(this).show();
+                        $(this).slideDown('fast');
                     }
                 });
             }
