@@ -91,5 +91,19 @@ var Utils = {
     // clone an object via JSON
     clone: function (object) {
         return JSON.parse(JSON.stringify(object));
+    },
+
+    // escape html entities
+    escape_html: function (string) {
+        return String(string).replace(/[&<>"'\/]/g, function (s) {
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                "\"": "&quot;",
+                "'": "&#39;",
+                "/": "&#x2F;"
+            }[s];
+        });
     }
 };

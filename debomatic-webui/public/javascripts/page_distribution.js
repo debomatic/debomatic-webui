@@ -355,9 +355,10 @@ function Page_Distrubion(socket) {
 
     var file = {
         set: function (socket_data) {
+            var new_content = Utils.escape_html(socket_data.file.content);
             var file_content = $('#file pre');
             view.file = Utils.clone(socket_data.file);
-            file_content.text(socket_data.file.content);
+            file_content.html(new_content);
             file_content.show();
             if (current_file_in_preview)
                 file_content.scrollTop(file_content[0].scrollHeight);
@@ -368,6 +369,7 @@ function Page_Distrubion(socket) {
         },
         append: function (new_content) {
             var file_content = $('#file pre');
+            new_content = Utils.escape_html(new_content);
             if (!current_file_in_preview) {
                 file_content.append(new_content);
                 if (config.preferences.autoscroll) {
