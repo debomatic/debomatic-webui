@@ -6,50 +6,54 @@
  * Module dependencies.
  */
 
-var express = require('express'),
+var http = require('http'),
+    express = require('express'),
     serve_static = require('serve-static'),
     serve_index = require('serve-index'),
     errorhandler = require('errorhandler'),
     routes = require('./routes'),
     config = require('./lib/config.js'),
     utils = require('./lib/utils.js'),
-    http = require('http'),
-    app = module.exports = express(),
     Client = require('./lib/client.js'),
     Broadcaster = require('./lib/broadcaster.js');
 
+var app = module.exports = express(),
+    server = http.createServer(app),
+    io = require('socket.io').listen(server, config.socket),
+    env = process.env.NODE_ENV || 'development';
 
-// serve dsc files as octet-stream
-serve_static.mime.define({
-    'application/octet-stream': ['dsc']
-});
-
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
-app.use(serve_static(__dirname + '/public'));
-app.use(config.routes.debomatic, serve_index(config.debomatic.path));
-app.use(config.routes.debomatic, serve_static(config.debomatic.path));
-
-var env = process.env.NODE_ENV || 'development';
 if ('development' == env) {
     app.use(errorhandler({
         dumpExceptions: true,
         showStack: true
     }));
-} else if ('development' == env) {
+} else if ('production' == env) {
     app.use(errorhandler());
 }
 
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+
 // Routes
 app.get('/', routes.index);
+// distibution page
 app.get(config.routes.distribution, routes.distribution);
+// parefernces page
 if (config.routes.preferences)
     app.get(config.routes.preferences, routes.preferences);
+// commands page
 if (config.routes.commands)
     app.get(config.routes.commands, routes.commands);
+// debomatic static page
+app.use(config.routes.debomatic, serve_index(config.debomatic.path));
+app.use(config.routes.debomatic, serve_static(config.debomatic.path));
+// serve stylesheet-javascript
+app.use(serve_static(__dirname + '/public'));
 
-var server = http.createServer(app),
-    io = require('socket.io').listen(server, config.socket);
+// serve dsc files as octet-stream
+serve_static.mime.define({
+    'application/octet-stream': ['dsc']
+});
 
 // Listening
 server.listen(config.port, config.host, null, function (err) {
