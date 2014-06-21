@@ -1,11 +1,4 @@
 {
-    "globals": {
-        "$": false,
-        "console": false,
-        "config": false,
-        "Utils": false,
-        "debug_socket": false
-    },
     "globalstrict": true,
     "browser": true,
     "node": true

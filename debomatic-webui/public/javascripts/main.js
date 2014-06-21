@@ -1,4 +1,10 @@
 // main client javascript
+
+/* global io: false */
+/* global Preferences: false */
+/* global Page_Generic: false */
+/* global Page_Distrubion: false */
+
 'use strict';
 
 var preferences = new Preferences();
@@ -23,7 +29,7 @@ if (window.location.pathname == '/') {
             label = config.debomatic.admin.name;
         real_email = '<a href="mailto:' + real_email + subject + '">' + label + '</a>';
         $(this).html(real_email);
-    })
+    });
 }
 
 var socket = io.connect('/');

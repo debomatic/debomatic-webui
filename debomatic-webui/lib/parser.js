@@ -1,3 +1,4 @@
+/*jshint multistr: true */
 'use strict';
 
 function Parser() {
@@ -35,4 +36,4 @@ Usage: %s [-c config]\n\
     });
 }
 
-module.exports = Parser
+module.exports = Parser;

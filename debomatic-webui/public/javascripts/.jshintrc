@@ -1,0 +1,9 @@
+{
+    "globals": {
+        "$": false,
+        "console": false,
+        "config": false
+    },
+    "globalstrict": true,
+    "browser": true
+}

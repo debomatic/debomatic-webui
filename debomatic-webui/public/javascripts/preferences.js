@@ -1,3 +1,5 @@
+/* global debug: false */
+/* global page_generic: false */
 'use strict';
 
 function Preferences() {

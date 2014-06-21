@@ -1,7 +1,10 @@
 'use strict';
 
-/* global debug: false */
+/* global Utils: false */
 /* global page_generic: false */
+/* global debug: false */
+/* global debug_socket: false */
+
 
 // function to get all files in on click
 // event comes from HTML

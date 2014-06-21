@@ -1,3 +1,5 @@
+/* global Utils: false */
+/* global debug_socket: false */
 'use strict';
 
 function Page_Generic() {
