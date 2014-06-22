@@ -182,7 +182,7 @@ function Page_Distrubion(socket) {
                 });
                 packages.select();
             } else {
-                $('#packages ul').append('<li class="text-muted">No packages yet</li>');
+                $('#packages ul').append('<li class="disabled"><a>No packages yet</a></li>');
             }
             packages.show();
             sticky.updateOffset();
