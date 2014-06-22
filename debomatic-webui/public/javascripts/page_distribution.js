@@ -180,8 +180,10 @@ function Page_Distrubion(socket) {
                     $('#packages .search .text').val(name);
                     $('#packages .search .text').keyup();
                 });
+                $('#packages .search').show();
                 packages.select();
             } else {
+                $('#packages .search').hide();
                 $('#packages ul').append('<li class="disabled"><a>No packages yet</a></li>');
             }
             packages.show();
