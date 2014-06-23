@@ -361,7 +361,7 @@ function Page_Distrubion(socket) {
     var file = {
         set: function (socket_data) {
             var new_content = Utils.escape_html(socket_data.file.content);
-            var file_content = $('#file pre');
+            var file_content = $('#file .content');
             view.file = Utils.clone(socket_data.file);
             file_content.html(new_content);
             file_content.show();
@@ -369,11 +369,11 @@ function Page_Distrubion(socket) {
                 file_content.scrollTop(file_content[0].scrollHeight);
         },
         clean: function () {
-            $('#file pre').html('');
+            $('#file .content').html('');
             $('#file').hide();
         },
         append: function (new_content) {
-            var file_content = $('#file pre');
+            var file_content = $('#file .content');
             new_content = Utils.escape_html(new_content);
             if (!current_file_in_preview) {
                 file_content.append(new_content);
@@ -407,7 +407,7 @@ function Page_Distrubion(socket) {
                 query_data.file.content = null;
                 query_data.file.force = force;
                 // get a feedback to user while downloading file
-                $('#file pre').html('Downloading file, please wait a while ...');
+                $('#file .content').html('Downloading file, please wait a while ...');
                 $('#file').show();
                 debug_socket('emit', _e.file, query_data);
                 socket.emit(_e.file, query_data);
@@ -419,9 +419,9 @@ function Page_Distrubion(socket) {
             }
             debug(2, "file set preview", preview);
             current_file_in_preview = preview;
-            var file = $('#file pre');
+            var file = $('#file .content');
             if (preview) {
-                $('#file pre').addClass('preview');
+                $('#file .content').addClass('preview');
                 var height = (config.file.num_lines) *
                     parseInt(file.css('line-height').replace(/[^-\d\.]/g, '')) +
                     parseInt(file.css('padding-top').replace(/[^-\d\.]/g, '')) +
@@ -590,9 +590,9 @@ function Page_Distrubion(socket) {
             $('#sticky-package').addClass('on-top');
         }
         if (!config.preferences.file_background) {
-            $('#file pre').addClass('no-background');
+            $('#file .content').addClass('no-background');
         }
-        $('#file pre').css('font-size', config.preferences.file_fontsize);
+        $('#file .content').css('font-size', config.preferences.file_fontsize);
     };
 
     var select = function () {
