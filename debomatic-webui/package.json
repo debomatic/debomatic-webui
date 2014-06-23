@@ -8,7 +8,7 @@
         "serve-static": "*",
         "errorhandler ": "*",
         "ejs": ">= 0.0.1",
-        "socket.io": "0.*",
+        "socket.io": "1.*",
         "tail": "*"
     },
     "scripts": {

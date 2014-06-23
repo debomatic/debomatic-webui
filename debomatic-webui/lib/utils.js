@@ -75,46 +75,41 @@ function __get_files_list(dir, onlyDirectories, callback) {
 }
 
 function __watch_path_onsocket(event_name, socket, data, watch_path, updater) {
-    socket.get('watchers', function (err, socket_watchers) {
-        if (!socket_watchers) {
-            // init socket watchers
-            socket_watchers = {};
-        }
-        try {
-            var watcher = socket_watchers[event_name];
-            if (watcher)
-                watcher.close();
+    var socket_watchers = socket.watchers || {};
+    try {
+        var watcher = socket_watchers[event_name];
+        if (watcher)
+            watcher.close();
 
-            fs.stat(watch_path, function (err, stats) {
-                if (err) {
-                    __errors_handler('__watch_path_onsocket:fs.stat', err, socket);
-                    return;
-                }
-                if (stats.isDirectory()) {
-                    watcher = fs.watch(watch_path, {
-                        persistent: true
-                    }, function (event, fileName) {
-                        if (event == 'rename')
-                            updater(event_name, socket, data);
-                    });
-                } else if (stats.isFile()) {
-                    watcher = new Tail(watch_path);
-                    watcher.on('line', function (new_content, tailInfo) {
-                        data.file.new_content = new_content + '\n';
+        fs.stat(watch_path, function (err, stats) {
+            if (err) {
+                __errors_handler('__watch_path_onsocket:fs.stat', err, socket);
+                return;
+            }
+            if (stats.isDirectory()) {
+                watcher = fs.watch(watch_path, {
+                    persistent: true
+                }, function (event, fileName) {
+                    if (event == 'rename')
                         updater(event_name, socket, data);
-                    });
-                    watcher.on('error', function (msg) {
-                        socket.emit(config.events.error, msg);
-                    });
-                }
-                socket_watchers[event_name] = watcher;
-                socket.set('watchers', socket_watchers);
-            });
-        } catch (err) {
-            __errors_handler('__watch_path_onsocket <- ' + arguments.callee.caller.name, err, socket);
-            return;
-        }
-    });
+                });
+            } else if (stats.isFile()) {
+                watcher = new Tail(watch_path);
+                watcher.on('line', function (new_content, tailInfo) {
+                    data.file.new_content = new_content + '\n';
+                    updater(event_name, socket, data);
+                });
+                watcher.on('error', function (msg) {
+                    socket.emit(config.events.error, msg);
+                });
+            }
+            socket_watchers[event_name] = watcher;
+            socket.watchers = socket_watchers;
+        });
+    } catch (err) {
+        __errors_handler('__watch_path_onsocket <- ' + arguments.callee.caller.name, err, socket);
+        return;
+    }
 }
 
 function __generic_handler_watcher(event_name, socket, data, watch_path, callback) {

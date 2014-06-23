@@ -17,9 +17,6 @@ var config = {};
 config.host = 'localhost';
 config.port = 3000;
 
-config.socket = {};
-config.socket.log = false;
-
 config.debomatic = {};
 config.debomatic.path = '/srv/debomatic-amd64';
 config.debomatic.jsonfile = '/var/log/debomatic-json.log';
