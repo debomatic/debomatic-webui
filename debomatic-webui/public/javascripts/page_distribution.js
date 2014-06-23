@@ -657,6 +657,12 @@ function Page_Distrubion(socket) {
 
     this.start = function () {
 
+        socket.on('connect', function () {
+            if (!__check_hash_makes_sense())
+                return;
+            populate();
+        });
+
         socket.on(config.events.error, function (socket_error) {
             debug_socket('received', config.events.error, socket_error);
             error.set(socket_error);
@@ -715,9 +721,6 @@ function Page_Distrubion(socket) {
             debug(1, 'changing view', 'old:', old_view, 'new:', view);
         });
 
-        if (!__check_hash_makes_sense())
-            return;
-        populate();
 
         // Init sticky-package back_on_top on click
         $('#sticky-package').on('click', function () {
