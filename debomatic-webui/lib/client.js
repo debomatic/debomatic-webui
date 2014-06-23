@@ -165,17 +165,15 @@ function Client(socket) {
 
         // on client disconnection close all watchers
         socket.on('disconnect', function () {
-            socket.get('watchers', function (err, socket_watchers) {
-                if (!socket_watchers)
-                    return;
-                for (var key in socket_watchers) {
-                    try {
-                        socket_watchers[key].close();
-                    } catch (error_watch) {}
-                }
-            });
+            var socket_watchers = socket.watchers;
+            if (!socket_watchers)
+                return;
+            for (var key in socket_watchers) {
+                try {
+                    socket_watchers[key].close();
+                } catch (error_watch) {}
+            }
         });
-
     };
 
     this.send_status = function (status) {
