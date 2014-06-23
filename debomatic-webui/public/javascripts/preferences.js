@@ -8,7 +8,7 @@ function Preferences() {
     var load = function () {
         for (var key in config.preferences) {
             var value = localStorage.getItem(key);
-            if (value) {
+            if (value !== null && value !== 'undefined') {
                 debug(2, 'loading preference', key, value);
                 config.preferences[key] = JSON.parse(value);
             }
