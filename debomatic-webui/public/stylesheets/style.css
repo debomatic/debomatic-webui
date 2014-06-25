@@ -157,6 +157,10 @@ footer .info {
   margin-right: 10px;
 }
 
+#files, #file {
+    display: none;
+}
+
 #files li[id$='datestamp'] {
   display: none;
 }
