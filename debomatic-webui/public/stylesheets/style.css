@@ -118,6 +118,7 @@ footer .info {
 }
 
 #packages .search {
+  display: none;
   margin-bottom: 5px;
 }
 
