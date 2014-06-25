@@ -32,6 +32,13 @@
   padding-bottom: 40px;
 }
 
+.unselectable {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 #home .dput pre {
   background: none;
   font-size: 15px;
