@@ -71,7 +71,7 @@ config.web.preferences.debug = 0; // debug level - 0 means disabled
 config.version = '0.5.1';
 
 config.events = {};
-config.events.error = 'error';
+config.events.error = 'server-error';
 config.events.broadcast = {};
 config.events.broadcast.distributions = 'b.distributions';
 config.events.broadcast.status_update = 'b.status_update';
