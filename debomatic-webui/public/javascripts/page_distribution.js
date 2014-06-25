@@ -184,7 +184,7 @@ function Page_Distrubion(socket) {
                 packages.select();
             } else {
                 $('#packages .search').hide();
-                $('#packages ul').append('<li class="disabled"><a>No packages yet</a></li>');
+                $('#packages ul').append('<li class="disabled unselectable"><a>No packages yet</a></li>');
             }
             packages.show();
             sticky.updateOffset();
