@@ -45,8 +45,13 @@ if (config.routes.preferences)
 if (config.routes.commands)
     app.get(config.routes.commands, routes.commands);
 // debomatic static page
-app.use(config.routes.debomatic, serve_index(config.debomatic.path));
 app.use(config.routes.debomatic, serve_static(config.debomatic.path));
+app.use(config.routes.debomatic, serve_index(config.debomatic.path, {
+    filter: function (filename) {
+        // do not show these files and directories
+        return ['dev', 'sys'].indexOf(filename) < 0;
+    }
+}));
 // serve stylesheet-javascript
 app.use(serve_static(__dirname + '/public'));
 
