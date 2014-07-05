@@ -69,7 +69,10 @@ if (config.routes.debomatic) {
     });
 
     app.use(config.routes.debomatic, serve_static(config.debomatic.path));
-    app.use(config.routes.debomatic, serve_index(config.debomatic.path));
+    app.use(config.routes.debomatic, serve_index(config.debomatic.path, {
+        'view': 'details',
+        'icons': true
+    }));
 }
 
 // serve stylesheet-javascript
