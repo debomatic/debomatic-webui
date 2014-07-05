@@ -11,11 +11,11 @@
       <section>
         <p>Welcome to debomatic web interface. Here you can monitor debomatic service,
         browse the packages already built and real-time check the building process of a new incoming
-        package. 
-        <p>Most of these actions can be taken in 
+        package.
+        <p>Most of these actions can be taken in
         <a href="<%= web.paths.distribution %>">distribution</a> page. </p>
 
-        <p>If you want a bit customization 
+        <p>If you want a bit customization
         check the <a href="<%= web.paths.preferences %>">preferences</a> page out.</p>
 
       </section>
@@ -30,12 +30,13 @@
           <p>For build account requests please mail <span subject="Build account request for <%= web.debomatic.dput.host %>" address="<%= web.debomatic.admin.email %>" class="email"></span>.</p>
         </div>
       </div>
-
+      <% if (web.paths.debomatic) { %>
       <section>
-        <p class="alert alert-warning"><strong>Remember:</strong> if you do not find here what you are 
-          looking for, you are always able to browse debomatic static directory 
+        <p class="alert alert-warning"><strong>Remember:</strong> if you do not find here what you are
+          looking for, you are always able to browse debomatic static directory
           in <a class="alert-link" href="<%= web.paths.debomatic %>">this page</a>.</p>
       </section>
+      <% } %>
     </article>
 
     <article id="configuration" >
@@ -94,15 +95,15 @@ scp_compress   = 1
       <header><h3>About debomatic</h3></header>
       <section>
         <p><strong>Deb-o-Matic</strong> is an easy to use utility to build Debian source packages, meant
-        to help developers to automate building of their packages with limited user interaction 
+        to help developers to automate building of their packages with limited user interaction
         and a simple startup configuration.</p>
 
         <p>It provides some useful features such as automatic chroot update, rebuilds of
         source packages, post-build checks, and much more.</p>
-        
-        <p>It is also extendable using modules that are loaded and executed 
+
+        <p>It is also extendable using modules that are loaded and executed
         during the build phases.</p>
-        
+
         <p><a class="btn btn-primary" href="http://launchpad.net/debomatic">Get more!</a></p>
       </section>
     </article>
@@ -112,7 +113,7 @@ scp_compress   = 1
       <section>
         <p><strong>debomatic-webui</strong> is a web interface for Deb-o-Matic aims to give to users a simple
         way to browse logs and to know what's going on debomatic build service providing a real-time packages status.</p>
-        
+
         <p>This interface is built up on <a href="//nodejs.org">node</a> platform
         and uses intensely <a href="//socket.io">socket.io</a> and <a href="//jquery.com/">jquery</a> technologies.</p>
 
