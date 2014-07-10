@@ -1,4 +1,20 @@
-# 0.5.1 (2015-06-17)
+# 0.6.0 (2014-07-10)
+ * [new] [module] write a JSON file about package status in its own directory
+ * [new] update to socket.io 1.x
+ * [new] enable icons and details in static debomatic directory listening
+ * [new] get status of package via socket instead of making a GET request
+ * [new] add clean button to package search
+ * [new] double click on a package in the list make an automatic search
+ * [new] add slide up and down effect while searching packages
+ * [new] set files list to not send to client as configurable
+ * [fix] prevent crashes filtering out request to chroots - send back 403 HTTP status
+ * [fix] escape correctly HTML in file content
+ * [fix] auto-populate page on socket connect instead of on page loads
+ * [fix] preferences does not set correctly if value is false
+ * [fix] better and smaller error messages
+ * [fix] fix some style issues
+
+# 0.5.1 (2014-06-17)
  * [fix] recursive call on receive file new_content while view the whole file
  * [fix] improved style for file view and datestamp
  * [fix] documentation set porter command instead of rebuild
