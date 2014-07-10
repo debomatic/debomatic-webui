@@ -68,7 +68,7 @@ config.web.preferences.debug = 0; // debug level - 0 means disabled
 
 // DO NOT TOUCH these ones
 
-config.version = '0.5.1';
+config.version = '0.6.0';
 
 config.debomatic.excluded_files = ['datestamp', 'json'];
 
