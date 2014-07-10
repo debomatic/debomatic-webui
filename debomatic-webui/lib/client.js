@@ -18,6 +18,8 @@ function __get_files_list_from_package(data, callback) {
             file.orig_name = f;
             file.name = f.split('_')[0];
             file.extension = f.split('.').pop();
+            if (config.debomatic.excluded_files.indexOf(file.extension) >= 0)
+                return;
             if (file.extension == 'deb' || file.extension == 'ddeb' || file.extension == 'udeb') {
                 data.package.debs.push(file);
             } else if (f.indexOf('.tar') >= 0 || file.extension == 'changes' || file.extension == 'dsc') {

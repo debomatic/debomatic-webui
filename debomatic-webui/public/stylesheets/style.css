@@ -169,10 +169,6 @@ footer .info {
     display: none;
 }
 
-#files li[id$='datestamp'] {
-  display: none;
-}
-
 #preferences .select label {
   font-weight: normal;
   line-height: 35px;
