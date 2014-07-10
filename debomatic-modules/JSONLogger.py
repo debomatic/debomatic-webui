@@ -27,6 +27,7 @@
 import os
 from time import time
 from json import dumps as toJSON
+from json import load as fileToJSON
 
 
 class DebomaticModule_JSONLogger:
@@ -47,6 +48,30 @@ class DebomaticModule_JSONLogger:
         with open(self.jsonfile, 'a') as logfd:
             json = toJSON(info)
             logfd.write(json + '\n')
+
+    def _get_package_json(self, args):
+        return '%(directory)s/pool/%(package)s/%(package)s.json' % args
+
+    def _write_package_json(self, args, status):
+        """Write package status into a JSON file."""
+        package_json = self._get_package_json(args)
+        if os.path.isfile(package_json):
+            with open(package_json, 'r') as infofd:
+                try:
+                    info = fileToJSON(infofd)
+                    info['end'] = int(time())
+                except:
+                    return
+        else:
+            info = {'start': int(time())}
+
+        for key in status:
+            if key not in info:
+                info[key] = status[key]
+
+        with open(package_json, 'w') as infofd:
+            json = toJSON(info, indent=4)
+            infofd.write(json + '\n')
 
     def _get_distribution_info(self, args):
         """From args to distribution info."""
@@ -77,6 +102,10 @@ class DebomaticModule_JSONLogger:
     def pre_build(self, args):
         package = self._get_package_info(args)
         package['status'] = 'build'
+        package_json = self._get_package_json(args)
+        if os.path.isfile(package_json):
+            os.remove(package_json)
+        self._write_package_json(args, package)
         self._append_info_to_logfile(args, package)
 
     def post_build(self, args):
@@ -88,4 +117,5 @@ class DebomaticModule_JSONLogger:
             if filename.endswith('.dsc'):
                 package['success'] = True
                 break
+        self._write_package_json(args, package)
         self._append_info_to_logfile(args, package)
