@@ -343,7 +343,7 @@ function Page_Distrubion(socket) {
                 return;
             }
 
-            function get_time(timestamp) {
+            function _get_time(timestamp) {
                 var date = new Date(timestamp * 1000);
                 var locale = navigator.language || 'en-US';
                 var options = {
@@ -362,10 +362,10 @@ function Page_Distrubion(socket) {
             if (socket_data.uploader)
                 info += "Uploaded by " + socket_data.uploader + ' - ';
 
-            info += "Build started " + get_time(socket_data.start);
+            info += "Build started " + _get_time(socket_data.start);
 
             if (socket_data.end) {
-                info += ' - finished ' + get_time(socket_data.end);
+                info += ' - finished ' + _get_time(socket_data.end);
                 info += ' - elapsed time: <b>';
                 var elapsed = new Date((socket_data.end - socket_data.start) * 1000);
                 info += ("0" + elapsed.getUTCHours()).slice(-2) + ':';
