@@ -353,7 +353,7 @@ function Page_Distrubion(socket) {
                     day: "numeric",
                 };
                 var result = date.toLocaleDateString(locale, options);
-                result += ' <b>' + date.toLocaleTimeString() + '</b>';
+                result += ' <b>' + date.getHours() + ':' + date.getMinutes() + '</b>';
                 return result;
             }
 
@@ -368,9 +368,9 @@ function Page_Distrubion(socket) {
                 info += ' - finished ' + get_time(socket_data.end);
                 info += ' - elapsed time: <b>';
                 var elapsed = new Date((socket_data.end - socket_data.start) * 1000);
-                if (elapsed.getUTCHours() > 0)
-                    info += ("0" + elapsed.getUTCHours()).slice(-2) + ':';
-                info += ("0" + elapsed.getUTCMinutes()).slice(-2) + ':' + ("0" + elapsed.getUTCSeconds()).slice(-2);
+                info += ("0" + elapsed.getUTCHours()).slice(-2) + ':';
+                info += ("0" + elapsed.getUTCMinutes()).slice(-2) + ':';
+                info += ("0" + elapsed.getUTCSeconds()).slice(-2);
             }
             $("#package_info").html(info);
 
