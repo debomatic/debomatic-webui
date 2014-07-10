@@ -382,6 +382,7 @@ function Page_Distrubion(socket) {
                 query_data.package = view.package;
                 debug_socket('emit', _e.package_info, query_data);
                 socket.emit(_e.package_info, query_data);
+                $("#package_info").html('...');
             }
         }
     };
