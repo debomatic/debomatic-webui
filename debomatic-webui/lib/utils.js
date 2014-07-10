@@ -8,7 +8,7 @@ var path = require('path'),
 function __errors_handler(from, err, socket) {
     if (!socket)
         from = 'NO SOCKET: ' + from;
-    console.error(from, err);
+    console.error(from, err.message);
     if (socket)
         socket.emit(config.events.error, err.message);
 }
