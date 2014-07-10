@@ -81,6 +81,7 @@ config.events.client = {};
 config.events.client.distribution_packages = 'c.distribution_packages';
 config.events.client.distribution_packages_status = 'c.distribution_packages_status';
 config.events.client.package_files_list = 'c.package_files_list';
+config.events.client.package_info = 'c.package_info';
 config.events.client.file = 'c.file';
 config.events.client.file_newcontent = 'c.file_newcontent';
 config.events.client.status = 'c.status';

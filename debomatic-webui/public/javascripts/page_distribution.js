@@ -317,27 +317,6 @@ function Page_Distrubion(socket) {
                 query_data.package = view.package;
                 debug_socket('emit', _e.package_files_list, query_data);
                 socket.emit(_e.package_files_list, query_data);
-                files.get_datestamp();
-            }
-        },
-        get_datestamp: function (socket_data) {
-            if (Utils.check_view_package(view)) {
-                if (socket_data && socket_data.package != view.package.orig_name)
-                    return;
-                var url = config.paths.debomatic + '/' +
-                    view.distribution.name + '/pool/' +
-                    view.package.orig_name + '/' +
-                    view.package.orig_name + '.datestamp';
-                debug(2, 'getting datestamp');
-                $.get(url, function (data) {
-                    data = data.replace(/ (\d+:\d+(:\d+)?)$/mg, ' <b>$1</b>');
-                    data = data.replace('Build finished', 'finished');
-                    data = data.replace('Elapsed', 'elapsed');
-                    data = data.replace(/\n$/g, '');
-                    data = data.replace(/\n/g, ' - ');
-                    data = data.replace(/at /g, '');
-                    $("#file .datestamp").html(data);
-                });
             }
         },
         select: function () {
@@ -356,6 +335,55 @@ function Page_Distrubion(socket) {
         show: function () {
             $('#files').show();
         },
+    };
+
+    var package_info = {
+        set: function (socket_data) {
+            if (!Utils.check_view_package(view) || socket_data.package != view.package.orig_name) {
+                return;
+            }
+
+            function get_time(timestamp) {
+                var date = new Date(timestamp * 1000);
+                var locale = navigator.language || 'en-US';
+                var options = {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                };
+                var result = date.toLocaleDateString(locale, options);
+                result += ' <b>' + date.toLocaleTimeString() + '</b>';
+                return result;
+            }
+
+            var info = "";
+
+            if (socket_data.uploader)
+                info += "Uploaded by " + socket_data.uploader + ' - ';
+
+            info += "Build started " + get_time(socket_data.start);
+
+            if (socket_data.end) {
+                info += ' - finished ' + get_time(socket_data.end);
+                info += ' - elapsed time: <b>';
+                var elapsed = new Date((socket_data.end - socket_data.start) * 1000);
+                if (elapsed.getUTCHours() > 0)
+                    info += ("0" + elapsed.getUTCHours()).slice(-2) + ':';
+                info += ("0" + elapsed.getUTCMinutes()).slice(-2) + ':' + ("0" + elapsed.getUTCSeconds()).slice(-2);
+            }
+            $("#package_info").html(info);
+
+        },
+        get: function () {
+            if (Utils.check_view_package(view)) {
+                var query_data = {};
+                query_data.distribution = view.distribution;
+                query_data.package = view.package;
+                debug_socket('emit', _e.package_info, query_data);
+                socket.emit(_e.package_info, query_data);
+            }
+        }
     };
 
     var file = {
@@ -628,6 +656,7 @@ function Page_Distrubion(socket) {
                 return;
             } else if (!Utils.check_view_package(old_view) || !Utils.check_view_package(view) ||
                 view.package.orig_name != old_view.package.orig_name) { // new package view
+                package_info.get();
                 files.get();
                 file.get();
             } else if (!Utils.check_view_file(old_view) || !Utils.check_view_file(view) ||
@@ -650,6 +679,7 @@ function Page_Distrubion(socket) {
     var populate = function () {
         clean();
         packages.get();
+        package_info.get();
         files.get();
         file.get();
         update.view();
@@ -687,7 +717,9 @@ function Page_Distrubion(socket) {
         socket.on(config.events.broadcast.status_update, function (socket_data) {
             packages.set_status(socket_data);
             sticky.set_status(socket_data);
-            files.get_datestamp(socket_data);
+            if (socket_data.distribution == view.distribution.name && socket_data.package == view.package.orig_name) {
+                package_info.get();
+            }
         });
 
         socket.on(_e.package_files_list, function (socket_data) {
@@ -703,6 +735,11 @@ function Page_Distrubion(socket) {
         socket.on(_e.file_newcontent, function (socket_data) {
             debug_socket('received', _e.file_newcontent, socket_data);
             new_lines.push(socket_data.file.new_content);
+        });
+
+        socket.on(_e.package_info, function (socket_data) {
+            debug_socket('received', _e.package_info, socket_data);
+            package_info.set(socket_data);
         });
 
         $(window).on('hashchange', function () {

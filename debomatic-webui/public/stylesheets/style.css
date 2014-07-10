@@ -189,15 +189,6 @@ footer .info {
   color: #101010;
 }
 
-#file .datestamp {
-  display: inline-block;
-  background: #f4f4f4;
-  padding: 4px 10px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  font-size: 75%;
-}
-
 #file .preview {
   overflow:hidden;
 }
@@ -205,4 +196,13 @@ footer .info {
 #title a.btn {
   padding: 10px 12px;
   float: right;
+}
+
+#package_info {
+  display: inline-block;
+  background: #f4f4f4;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  font-size: 75%;
 }

@@ -42,6 +42,26 @@ function __send_package_files_list(event_name, socket, data) {
     });
 }
 
+function __read_package_status(data, cb) {
+    var package_path = utils.get_package_path(data);
+    var package_json = path.join(package_path, data.package.orig_name + '.json');
+    fs.readFile(package_json, {
+        encoding: 'utf8'
+    }, function (err, content) {
+        if (err) {
+            utils.errors_handler('Client:__read_package_status:', err);
+            return;
+        }
+        try {
+            content = JSON.parse(content);
+        } catch (parse_err) {
+            utils.errors_handler('Client:__read_package_status:parse_err:', parse_err);
+            return;
+        }
+        cb(content);
+    });
+}
+
 function __send_package_status(socket, data, package_data) {
 
     var event_name = config.events.client.distribution_packages_status;
@@ -86,6 +106,12 @@ function __send_package_status(socket, data, package_data) {
                 }
             });
         }
+    });
+}
+
+function __send_package_info(socket, data) {
+    __read_package_status(data, function (content) {
+        socket.emit(_e.package_info, content);
     });
 }
 
@@ -160,6 +186,12 @@ function Client(socket) {
             if (!utils.check_data_file(data))
                 return;
             __handler_get_file(socket, data);
+        });
+
+        socket.on(_e.package_info, function (data) {
+            if (!utils.check_data_package(data))
+                return;
+            __send_package_info(socket, data);
         });
 
 
