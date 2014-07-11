@@ -343,6 +343,10 @@ function Page_Distrubion(socket) {
                 return;
             }
 
+            function _get_two_digits(num) {
+                return ("0" + num).slice(-2);
+            }
+
             function _get_time(timestamp) {
                 var date = new Date(timestamp * 1000);
                 var locale = navigator.language || 'en-US';
@@ -353,7 +357,7 @@ function Page_Distrubion(socket) {
                     day: "numeric",
                 };
                 var result = date.toLocaleDateString(locale, options);
-                result += ' <b>' + date.getHours() + ':' + date.getMinutes() + '</b>';
+                result += ' <b>' + _get_two_digits(date.getHours()) + ':' + _get_two_digits(date.getMinutes()) + '</b>';
                 return result;
             }
 
@@ -368,9 +372,9 @@ function Page_Distrubion(socket) {
                 info += ' - finished ' + _get_time(socket_data.end);
                 info += ' - elapsed time: <b>';
                 var elapsed = new Date((socket_data.end - socket_data.start) * 1000);
-                info += ("0" + elapsed.getUTCHours()).slice(-2) + ':';
-                info += ("0" + elapsed.getUTCMinutes()).slice(-2) + ':';
-                info += ("0" + elapsed.getUTCSeconds()).slice(-2);
+                info += _get_two_digits(elapsed.getUTCHours()) + ':';
+                info += _get_two_digits(elapsed.getUTCMinutes()) + ':';
+                info += _get_two_digits(elapsed.getUTCSeconds());
             }
             $("#package_info").html(info);
 
