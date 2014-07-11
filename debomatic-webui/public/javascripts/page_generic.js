@@ -143,12 +143,12 @@ function Page_Generic() {
             $('footer .info').show();
             $('.navbar .home-link').show();
         }
-
+        var bootstrap_theme_css = '/external_libs/bootstrap-3.2.0-dist/css/bootstrap-theme.min.css';
         if (config.preferences.glossy_theme) {
-            if ($('head').find('link[href="/external_libs/bootstrap-3.1.1-dist/css/bootstrap-theme.min.css"]').length === 0)
-                $('head').append('<link rel="stylesheet" href="/external_libs/bootstrap-3.1.1-dist/css/bootstrap-theme.min.css">');
+            if ($('head').find('link[href="' + bootstrap_theme_css + '"]').length === 0)
+                $('head').append('<link rel="stylesheet" href="' + bootstrap_theme_css + '">');
         } else {
-            $('head').find('link[href="/external_libs/bootstrap-3.1.1-dist/css/bootstrap-theme.min.css"]').remove();
+            $('head').find('link[href="' + bootstrap_theme_css + '"]').remove();
         }
     };
 
