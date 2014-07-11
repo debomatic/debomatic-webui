@@ -189,6 +189,10 @@ footer .info {
   overflow:hidden;
 }
 
+#file .loading img {
+  float: right;
+}
+
 #title a.btn {
   padding: 10px 12px;
   float: right;

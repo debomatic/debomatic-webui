@@ -440,7 +440,7 @@ function Page_Distrubion(socket) {
                 query_data.file.content = null;
                 query_data.file.force = force;
                 // get a feedback to user while downloading file
-                $('#file .content').html('Downloading file, please wait a while ...');
+                $('#file .content').html('<div class="loading">Downloading file, please wait a while ... <img src="/images/loading.gif" /></div>');
                 $('#file').show();
                 debug_socket('emit', _e.file, query_data);
                 socket.emit(_e.file, query_data);
