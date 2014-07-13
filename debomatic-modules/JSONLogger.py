@@ -28,9 +28,52 @@ import os
 from time import time
 from json import dumps as toJSON
 from json import load as fileToJSON
+from collections import defaultdict
 
 
-class DebomaticModule_JSONLogger:
+# ZZ and 00 are wrappers for JSONLogger to get module run
+# as first and as last one for pre_* and post_* hooks
+class DebomaticModule_00_JSONLogger:
+    def __init__(self):
+        self.logger = JSONLogger.Instance()
+
+    def pre_chroot(self, args):
+        self.logger.pre_chroot(args)
+
+    def pre_build(self, args):
+        self.logger.pre_build(args)
+
+
+class DebomaticModule_ZZ_JSONLogger:
+    def __init__(self):
+        self.logger = JSONLogger.Instance()
+
+    def post_chroot(self, args):
+        self.logger.post_chroot(args)
+
+    def post_build(self, args):
+        self.logger.post_build(args)
+
+
+# Singleton decorator
+class Singleton:
+    def __init__(self, decorated):
+        self._decorated = decorated
+
+    def Instance(self):
+        try:
+            return self._instance
+        except AttributeError:
+            self._instance = self._decorated()
+            return self._instance
+
+    def __call__(self):
+        raise TypeError('Singletons must be accessed through `Instance()`.')
+
+
+# The real JSONLogger Class
+@Singleton
+class JSONLogger:
 
     def __init__(self):
         self.jsonfile = '/var/log/debomatic-json.log'
@@ -113,10 +156,80 @@ class DebomaticModule_JSONLogger:
         status = self._get_package_status(args)
         status['status'] = 'build'
         status['success'] = False
+        status['tags'] = {}
         resultdir = os.path.join(args['directory'], 'pool', args['package'])
         for filename in os.listdir(resultdir):
             if filename.endswith('.dsc'):
                 status['success'] = True
-                break
+            else:
+                full_path = os.path.join(resultdir, filename)
+                tag = LogParser(full_path).parse()
+                if tag:
+                    status['tags'][filename] = tag
         self._write_package_json(args, status)
         self._write_json_logfile(args, status)
+
+
+# Parser for log files
+class LogParser():
+    def __init__(self, file_path):
+        self.file = file_path
+        self.basename = os.path.basename(file_path)
+        self.extension = self.basename.split('.').pop()
+
+    def parse(self):
+        if not os.path.isfile(self.file):
+            return None
+        result = None
+        if self.extension == 'lintian':
+            result = self.parse_lintian()
+        elif self.extension == 'autopkgtest':
+            result = self.parse_autopkgtest()
+        elif self.extension == 'piuparts':
+            result = self.parse_piuparts()
+        return result
+
+    def parse_lintian(self):
+        tags = defaultdict(int)
+        with open(self.file, 'r') as fd:
+            for line in fd:
+                if len(line) >= 2 and line[0] != 'N' and line[1] == ':':
+                    tags[line[0]] += 1
+        return self._from_tags_to_result(tags)
+
+    def parse_autopkgtest(self):
+        tags = defaultdict(int)
+        with open(self.file, 'r') as fd:
+            found = False
+            pass_next = False
+            for line in fd:
+                if pass_next:
+                    pass_next = False
+                    continue
+                if not found and line.find('Tests summary') >= 0:
+                    found = True
+                    pass_next = True
+                elif found and len(line.split()) >= 2:
+                    info = line.split()[1]
+                    if info == 'PASS':
+                        continue
+                    tags[info[0]] += 1
+                elif found and line == '\n':
+                    break
+        return self._from_tags_to_result(tags)
+
+    def parse_piuparts(self):
+        with open(self.file, 'r') as fd:
+            last_line = fd.readlines()[-1]
+            if last_line.find('ERROR:') >= 0:
+                return 'E'
+        return None
+
+    def _from_tags_to_result(self, tags):
+        keys = sorted(list(tags.keys()))
+        result = []
+        for k in keys:
+            result.append("%s%s" % (k, tags[k]))
+        if len(result) > 0:
+            return ' '.join(result)
+        return None

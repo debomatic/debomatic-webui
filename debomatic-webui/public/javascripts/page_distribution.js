@@ -267,8 +267,11 @@ function Page_Distrubion(socket) {
                 // update html
                 socket_data.package.files.forEach(function (f) {
                     tmp.file = f;
-                    var html_file = $('<li id="file-' + f.orig_name + '"><a title="' + f.orig_name + '" href="' +
-                        Utils.from_view_to_hash(tmp) + '">' + f.name + '</a></li>');
+                    var html_file = $('<li id="file-' + f.orig_name + '">' +
+                        '<a title="' + f.orig_name + '" href="' +
+                        Utils.from_view_to_hash(tmp) + '">' +
+                        '<span class="status pull-right"></span>' +
+                        f.name + '</a></li>');
                     html_file.on('click', function () {
                         files.select(this);
                     });
@@ -335,6 +338,9 @@ function Page_Distrubion(socket) {
         show: function () {
             $('#files').show();
         },
+        set_status: function (file, status) {
+            $('#logs li[id="file-' + file + '"] .status').html(status);
+        }
     };
 
     var package_info = {
@@ -359,6 +365,14 @@ function Page_Distrubion(socket) {
                 var result = date.toLocaleDateString(locale, options);
                 result += ' <b>' + _get_two_digits(date.getHours()) + ':' + _get_two_digits(date.getMinutes()) + '</b>';
                 return result;
+            }
+
+            if (socket_data.hasOwnProperty('tags')) {
+                var tags = socket_data.tags;
+                for (var file in tags) {
+                    if (tags.hasOwnProperty(file))
+                        files.set_status(file, tags[file]);
+                }
             }
 
             var info = "";
@@ -661,9 +675,9 @@ function Page_Distrubion(socket) {
                 return;
             } else if (!Utils.check_view_package(old_view) || !Utils.check_view_package(view) ||
                 view.package.orig_name != old_view.package.orig_name) { // new package view
-                package_info.get();
                 files.get();
                 file.get();
+                package_info.get();
             } else if (!Utils.check_view_file(old_view) || !Utils.check_view_file(view) ||
                 view.file.name != old_view.file.name) { // new file view
                 file.get();
@@ -684,9 +698,9 @@ function Page_Distrubion(socket) {
     var populate = function () {
         clean();
         packages.get();
-        package_info.get();
         files.get();
         file.get();
+        package_info.get();
         update.view();
     };
 
