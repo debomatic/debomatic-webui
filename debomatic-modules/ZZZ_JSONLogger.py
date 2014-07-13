@@ -31,7 +31,7 @@ from json import load as fileToJSON
 from collections import defaultdict
 
 
-class DebomaticModule_JSONLogger:
+class DebomaticModule_ZZZ_JSONLogger:
 
     def __init__(self):
         self.jsonfile = '/var/log/debomatic-json.log'
