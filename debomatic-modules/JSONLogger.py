@@ -31,7 +31,49 @@ from json import load as fileToJSON
 from collections import defaultdict
 
 
-class DebomaticModule_ZZZ_JSONLogger:
+# ZZ and 00 are wrappers for JSONLogger to get module run
+# as first and as last one for pre_* and post_* hooks
+class DebomaticModule_00_JSONLogger:
+    def __init__(self):
+        self.logger = JSONLogger.Instance()
+
+    def pre_chroot(self, args):
+        self.logger.pre_chroot(args)
+
+    def pre_build(self, args):
+        self.logger.pre_build(args)
+
+
+class DebomaticModule_ZZ_JSONLogger:
+    def __init__(self):
+        self.logger = JSONLogger.Instance()
+
+    def post_chroot(self, args):
+        self.logger.post_chroot(args)
+
+    def post_build(self, args):
+        self.logger.post_build(args)
+
+
+# Singleton decorator
+class Singleton:
+    def __init__(self, decorated):
+        self._decorated = decorated
+
+    def Instance(self):
+        try:
+            return self._instance
+        except AttributeError:
+            self._instance = self._decorated()
+            return self._instance
+
+    def __call__(self):
+        raise TypeError('Singletons must be accessed through `Instance()`.')
+
+
+# The real JSONLogger Class
+@Singleton
+class JSONLogger:
 
     def __init__(self):
         self.jsonfile = '/var/log/debomatic-json.log'
@@ -128,6 +170,7 @@ class DebomaticModule_ZZZ_JSONLogger:
         self._write_json_logfile(args, status)
 
 
+# Parser for log files
 class LogParser():
     def __init__(self, file_path):
         self.file = file_path
@@ -152,7 +195,7 @@ class LogParser():
             for line in fd:
                 if len(line) >= 2 and line[0] != 'N' and line[1] == ':':
                     tags[line[0]] += 1
-        return _from_tags_to_result(tags)
+        return self._from_tags_to_result(tags)
 
     def parse_autopkgtest(self):
         tags = defaultdict(int)
@@ -173,7 +216,7 @@ class LogParser():
                     tags[info[0]] += 1
                 elif found and line == '\n':
                     break
-        return _from_tags_to_result(tags)
+        return self._from_tags_to_result(tags)
 
     def parse_piuparts(self):
         with open(self.file, 'r') as fd:
@@ -182,12 +225,11 @@ class LogParser():
                 return 'E'
         return None
 
-
-def _from_tags_to_result(tags):
-    keys = sorted(list(tags.keys()))
-    result = []
-    for k in keys:
-        result.append("%s%s" % (k, tags[k]))
-    if len(result) > 0:
-        return ' '.join(result)
-    return None
+    def _from_tags_to_result(self, tags):
+        keys = sorted(list(tags.keys()))
+        result = []
+        for k in keys:
+            result.append("%s%s" % (k, tags[k]))
+        if len(result) > 0:
+            return ' '.join(result)
+        return None
