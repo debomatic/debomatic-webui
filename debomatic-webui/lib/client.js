@@ -137,6 +137,7 @@ function Client(socket) {
                 return;
             var distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool');
             utils.generic_handler_watcher(_e.distribution_packages, socket, data, distribution_path, __send_distribution_packages);
+            data = null;
         });
 
         socket.on(_e.package_files_list, function (data) {
@@ -144,18 +145,21 @@ function Client(socket) {
                 return;
             var package_path = utils.get_package_path(data);
             utils.generic_handler_watcher(_e.package_files_list, socket, data, package_path, __send_package_files_list);
+            data = null;
         });
 
         socket.on(_e.file, function (data) {
             if (!utils.check_data_file(data))
                 return;
             __handler_get_file(socket, data);
+            data = null;
         });
 
         socket.on(_e.package_info, function (data) {
             if (!utils.check_data_package(data))
                 return;
             __send_package_info(socket, data);
+            data = null;
         });
 
 
@@ -167,7 +171,9 @@ function Client(socket) {
             for (var key in socket_watchers) {
                 try {
                     socket_watchers[key].close();
-                } catch (error_watch) {}
+                } catch (error_watch) {
+                    utils.errors_handler('client:disconnect', error_watch);
+                }
             }
         });
     };

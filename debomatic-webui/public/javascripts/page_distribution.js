@@ -725,12 +725,14 @@ function Page_Distrubion(socket) {
         socket.on(_e.distribution_packages, function (socket_data) {
             debug_socket('received', _e.distribution_packages, socket_data);
             packages.set(socket_data);
+            socket_data = null;
         });
 
         socket.on(_e.distribution_packages_status, function (socket_data) {
             debug_socket('received', _e.distribution_packages_status, socket_data);
             packages.set_status(socket_data);
             sticky.set_status(socket_data);
+            socket_data = null;
         });
 
         socket.on(config.events.broadcast.status_update, function (socket_data) {
@@ -739,26 +741,31 @@ function Page_Distrubion(socket) {
             if (socket_data.distribution == view.distribution.name && socket_data.package == view.package.orig_name) {
                 package_info.get();
             }
+            socket_data = null;
         });
 
         socket.on(_e.package_files_list, function (socket_data) {
             debug_socket('received', _e.package_files_list, socket_data);
             files.set(socket_data);
+            socket_data = null;
         });
 
         socket.on(_e.file, function (socket_data) {
             debug_socket('received', _e.file, socket_data);
             file.set(socket_data);
+            socket_data = null;
         });
 
         socket.on(_e.file_newcontent, function (socket_data) {
             debug_socket('received', _e.file_newcontent, socket_data);
             new_lines.push(socket_data.file.new_content);
+            socket_data = null;
         });
 
         socket.on(_e.package_info, function (socket_data) {
             debug_socket('received', _e.package_info, socket_data);
             package_info.set(socket_data);
+            socket_data = null;
         });
 
         $(window).on('hashchange', function () {
@@ -775,6 +782,8 @@ function Page_Distrubion(socket) {
             update.page(old_view);
             page.go.up();
             debug(1, 'changing view', 'old:', old_view, 'new:', view);
+            old_view = null;
+            new_view = null;
         });
 
 
