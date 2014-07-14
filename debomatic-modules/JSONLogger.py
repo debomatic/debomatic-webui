@@ -35,7 +35,7 @@ from collections import defaultdict
 # as first and as last one for pre_* and post_* hooks
 class DebomaticModule_00_JSONLogger:
     def __init__(self):
-        self.logger = JSONLogger.Instance()
+        self.logger = DebomaticModule_JSONLogger()
 
     def pre_chroot(self, args):
         self.logger.pre_chroot(args)
@@ -46,7 +46,7 @@ class DebomaticModule_00_JSONLogger:
 
 class DebomaticModule_ZZ_JSONLogger:
     def __init__(self):
-        self.logger = JSONLogger.Instance()
+        self.logger = DebomaticModule_JSONLogger()
 
     def post_chroot(self, args):
         self.logger.post_chroot(args)
@@ -55,25 +55,8 @@ class DebomaticModule_ZZ_JSONLogger:
         self.logger.post_build(args)
 
 
-# Singleton decorator
-class Singleton:
-    def __init__(self, decorated):
-        self._decorated = decorated
-
-    def Instance(self):
-        try:
-            return self._instance
-        except AttributeError:
-            self._instance = self._decorated()
-            return self._instance
-
-    def __call__(self):
-        raise TypeError('Singletons must be accessed through `Instance()`.')
-
-
 # The real JSONLogger Class
-@Singleton
-class JSONLogger:
+class DebomaticModule_JSONLogger:
 
     def __init__(self):
         self.jsonfile = '/var/log/debomatic-json.log'
