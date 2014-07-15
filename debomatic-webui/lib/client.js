@@ -43,7 +43,7 @@ function __send_package_files_list (event_name, socket, data) {
   });
 }
 
-function __send_package_status (socket, data, package_data) {
+function __send_package_status(socket, data, package_data) {
 
   var event_name = config.events.client.distribution_packages.status
 
@@ -146,14 +146,14 @@ function Client (socket) {
       distribution_path = path.join(config.debomatic.path, data.distribution.name, 'pool')
       utils.generic_handler_watcher(_e.distribution_packages.set, socket, data, distribution_path, __send_distribution_packages)
     })
-
-    socket.on(_e.package_files_list.get, function (data) {
+    
+    socket.on(_e.package_files_list.get, function(data) {
       if (! utils.check_data_package(data))
         return
       package_path = utils.get_package_path(data)
       utils.generic_handler_watcher(_e.package_files_list.set, socket, data, package_path, __send_package_files_list)
     })
-
+    
     socket.on(_e.file.get, function (data){
       if (! utils.check_data_file(data))
         return
