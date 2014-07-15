@@ -13,9 +13,17 @@
   <aside id="sidebar" class="col-md-3">
     <nav id="packages">
       <h2>Packages</h2>
+      <div class="search">
+        <div class="input-group">
+          <input type="text" class="form-control text" placeholder="Search">
+          <span class="input-group-btn">
+            <a class="btn btn-default reset"><span class="glyphicon glyphicon-remove-sign"></span></a>
+          </span>
+        </div>
+      </div>
       <ul class="nav nav-pills nav-stacked"></ul>
     </nav>
-    
+
     <div id="sticky" >
       <section id="files">
         <nav id="logs">
@@ -24,12 +32,16 @@
         </nav>
         <div class="others">
           <nav id="sources">
-            <h4>Sources</h4>
+            <h4>Sources
+              <a class="btn btn-link" data-toggle="tooltip" data-placement="right" title="Get all sources in one click"  onclick="download_all('#sources')">
+                <span class="glyphicon glyphicon-download-alt"></span>
+              </a>
+            </h4>
             <ul></ul>
           </nav>
           <nav id="debs">
             <h4>Debs
-              <a class="btn btn-link" title="Get all debs in one click"  onclick="download_all('#debs')">
+              <a class="btn btn-link" data-toggle="tooltip" data-placement="right"  title="Get all debs in one click"  onclick="download_all('#debs')">
                 <span class="glyphicon glyphicon-download-alt"></span>
               </a>
             </h4>
@@ -37,7 +49,7 @@
           </nav>
         </div>
       </section>
-      <section title="Back on Top" id="sticky-package">
+      <section data-toggle="tooltip" title="Back on Top" id="sticky-package">
         <div id="sticky-package-content">
           <div class="panel-heading">
             <h3 class="panel-title">
@@ -60,7 +72,8 @@
     </header>
     <div id="welcome"></div>
     <div id="file">
-      <pre></pre>
+      <div id="package_info"></div>
+      <pre class="content"></pre>
       <div id="fileOffset"></div>
     </div>
   </section>

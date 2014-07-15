@@ -18,6 +18,10 @@
   margin-left: 10px;
 }
 
+.breadcrumb {
+  margin-bottom:10px;
+}
+
 #error {
   display: none;
 }
@@ -26,6 +30,13 @@
   max-width: 1000px;
 /*  margin: 0 auto;*/
   padding-bottom: 40px;
+}
+
+.unselectable {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 #home .dput pre {
@@ -45,7 +56,7 @@ aside .nav-pills li {
 }
 
 #sidebar {
-  position: relative; 
+  position: relative;
 }
 
 #sidebar .fixed {
@@ -102,6 +113,15 @@ footer {
   border-top: 1px solid #f0f0f0;
 }
 
+footer .info {
+  margin-right: 5px;
+}
+
+#packages .search {
+  display: none;
+  margin-bottom: 5px;
+}
+
 #packages li .icon {
   float: right;
   margin-top: -3px;
@@ -114,6 +134,10 @@ footer {
 
 #status > span.label {
   margin-right: 10px;
+}
+
+#status .debomatic {
+  display: none;
 }
 
 #status .packages {
@@ -141,13 +165,44 @@ footer {
   margin-right: 10px;
 }
 
+#files, #file {
+    display: none;
+}
+
 #preferences .select label {
   font-weight: normal;
   line-height: 35px;
+}
+
+#file .content {
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 #file .no-background {
   background: none;
   border: none;
   color: #101010;
+}
+
+#file .preview {
+  overflow:hidden;
+}
+
+#file .loading img {
+  float: right;
+}
+
+#title a.btn {
+  padding: 10px 12px;
+  float: right;
+}
+
+#package_info {
+  display: inline-block;
+  background: #f4f4f4;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  font-size: 75%;
 }

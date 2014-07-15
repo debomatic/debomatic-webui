@@ -3,7 +3,7 @@
 EXT_LIBS_DIR="${SCRIPTS_DIR}/../public/external_libs"
 
 get_bootstrap() {
-  VERSION="3.1.1"
+  VERSION="3.2.0"
   NAME="bootstrap-${VERSION}-dist"
   if [ -d ${EXT_LIBS_DIR}/${NAME} ] ; then return ; fi
   ARCHIVE=${NAME}.zip
