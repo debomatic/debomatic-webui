@@ -1,26 +1,42 @@
 __errors_handler = (from, err, socket) ->
-    from = "NO SOCKET: " + from    unless socket
+    from = "NO SOCKET: " + from unless socket
     console.error from, err.message
-    socket.emit config.events.error, err.message    if socket
+    socket.emit config.events.error, err.message if socket
     return
+
 __check_no_backward = (backward_path) ->
     try
         return backward_path.indexOf("..") < 0
     catch err
         return true
     return
+
 __check_data_distribution = (data) ->
-    __check_no_backward(data) and __check_no_backward(data.distribution) and __check_no_backward(data.distribution.name)
+    __check_no_backward(data) and
+    __check_no_backward(data.distribution) and
+    __check_no_backward(data.distribution.name)
+
 __check_data_package = (data) ->
-    __check_data_distribution(data) and __check_no_backward(data.package) and __check_no_backward(data.package.name) and __check_no_backward(data.package.version)
+    __check_data_distribution(data) and
+    __check_no_backward(data.package) and
+    __check_no_backward(data.package.name) and
+    __check_no_backward(data.package.version)
+
 __check_data_file = (data) ->
-    __check_data_package(data) and __check_no_backward(data.file) and __check_no_backward(data.file.name)
+    __check_data_package(data) and
+    __check_no_backward(data.file) and
+    __check_no_backward(data.file.name)
+
 __get_distribution_pool_path = (data) ->
-    path.join config.debomatic.path, data.distribution.name, "pool"
+    path.join(config.debomatic.path, data.distribution.name, "pool")
+
 __get_package_path = (data) ->
-    path.join __get_distribution_pool_path(data), data.package.name + "_" + data.package.version
+    path.join(__get_distribution_pool_path(data), data.package.orig_name)
+
 __get_file_path = (data) ->
-    path.join __get_package_path(data), data.package.name + "_" + data.package.version + "." + data.file.name
+    path.join(__get_package_path(data),
+              data.package.orig_name + "." + data.file.name)
+
 __get_files_list = (dir, onlyDirectories, callback) ->
     fs.readdir dir, (err, files) ->
         result = []
@@ -32,9 +48,9 @@ __get_files_list = (dir, onlyDirectories, callback) ->
                 complete_path = path.join(dir, f)
                 stat = fs.statSync(complete_path)
                 if onlyDirectories
-                    result.push f    if stat.isDirectory()
+                    result.push f if stat.isDirectory()
                 else
-                    result.push f    if stat.isFile()
+                    result.push f if stat.isFile()
             catch fs_error
                 __errors_handler "__get_files_list:forEach", fs_error
                 return
@@ -57,7 +73,7 @@ __watch_path_onsocket = (event_name, socket, data, watch_path, updater) ->
                 watcher = fs.watch(watch_path,
                     persistent: true
                 , (event, fileName) ->
-                    updater event_name, socket, data    if event is "rename"
+                    updater event_name, socket, data if event is "rename"
                     return
                 )
             else if stats.isFile()
@@ -76,7 +92,10 @@ __watch_path_onsocket = (event_name, socket, data, watch_path, updater) ->
             return
 
     catch err
-        __errors_handler "__watch_path_onsocket <- " + arguments_.callee.caller.name, err, socket
+        __errors_handler("__watch_path_onsocket <- " +
+                         arguments_.callee.caller.name,
+                         err,
+                         socket)
         return
     return
 __generic_handler_watcher = (event_name, socket, data, watch_path, callback) ->
@@ -91,18 +110,18 @@ __send_distributions = (socket) ->
             data.distribution = {}
             data.distribution.name = dir
             pool_path = __get_distribution_pool_path(data)
-            distributions.push dir    if fs.existsSync(pool_path)
+            distributions.push dir if fs.existsSync(pool_path)
             return
 
         socket.emit config.events.broadcast.distributions, distributions
         return
-
     return
-"use strict"
+
 path = require("path")
 fs = require("fs")
 config = require("./config")
 Tail = require("./tail")
+
 utils =
     check_data_distribution: (data) ->
         __check_data_distribution data

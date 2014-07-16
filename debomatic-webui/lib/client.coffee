@@ -6,22 +6,26 @@ __get_files_list_from_package = (data, callback) ->
         data.package.sources = []
         files.forEach (f) ->
             file = {}
-            file.path = path.join(package_path, f).replace(config.debomatic.path, config.routes.debomatic)
+            file.path = path.join(package_path, f)
+                            .replace(config.debomatic.path,
+                                     config.routes.debomatic)
             file.orig_name = f
             file.name = f.split("_")[0]
             file.extension = f.split(".").pop()
-            return    if config.debomatic.excluded_files.indexOf(file.extension) >= 0
-            if file.extension is "deb" or file.extension is "ddeb" or file.extension is "udeb"
-                data.package.debs.push file
-            else if f.indexOf(".tar") >= 0 or file.extension is "changes" or file.extension is "dsc"
-                file.name = f.replace(data.package.name + "_" + data.package.version + ".", "")
+            return if file.extension in config.debomatic.excluded_files
+            if file.extension in ["deb", "ddeb", "udeb"]
+                data.package.debs.push(file)
+            else if file.extension in ["changes", "dsc"] or
+                    f.indexOf('.tar') > 0
+                file.name = f.replace(data.package.orig_name + ".", "")
                 if file.extension is "changes"
                     file.name = file.extension
-                else file.name = "orig." + f.split(".orig.").pop() if f.indexOf(".tar") >= 0 and f.indexOf(".orig.") > 0
-                data.package.sources.push file
+                else if f.indexOf('.orig.tar') > 0
+                    file.name = "orig." + f.split(".orig.").pop()
+                data.package.sources.push(file)
             else
                 file.name = file.extension
-                data.package.files.push file
+                data.package.files.push(file)
             return
 
         callback data
@@ -46,7 +50,9 @@ __read_package_status = (data, cb) ->
         try
             content = JSON.parse(content)
         catch parse_err
-            utils.errors_handler "Client:__read_package_status:parse_err:", parse_err
+            utils.errors_handler("Client:" +
+                                 "__read_package_status:parse_err:",
+                                 parse_err)
             return
         cb content
         return
@@ -93,26 +99,30 @@ __send_file = (event_name, socket, data, last_lines) ->
             return
         data.file.orig_name = file_path.split("/").pop()
         if last_lines > 0
-            data.file.content = content.split("\n").slice(-last_lines).join("\n")
+            data.file.content = content.split("\n")[-last_lines..].join("\n")
         else
             data.file.content = content
-        data.file.path = file_path.replace(config.debomatic.path, config.routes.debomatic)
+        data.file.path = file_path.replace(config.debomatic.path,
+                                           config.routes.debomatic)
         socket.emit event_name, data
         return
 
     return
 __handler_get_file = (socket, data) ->
     file_path = utils.get_file_path(data)
-    utils.watch_path_onsocket _e.file_newcontent, socket, data, file_path, (event_name, socket, data) ->
+    send = (event_name, socket, data) ->
         data.file.content = null
         socket.emit event_name, data
-        return
+    utils.watch_path_onsocket _e.file_newcontent, socket, data, file_path, send
 
-    if config.web.file.preview.indexOf(data.file.name) >= 0 and not data.file.force
-        __send_file _e.file, socket, data, config.web.file.num_lines
+
+    if data.file.name in config.web.file.preview and not data.file.force
+        __send_file(_e.file, socket, data, config.web.file.num_lines)
     else
-        __send_file _e.file, socket, data
+        __send_file(_e.file, socket, data)
     return
+
+
 Client = (socket) ->
     @start = ->
 
@@ -121,27 +131,37 @@ Client = (socket) ->
 
         # init events
         socket.on _e.distribution_packages, (data) ->
-            return    unless utils.check_data_distribution(data)
-            distribution_path = path.join(config.debomatic.path, data.distribution.name, "pool")
-            utils.generic_handler_watcher _e.distribution_packages, socket, data, distribution_path, __send_distribution_packages
+            return unless utils.check_data_distribution(data)
+            distribution_path = path.join(config.debomatic.path,
+                                          data.distribution.name,
+                                          "pool")
+            utils.generic_handler_watcher(_e.distribution_packages,
+                                          socket,
+                                          data,
+                                          distribution_path,
+                                          __send_distribution_packages)
             data = null
             return
 
         socket.on _e.package_files_list, (data) ->
-            return    unless utils.check_data_package(data)
+            return unless utils.check_data_package(data)
             package_path = utils.get_package_path(data)
-            utils.generic_handler_watcher _e.package_files_list, socket, data, package_path, __send_package_files_list
+            utils.generic_handler_watcher(_e.package_files_list,
+                                          socket,
+                                          data,
+                                          package_path,
+                                          __send_package_files_list)
             data = null
             return
 
         socket.on _e.file, (data) ->
-            return    unless utils.check_data_file(data)
+            return unless utils.check_data_file(data)
             __handler_get_file socket, data
             data = null
             return
 
         socket.on _e.package_info, (data) ->
-            return    unless utils.check_data_package(data)
+            return unless utils.check_data_package(data)
             __send_package_info socket, data
             data = null
             return
@@ -150,7 +170,7 @@ Client = (socket) ->
         # on client disconnection close all watchers
         socket.on "disconnect", ->
             socket_watchers = socket.watchers
-            return    unless socket_watchers
+            return unless socket_watchers
             for key of socket_watchers
                 try
                     socket_watchers[key].close()

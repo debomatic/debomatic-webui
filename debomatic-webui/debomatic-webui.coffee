@@ -33,10 +33,11 @@ app.get "/", routes.index
 app.get config.routes.distribution, routes.distribution
 
 # parefernces page
-app.get config.routes.preferences, routes.preferences    if config.routes.preferences
+if config.routes.preferences
+    app.get config.routes.preferences, routes.preferences
 
 # commands page
-app.get config.routes.commands, routes.commands    if config.routes.commands
+app.get config.routes.commands, routes.commands if config.routes.commands
 
 # debomatic static page
 if config.routes.debomatic
@@ -50,8 +51,10 @@ if config.routes.debomatic
         base += (if base[base.length - 1] isnt "/" then "/" else "") # append /
         match = req.url.replace(base, "").split("/")
         match.pop() if match[match.length - 1] is ""
-        # case unstable/unstable
-        if match.length >= 2 and ((match[0] is match[1]) or (match[1] is "build" and match.length > 2)) # case unstable/build/*
+
+        if match.length >= 2 and
+        ((match[0] is match[1]) or # case unstable/unstable
+        (match[1] is "build" and match.length > 2)) # case unstable/build/*
             res.status(403).send "<h1>403 Forbidden</h1>"
         else # call next() here to move on to next middleware/router
             next()
@@ -77,7 +80,8 @@ server.listen config.port, config.host, null, (err) ->
     # and set his user id
     uid = parseInt(process.env.SUDO_UID)
     if uid
-        console.log "Please do not run nodejs with sudo. Changing user to %d", uid
+        console.log "Please do not run nodejs with sudo. " +
+                    "Changing user to %d", uid
         process.setgid uid
         process.setuid uid
 
@@ -87,11 +91,14 @@ server.listen config.port, config.host, null, (err) ->
     io.sockets.on "connection", (socket) ->
         client = new Client(socket)
         client.start()
-        client.send_status status    if status.length > 0
+        client.send_status status if status.length > 0
         client.send_status_debomatic()
         return
 
-    console.log "Debomatic-webui listening on %s:%d in %s mode", server.address().address, server.address().port, app.settings.env
+    console.log "Debomatic-webui listening on %s:%d in %s mode",
+                server.address().address,
+                server.address().port,
+                app.settings.env
     return
 
 server.on "error", (e) ->

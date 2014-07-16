@@ -2,7 +2,7 @@
 Parser = ->
     args = process.argv.slice(2)
     help = ->
-        console.log "Usage: %s [-c config]\n    -h        print this help \n    -c        set user configuration file", process.argv[1].split("/").pop()
+        console.log "Usage: %s [-c config]\n    -h print this help \n    -c set user configuration file", process.argv[1].split("/").pop()
         process.exit 0
         return
 

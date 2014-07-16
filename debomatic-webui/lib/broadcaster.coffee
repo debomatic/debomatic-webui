@@ -2,7 +2,7 @@ __watch_status_check_same_obj = (obj1, obj2) ->
     if obj1.status is obj2.status
         if obj1.distribution is obj2.distribution
             if obj1.hasOwnProperty("package") and obj2.hasOwnProperty("package")
-                return true    if obj1.package is obj2.package
+                return true if obj1.package is obj2.package
                 return false
             return true
     false
@@ -15,7 +15,9 @@ __watch_status = (socket, status) ->
         try
             data = JSON.parse(new_content)
         catch err
-            utils.errors_handler "Broadcaster:__watch_status:JSON.parse(new_content) - ", err, socket
+            utils.errors_handler "Broadcaster:" +
+                                 "__watch_status:JSON.parse(new_content) - ",
+                                 err, socket
             return
 
         # looking for same status already in statuses lists
@@ -55,21 +57,26 @@ __watch_distributions = (socket) ->
 
     return
 __watch_pidfile = (socket) ->
-    fs.watchFile config.debomatic.pidfile,
+    fs.watchFile config.debomatic.pidfile, {
         persistent: false
         interval: 1007
+    }
     , (curr, prev) ->
-        status_debomatic = running: curr.ino isnt 0 # if === 0 means pidfile does not exists
+        # if === 0 means pidfile does not exists
+        status_debomatic = running: curr.ino isnt 0
         try
-            socket.emit socket.emit(config.events.broadcast.status_debomatic, status_debomatic)
+            socket.emit socket.emit(
+                config.events.broadcast.status_debomatic,
+                status_debomatic)
         return
 
     return
+
 Broadcaster = (sockets, status) ->
-    __watch_status sockets, status
-    __watch_distributions sockets
-    __watch_pidfile sockets
-    {}
+    __watch_status(sockets, status)
+    __watch_distributions(sockets)
+    __watch_pidfile(sockets)
+
 "use strict"
 config = require("./config")
 fs = require("fs")
