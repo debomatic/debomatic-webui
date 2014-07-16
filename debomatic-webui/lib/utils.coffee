@@ -4,11 +4,9 @@ config = require("./config")
 Tail = require("./tail")
 
 _check_no_backward = (backward_path) ->
-    try
+    if typeof backward_path is 'string'
         return backward_path.indexOf("..") < 0
-    catch err
-        return true
-    return
+    return true
 
 check_data_distribution = (data) ->
     _check_no_backward(data) and
@@ -101,6 +99,7 @@ watch_path_onsocket = (event_name, socket, data, watch_path, updater) ->
 generic_handler_watcher = (event_name, socket, data, watch_path, callback) ->
     callback event_name, socket, data
     watch_path_onsocket event_name, socket, data, watch_path, callback
+
 
 send_distributions = (socket) ->
     get_files_list config.debomatic.path, true, (directories) ->
