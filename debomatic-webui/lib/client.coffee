@@ -4,15 +4,15 @@ __get_files_list_from_package = (data, callback) ->
         data.package.files = []
         data.package.debs = []
         data.package.sources = []
-        files.forEach (f) ->
+        for f in files
             file = {}
+            file.extension = f.split(".").pop()
+            continue if file.extension in config.debomatic.excluded_files
             file.path = path.join(package_path, f)
                             .replace(config.debomatic.path,
                                      config.routes.debomatic)
             file.orig_name = f
             file.name = f.split("_")[0]
-            file.extension = f.split(".").pop()
-            return if file.extension in config.debomatic.excluded_files
             if file.extension in ["deb", "ddeb", "udeb"]
                 data.package.debs.push(file)
             else if file.extension in ["changes", "dsc"] or
@@ -26,12 +26,9 @@ __get_files_list_from_package = (data, callback) ->
             else
                 file.name = file.extension
                 data.package.files.push(file)
-            return
+        callback(data)
 
-        callback data
-        return
 
-    return
 __send_package_files_list = (event_name, socket, data) ->
     __get_files_list_from_package data, (new_data) ->
         socket.emit event_name, new_data
@@ -113,8 +110,7 @@ __handler_get_file = (socket, data) ->
     send = (event_name, socket, data) ->
         data.file.content = null
         socket.emit event_name, data
-    utils.watch_path_onsocket _e.file_newcontent, socket, data, file_path, send
-
+    utils.watch_path_onsocket(_e.file_newcontent, socket, data, file_path, send)
 
     if data.file.name in config.web.file.preview and not data.file.force
         __send_file(_e.file, socket, data, config.web.file.num_lines)
