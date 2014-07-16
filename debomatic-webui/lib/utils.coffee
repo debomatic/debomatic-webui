@@ -1,159 +1,134 @@
-__errors_handler = (from, err, socket) ->
-    from = "NO SOCKET: " + from unless socket
-    console.error from, err.message
-    socket.emit config.events.error, err.message if socket
-    return
+path = require("path")
+fs = require("fs")
+config = require("./config")
+Tail = require("./tail")
 
-__check_no_backward = (backward_path) ->
+_check_no_backward = (backward_path) ->
     try
         return backward_path.indexOf("..") < 0
     catch err
         return true
     return
 
-__check_data_distribution = (data) ->
-    __check_no_backward(data) and
-    __check_no_backward(data.distribution) and
-    __check_no_backward(data.distribution.name)
+check_data_distribution = (data) ->
+    _check_no_backward(data) and
+    _check_no_backward(data.distribution) and
+    _check_no_backward(data.distribution.name)
 
-__check_data_package = (data) ->
-    __check_data_distribution(data) and
-    __check_no_backward(data.package) and
-    __check_no_backward(data.package.name) and
-    __check_no_backward(data.package.version)
 
-__check_data_file = (data) ->
-    __check_data_package(data) and
-    __check_no_backward(data.file) and
-    __check_no_backward(data.file.name)
+check_data_package = (data) ->
+    check_data_distribution(data) and
+    _check_no_backward(data.package) and
+    _check_no_backward(data.package.name) and
+    _check_no_backward(data.package.version)
 
-__get_distribution_pool_path = (data) ->
+
+check_data_file = (data) ->
+    check_data_package(data) and
+    _check_no_backward(data.file) and
+    _check_no_backward(data.file.name)
+
+
+get_distribution_pool_path = (data) ->
     path.join(config.debomatic.path, data.distribution.name, "pool")
 
-__get_package_path = (data) ->
-    path.join(__get_distribution_pool_path(data), data.package.orig_name)
 
-__get_file_path = (data) ->
-    path.join(__get_package_path(data),
+get_package_path = (data) ->
+    path.join(get_distribution_pool_path(data), data.package.orig_name)
+
+
+get_file_path = (data) ->
+    path.join(get_package_path(data),
               data.package.orig_name + "." + data.file.name)
 
-__get_files_list = (dir, onlyDirectories, callback) ->
+get_files_list = (dir, onlyDirectories, callback) ->
     fs.readdir dir, (err, files) ->
-        result = []
         if err
             __errors_handler "__get_files_list", err
             return
-        files.forEach (f) ->
+        result = []
+        for f in files
             try
                 complete_path = path.join(dir, f)
                 stat = fs.statSync(complete_path)
                 if onlyDirectories
-                    result.push f if stat.isDirectory()
+                    result.push(f) if stat.isDirectory()
                 else
-                    result.push f if stat.isFile()
+                    result.push(f) if stat.isFile()
             catch fs_error
-                __errors_handler "__get_files_list:forEach", fs_error
-                return
-            return
+                __errors_handler("__get_files_list:forEach", fs_error)
+                continue
+        callback(result)
 
-        callback result
-        return
 
-    return
-__watch_path_onsocket = (event_name, socket, data, watch_path, updater) ->
+watch_path_onsocket = (event_name, socket, data, watch_path, updater) ->
     socket_watchers = socket.watchers or {}
     try
         watcher = socket_watchers[event_name]
         watcher.close() if watcher
         fs.stat watch_path, (err, stats) ->
             if err
-                __errors_handler "__watch_path_onsocket:fs.stat", err, socket
+                __errors_handler("__watch_path_onsocket:fs.stat",
+                                 err, socket)
                 return
+
             if stats.isDirectory()
                 watcher = fs.watch(watch_path,
-                    persistent: true
-                , (event, fileName) ->
-                    updater event_name, socket, data if event is "rename"
-                    return
-                )
+                    persistent: true,
+                    (event, fileName) ->
+                        if ev is "rename"
+                            updater(event_name, socket, data))
+
             else if stats.isFile()
                 watcher = new Tail(watch_path)
-                watcher.on "line", (new_content, tailInfo) ->
+                watcher.on("line", (new_content, tailInfo) ->
                     data.file.new_content = new_content + "\n"
-                    updater event_name, socket, data
-                    return
+                    updater event_name, socket, data)
 
                 watcher.on "error", (msg) ->
                     socket.emit config.events.error, msg
-                    return
 
             socket_watchers[event_name] = watcher
             socket.watchers = socket_watchers
-            return
 
     catch err
-        __errors_handler("__watch_path_onsocket <- " +
-                         arguments_.callee.caller.name,
-                         err,
-                         socket)
+        errors_handler("__watch_path_onsocket <- " +
+                       arguments_.callee.caller.name,
+                       err, socket)
         return
-    return
-__generic_handler_watcher = (event_name, socket, data, watch_path, callback) ->
+
+
+generic_handler_watcher = (event_name, socket, data, watch_path, callback) ->
     callback event_name, socket, data
-    __watch_path_onsocket event_name, socket, data, watch_path, callback
-    return
-__send_distributions = (socket) ->
-    __get_files_list config.debomatic.path, true, (directories) ->
+    watch_path_onsocket event_name, socket, data, watch_path, callback
+
+send_distributions = (socket) ->
+    get_files_list config.debomatic.path, true, (directories) ->
         distributions = []
-        directories.forEach (dir) ->
+        for dir in directories
             data = {}
             data.distribution = {}
             data.distribution.name = dir
-            pool_path = __get_distribution_pool_path(data)
+            pool_path = get_distribution_pool_path(data)
             distributions.push dir if fs.existsSync(pool_path)
-            return
 
         socket.emit config.events.broadcast.distributions, distributions
-        return
+
+errors_handler = (from, error, socket) ->
+    from = "NO SOCKET: " + from unless socket
+    console.error from, err.message
+    socket.emit config.events.error, err.message if socket
     return
 
-path = require("path")
-fs = require("fs")
-config = require("./config")
-Tail = require("./tail")
 
-utils =
-    check_data_distribution: (data) ->
-        __check_data_distribution data
-
-    check_data_package: (data) ->
-        __check_data_package data
-
-    check_data_file: (data) ->
-        __check_data_file data
-
-    get_distribution_pool_path: (data) ->
-        __get_distribution_pool_path data
-
-    get_package_path: (data) ->
-        __get_package_path data
-
-    get_file_path: (data) ->
-        __get_file_path data
-
-    get_files_list: (dir, onlyDirectories, callback) ->
-        __get_files_list dir, onlyDirectories, callback
-
-    watch_path_onsocket: (event_name, socket, data, watch_path, updater) ->
-        __watch_path_onsocket event_name, socket, data, watch_path, updater
-
-    generic_handler_watcher: (event_name, socket, data, watch_path, callback) ->
-        __generic_handler_watcher event_name, socket, data, watch_path, callback
-
-    send_distributions: (socket) ->
-        __send_distributions socket
-
-    errors_handler: (from, error, socket) ->
-        __errors_handler from, error, socket
-
-module.exports = utils
+module.exports.check_data_distribution = check_data_distribution
+module.exports.check_data_package = check_data_package
+module.exports.check_data_file = check_data_file
+module.exports.get_distribution_pool_path = get_distribution_pool_path
+module.exports.get_package_path = get_package_path
+module.exports.get_file_path = get_file_path
+module.exports.get_files_list = get_files_list
+module.exports.watch_path_onsocket = watch_path_onsocket
+module.exports.generic_handler_watcher = generic_handler_watcher
+module.exports.send_distributions = send_distributions
+module.exports.errors_handler = errors_handler
