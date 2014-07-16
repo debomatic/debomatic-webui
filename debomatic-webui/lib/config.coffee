@@ -4,54 +4,19 @@
 # *
 # *    Edit auto-generated 'user.config.js' file instead.
 # *
-# 
+#
 
 # #start config-auto-export
+config = {}
 
 #
 # * Configure host and port.
 # *    Please for ports < 1000 use authbind. DO NOT RUN nodejs as root.
 # *    $ authbind nodejs index.js
-# 
-
-# web configuration
-
-# debomatic configuration exportable for web
-# please use this SPAMFREE form - it will be converted client side by javascript
-
-# header title and description
-
-# list of files get preview
-
-# default ui settings
-# valid values are [13..16]
-# debug level - 0 means disabled
-
-# #end config-auto-export
-
-# DO NOT TOUCH these ones
-
-# debomatic status according with JSONLogger.py module
-
-# read user configuration and merge it
 #
-# * update object1 with object2 values
-# 
-_merge = (object1, object2) ->
-    result = {}
-    for p of object1
-        if object2.hasOwnProperty(p)
-            if typeof object1[p] is "object" and typeof object2[p] is "object"
-                result[p] = _merge(object1[p], object2[p])
-            else
-                result[p] = object2[p]
-        else
-            result[p] = object1[p]
-    result
-"use strict"
-config = {}
 config.host = "localhost"
 config.port = 3000
+
 config.debomatic = {}
 config.debomatic.path = "/srv/debomatic-amd64"
 config.debomatic.jsonfile = "/var/log/debomatic-json.log"
@@ -60,10 +25,13 @@ config.routes.debomatic = "/debomatic"
 config.routes.distribution = "/distribution"
 config.routes.preferences = "/preferences"
 config.routes.commands = "/commands"
+
+# web configuration
 config.web = {}
 config.web.debomatic = {}
 config.web.debomatic.admin = {}
 config.web.debomatic.admin.name = "Your Name"
+# please use this SPAMFREE form - it will be converted client side by javascript
 config.web.debomatic.admin.email = "you AT debian DOT org"
 config.web.debomatic.architecture = "amd64"
 config.web.debomatic.dput = {}
@@ -72,24 +40,37 @@ config.web.debomatic.dput.host = config.host
 config.web.debomatic.dput.login = "debomatic"
 config.web.debomatic.dput.method = "scp"
 config.web.debomatic.dput.unsigned_uploads = false
+# header title and description
 config.web.title = "Deb-o-Matic web.ui"
-config.web.description = "This is a web interface for debomatic over " + config.web.debomatic.architecture
+config.web.description = "This is a web interface for debomatic over " +
+                         config.web.debomatic.architecture
+# list of files get preview
 config.web.file = {}
 config.web.file.preview = ["buildlog"]
 config.web.file.num_lines = 25
+
+# default ui settings
 config.web.preferences = {}
 config.web.preferences.autoscroll = true
 config.web.preferences.header = true
 config.web.preferences.sidebar = true
 config.web.preferences.glossy_theme = true
 config.web.preferences.file_background = true
+# valid values are [13..16]
 config.web.preferences.file_fontsize = 13
+# debug level - 0 means disabled
 config.web.preferences.debug = 0
+
+# #end config-auto-export
+
+# DO NOT TOUCH these ones
+
 config.version = "0.6.0"
 config.debomatic.excluded_files = [
     "datestamp"
     "json"
 ]
+
 config.events = {}
 config.events.error = "server-error"
 config.events.broadcast = {}
@@ -104,18 +85,33 @@ config.events.client.package_info = "c.package_info"
 config.events.client.file = "c.file"
 config.events.client.file_newcontent = "c.file_newcontent"
 config.events.client.status = "c.status"
+
+# debomatic status according with JSONLogger.py module
 config.status = {}
 config.status.build = "build"
 config.status.create = "create"
 config.status.update = "update"
 config.status.success = true
 config.status.fail = false
+
 try
     Parser = require("./parser")
     parser = new Parser()
     user_config = parser.getUserConfig()
     if user_config
         console.log "Reading user configutation ..."
+        # * update object1 with object2 values
+        _merge = (object1, object2) ->
+            result = {}
+            for p of object1
+                if object2.hasOwnProperty(p)
+                    if typeof object1[p] is "object" and typeof object2[p] is "object"
+                        result[p] = _merge(object1[p], object2[p])
+                    else
+                        result[p] = object2[p]
+                else
+                    result[p] = object1[p]
+            return result
         config = _merge(config, require(user_config))
     else
         console.log "No user config specified. Using global settings."
@@ -127,13 +123,17 @@ catch err
         console.error "Error reading user configutation", err
         process.exit 1
 finally
-    
+
     # export some variable
     config.web.paths = config.routes
     config.web.events = config.events
     config.web.status = config.status
     config.web.host = config.host
-    
+
     # calculate pidfile
-    config.debomatic.pidfile = "/var/run/debomatic-" + require("crypto").createHash("sha256").update(config.debomatic.path).digest("hex")
+    config.debomatic.pidfile = "/var/run/debomatic-" +
+                               require("crypto")
+                               .createHash("sha256")
+                               .update(config.debomatic.path)
+                               .digest("hex")
     module.exports = config
