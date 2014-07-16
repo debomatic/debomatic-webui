@@ -128,9 +128,7 @@ Client = (socket) ->
         # init events
         socket.on _e.distribution_packages, (data) ->
             return unless utils.check_data_distribution(data)
-            distribution_path = path.join(config.debomatic.path,
-                                          data.distribution.name,
-                                          "pool")
+            distribution_path = utils.get_distribution_pool_path(data)
             utils.generic_handler_watcher(_e.distribution_packages,
                                           socket,
                                           data,
