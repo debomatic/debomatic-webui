@@ -74,7 +74,7 @@ watch_path_onsocket = (event_name, socket, data, watch_path, updater) ->
                 watcher = fs.watch(watch_path,
                     persistent: true,
                     (event, fileName) ->
-                        if ev is "rename"
+                        if event is "rename"
                             updater(event_name, socket, data))
 
             else if stats.isFile()
