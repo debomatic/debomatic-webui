@@ -73,7 +73,14 @@ __watch_pidfile = (socket) ->
     return
 
 Broadcaster = (sockets, status) ->
-    __watch_status(sockets, status)
+    if not fs.existsSync(config.debomatic.jsonfile)
+        # watch until json log file is created
+        fs.watchFile config.debomatic.jsonfile, (curr, prev) ->
+            if curr.ino isnt 0
+                fs.unwatchFile(config.debomatic.jsonfile)
+                __watch_status(sockets, status)
+    else
+        __watch_status(sockets, status)
     __watch_distributions(sockets)
     __watch_pidfile(sockets)
 
