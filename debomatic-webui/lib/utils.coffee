@@ -42,7 +42,7 @@ get_file_path = (data) ->
 get_files_list = (dir, onlyDirectories, callback) ->
     fs.readdir dir, (err, files) ->
         if err
-            __errors_handler "__get_files_list", err
+            errors_handler "get_files_list", err
             return
         result = []
         for f in files
@@ -54,7 +54,7 @@ get_files_list = (dir, onlyDirectories, callback) ->
                 else
                     result.push(f) if stat.isFile()
             catch fs_error
-                __errors_handler("__get_files_list:forEach", fs_error)
+                errors_handler("get_files_list:forEach", fs_error)
                 continue
         callback(result)
 
@@ -66,7 +66,7 @@ watch_path_onsocket = (event_name, socket, data, watch_path, updater) ->
         watcher.close() if watcher
         fs.stat watch_path, (err, stats) ->
             if err
-                __errors_handler("__watch_path_onsocket:fs.stat",
+                errors_handler("watch_path_onsocket:fs.stat",
                                  err, socket)
                 return
 
@@ -90,7 +90,7 @@ watch_path_onsocket = (event_name, socket, data, watch_path, updater) ->
             socket.watchers = socket_watchers
 
     catch err
-        errors_handler("__watch_path_onsocket <- " +
+        errors_handler("watch_path_onsocket <- " +
                        arguments_.callee.caller.name,
                        err, socket)
         return
