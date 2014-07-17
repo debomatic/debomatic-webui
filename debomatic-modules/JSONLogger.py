@@ -116,7 +116,7 @@ class DebomaticModule_JSONLogger:
                 info[key] = status[key]
 
         with open(package_json, 'w') as infofd:
-            json = toJSON(info, indent=4)
+            json = toJSON(info, indent=4, sort_keys=True)
             infofd.write(json + '\n')
 
     def pre_chroot(self, args):
