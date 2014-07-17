@@ -10,8 +10,8 @@ global_config_file = os.path.join(base_path, '../lib/config.coffee')
 user_config_file = os.path.join(base_path, '../user.config.coffee')
 
 if os.path.isfile(user_config_file):
-  print ("A config user file already exists. Skipping creation.")
-  exit()
+    print ("A config user file already exists. Skipping creation.")
+    exit()
 
 export_header = """
 ###
@@ -22,15 +22,15 @@ debomatic-webui user configuration
 export_config = [export_header]
 
 with open(global_config_file) as fd:
-  start = False
-  for line in fd:
-    if line.find('#start config-auto-export') >= 0:
-      start = True
-      continue
-    elif line.find('#end config-auto-export') >= 0:
-      break
-    if start:
-      export_config.append(line)
+    start = False
+    for line in fd:
+        if line.find('#start config-auto-export') >= 0:
+            start = True
+            continue
+        elif line.find('#end config-auto-export') >= 0:
+            break
+        if start:
+            export_config.append(line)
 
 export_config.append('# DO NOT EDIT THIS LINE:\n')
 export_config.append('module.exports = config\n')
@@ -38,4 +38,4 @@ export_config.append('module.exports = config\n')
 print ("Creating user configuration ...")
 
 with open(user_config_file, 'w') as fd:
-  fd.write(''.join(export_config))
+    fd.write(''.join(export_config))
