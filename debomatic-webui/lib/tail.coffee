@@ -1,29 +1,22 @@
-"use strict"
 fs = require("fs")
 Tail = require("tail").Tail
-Tail::watchEvent = (e) ->
-    _this = this
-    if e is "change"
-        fs.stat @filename, (err, stats) ->
-            if err
-                _this.emit "error", err
-                return
-            _this.pos = stats.size if stats.size < _this.pos
-            if stats.size > _this.pos
-                _this.queue.push
-                    start: _this.pos
-                    end: stats.size
 
-                _this.pos = stats.size
-                _this.internalDispatcher.emit "next" if _this.queue.length is 1
+class MyTail extends Tail
 
-    else if e is "rename"
+    watchEvent: (e) ->
+        if e is 'change'
+            stats = fs.statSync(@filename)
+            @pos = stats.size if stats.size < @pos #scenario where texts is not appended but it's actually a w+
+            if stats.size > @pos
+                @queue.push({start: @pos, end: stats.size})
+                @pos = stats.size
+                @internalDispatcher.emit("next") if @queue.length is 1
+        else if e is 'rename'
+            @unwatch()
+            @emit "error", "File " + @filename + " deleted."
+
+    close: () ->
         @unwatch()
-        _this.emit "error", "File " + @filename + " deleted."
-    return
+        return
 
-Tail::close = ->
-    @unwatch()
-    return
-
-module.exports = Tail
+module.exports = MyTail
