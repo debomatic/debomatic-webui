@@ -89,7 +89,7 @@ __send_file = (event_name, socket, data, last_lines) ->
     file_path = utils.get_file_path(data)
     fs.readFile file_path, "utf8", (err, content) ->
         if err
-            utils.errors_handler "client:__send_file", err, socket
+            utils.errors_handler("client:__send_file", err, socket)
             return
         data.file.orig_name = file_path.split("/").pop()
         if last_lines > 0
@@ -100,13 +100,13 @@ __send_file = (event_name, socket, data, last_lines) ->
                                            config.routes.debomatic)
         socket.emit event_name, data
         return
-
     return
+
 __handler_get_file = (socket, data) ->
     file_path = utils.get_file_path(data)
     send = (event_name, socket, data) ->
         data.file.content = null
-        socket.emit event_name, data
+        socket.emit(event_name, data)
     utils.watch_path_onsocket(_e.file_newcontent, socket, data, file_path, send)
 
     if data.file.name in config.web.file.preview and not data.file.force

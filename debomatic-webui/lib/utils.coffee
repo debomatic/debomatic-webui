@@ -59,7 +59,7 @@ get_files_list = (dir, onlyDirectories, callback) ->
         callback(result)
 
 
-watch_path_onsocket = (event_name, socket, data, watch_path, updater) ->
+watch_path_onsocket = (event_name, socket, data, watch_path, callback) ->
     socket_watchers = socket.watchers or {}
     try
         watcher = socket_watchers[event_name]
@@ -75,13 +75,13 @@ watch_path_onsocket = (event_name, socket, data, watch_path, updater) ->
                     persistent: true,
                     (event, fileName) ->
                         if event is "rename"
-                            updater(event_name, socket, data))
+                            callback(event_name, socket, data))
 
             else if stats.isFile()
                 watcher = new Tail(watch_path)
-                watcher.on("line", (new_content, tailInfo) ->
+                watcher.on "line", (new_content, tailInfo) ->
                     data.file.new_content = new_content + "\n"
-                    updater event_name, socket, data)
+                    callback(event_name, socket, data)
 
                 watcher.on "error", (msg) ->
                     socket.emit config.events.error, msg
@@ -91,7 +91,7 @@ watch_path_onsocket = (event_name, socket, data, watch_path, updater) ->
 
     catch err
         errors_handler("watch_path_onsocket <- " +
-                       arguments_.callee.caller.name,
+                       arguments.callee.caller.name,
                        err, socket)
         return
 
@@ -113,7 +113,7 @@ send_distributions = (socket) ->
 
         socket.emit config.events.broadcast.distributions, distributions
 
-errors_handler = (from, error, socket) ->
+errors_handler = (from, err, socket) ->
     from = "NO SOCKET: " + from unless socket
     console.error from, err.message
     socket.emit config.events.error, err.message if socket
