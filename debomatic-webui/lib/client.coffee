@@ -15,8 +15,7 @@ __get_files_list_from_package = (data, callback) ->
             file.name = f.split("_")[0]
             if file.extension in ["deb", "ddeb", "udeb"]
                 data.package.debs.push(file)
-            else if file.extension in ["changes", "dsc"] or
-                    f.indexOf('.tar') > 0
+            else if file.extension in ["changes", "dsc"] or f.indexOf('.tar') > 0
                 file.name = f.replace(data.package.orig_name + ".", "")
                 if file.extension is "changes"
                     file.name = file.extension
@@ -38,9 +37,7 @@ __send_package_files_list = (event_name, socket, data) ->
 __read_package_status = (data, cb) ->
     package_path = utils.get_package_path(data)
     package_json = path.join(package_path, data.package.orig_name + ".json")
-    fs.readFile package_json,
-        encoding: "utf8"
-    , (err, content) ->
+    fs.readFile package_json, {encoding: "utf8"}, (err, content) ->
         if err
             utils.errors_handler "Client:__read_package_status:", err
             return

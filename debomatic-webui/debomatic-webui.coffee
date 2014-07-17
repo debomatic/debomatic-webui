@@ -61,10 +61,8 @@ if config.routes.debomatic
         return
 
     app.use config.routes.debomatic, serve_static(config.debomatic.path)
-    app.use config.routes.debomatic, serve_index(config.debomatic.path,
-        view: "details"
-        icons: true
-    )
+    app.use(config.routes.debomatic, serve_index(config.debomatic.path,
+                                                 {view: "details", icons: true}))
 
 # serve stylesheet-javascript
 app.use serve_static(__dirname + "/public")
