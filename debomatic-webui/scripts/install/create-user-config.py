@@ -13,8 +13,7 @@ if os.path.isfile(user_config_file):
     print ("A config user file already exists. Skipping creation.")
     exit()
 
-export_header = """
-###
+export_header = """###
 debomatic-webui user configuration
 ###
 
