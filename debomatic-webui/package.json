@@ -9,7 +9,8 @@
         "errorhandler ": "*",
         "ejs": ">= 0.0.1",
         "socket.io": "1.*",
-        "tail": "*"
+        "tail": "*",
+        "extend": "~1.3.0"
     },
     "scripts": {
         "install": "bash scripts/install.sh",
