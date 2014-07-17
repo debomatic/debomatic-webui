@@ -12,7 +12,8 @@
         "tail": "*"
     },
     "scripts": {
-        "install": "bash scripts/install.sh"
+        "install": "bash scripts/install.sh",
+        "start": "coffee debomatic-webui"
     },
     "bin": {
         "debomatic-webui": "./debomatic-webui"

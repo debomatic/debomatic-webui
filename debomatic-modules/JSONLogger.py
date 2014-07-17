@@ -35,7 +35,7 @@ from collections import defaultdict
 # as first and as last one for pre_* and post_* hooks
 class DebomaticModule_00_JSONLogger:
     def __init__(self):
-        self.logger = JSONLogger.Instance()
+        self.logger = DebomaticModule_JSONLogger()
 
     def pre_chroot(self, args):
         self.logger.pre_chroot(args)
@@ -46,7 +46,7 @@ class DebomaticModule_00_JSONLogger:
 
 class DebomaticModule_ZZ_JSONLogger:
     def __init__(self):
-        self.logger = JSONLogger.Instance()
+        self.logger = DebomaticModule_JSONLogger()
 
     def post_chroot(self, args):
         self.logger.post_chroot(args)
@@ -55,25 +55,8 @@ class DebomaticModule_ZZ_JSONLogger:
         self.logger.post_build(args)
 
 
-# Singleton decorator
-class Singleton:
-    def __init__(self, decorated):
-        self._decorated = decorated
-
-    def Instance(self):
-        try:
-            return self._instance
-        except AttributeError:
-            self._instance = self._decorated()
-            return self._instance
-
-    def __call__(self):
-        raise TypeError('Singletons must be accessed through `Instance()`.')
-
-
 # The real JSONLogger Class
-@Singleton
-class JSONLogger:
+class DebomaticModule_JSONLogger:
 
     def __init__(self):
         self.jsonfile = '/var/log/debomatic-json.log'
@@ -81,10 +64,33 @@ class JSONLogger:
     def _set_json_logfile_name(self, args):
         """If debomatic config file has section [jsonlogger] try to get
         'jsonfile' option and override the default value."""
-        if 'opts' in args and args['opts'].has_section('jsonlogger'):
+        if 'opts' in args and \
+           args['opts'].has_section('jsonlogger') and \
+           args['opts'].has_option('jsonlogger', 'jsonfile'):
             self.jsonfile = args['opts'].get('jsonlogger', 'jsonfile').strip()
 
-    def _write_json_logfile(self, args, status):
+    def _get_package_json_filename(self, args):
+        """Get the path of package JSON file"""
+        return '%(directory)s/pool/%(package)s/%(package)s.json' % args
+
+    def _get_distribution_status(self, args):
+        """From args to distribution status"""
+        status = {}
+        status['status'] = args['cmd']
+        status['distribution'] = args['distribution']
+        if 'success' in args:
+            status['success'] = args['success']
+        return status
+
+    def _get_package_status(self, args):
+        """From args to package status"""
+        status = {}
+        for k in ['package', 'distribution', 'uploader']:
+            if k in args:
+                status[k] = args[k]
+        return status
+
+    def _append_json_logfile(self, args, status):
         """Write status to jsonfile in JSON format."""
         self._set_json_logfile_name(args)
         status['time'] = int(time())
@@ -92,13 +98,9 @@ class JSONLogger:
             json = toJSON(status)
             logfd.write(json + '\n')
 
-    def _get_package_json(self, args):
-        """Get the path of package JSON file"""
-        return '%(directory)s/pool/%(package)s/%(package)s.json' % args
-
     def _write_package_json(self, args, status):
         """Write package status to a JSON file."""
-        package_json = self._get_package_json(args)
+        package_json = self._get_package_json_filename(args)
         if os.path.isfile(package_json):
             with open(package_json, 'r') as infofd:
                 try:
@@ -117,40 +119,22 @@ class JSONLogger:
             json = toJSON(info, indent=4)
             infofd.write(json + '\n')
 
-    def _get_distribution_status(self, args):
-        """From args to distribution status"""
-        status = {}
-        status['status'] = args['cmd']
-        status['distribution'] = args['distribution']
-        if 'success' in args:
-            status['success'] = args['success']
-        return status
-
-    def _get_package_status(self, args):
-        """From args to package status"""
-        keys = ['package', 'distribution', 'uploader']
-        status = {}
-        for k in keys:
-            if k in args:
-                status[k] = args[k]
-        return status
-
     def pre_chroot(self, args):
         distribution = self._get_distribution_status(args)
-        self._write_json_logfile(args, distribution)
+        self._append_json_logfile(args, distribution)
 
     def post_chroot(self, args):
         distribution = self._get_distribution_status(args)
-        self._write_json_logfile(args, distribution)
+        self._append_json_logfile(args, distribution)
 
     def pre_build(self, args):
         package = self._get_package_status(args)
         package['status'] = 'build'
-        package_json = self._get_package_json(args)
+        package_json = self._get_package_json_filename(args)
         if os.path.isfile(package_json):
             os.remove(package_json)
         self._write_package_json(args, package)
-        self._write_json_logfile(args, package)
+        self._append_json_logfile(args, package)
 
     def post_build(self, args):
         status = self._get_package_status(args)
@@ -167,7 +151,7 @@ class JSONLogger:
                 if tag:
                     status['tags'][filename] = tag
         self._write_package_json(args, status)
-        self._write_json_logfile(args, status)
+        self._append_json_logfile(args, status)
 
 
 # Parser for log files
@@ -227,9 +211,5 @@ class LogParser():
 
     def _from_tags_to_result(self, tags):
         keys = sorted(list(tags.keys()))
-        result = []
-        for k in keys:
-            result.append("%s%s" % (k, tags[k]))
-        if len(result) > 0:
-            return ' '.join(result)
-        return None
+        result = ["%s%s" % (k, tags[k]) for k in keys]
+        return ' '.join(result) if result else None
