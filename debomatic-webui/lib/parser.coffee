@@ -16,7 +16,10 @@ Parser = ->
         if '-c' in args
             if args.length < 2
                 help()
-            return args[args.indexOf('-c') + 1]
+            user_config = args[args.indexOf('-c') + 1]
+            if user_config[0] isnt '/'
+                user_config = process.cwd() + "/" + user_config
+            return path.normalize(user_config)
         return null
 
     if '-h' in args
