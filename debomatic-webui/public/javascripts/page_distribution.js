@@ -579,6 +579,8 @@ function Page_Distrubion(socket) {
         set: function (socket_error) {
             if ($('#error').is(':visible'))
                 return;
+            socket_error = socket_error.replace(/ENOENT, [a-z]+ '(.*)'/,
+                '<b>No such file or directory</b>&nbsp;&nbsp;$1');
             $('#error .message').html(socket_error);
             error.view();
         },
