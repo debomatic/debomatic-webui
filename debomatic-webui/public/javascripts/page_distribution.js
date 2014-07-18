@@ -579,12 +579,12 @@ function Page_Distrubion(socket) {
         set: function (socket_error) {
             if ($('#error').is(':visible'))
                 return;
-            $('#error span').html(socket_error);
+            $('#error .message').html(socket_error);
             error.view();
         },
         clean: function () {
             $('#error').hide();
-            $('#error span').html('');
+            $('#error .message').html('');
         },
         view: function () {
             $('#error').fadeIn(100);
