@@ -1,25 +1,26 @@
 #!/bin/bash
 
+VERSION="$1"
+BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
+PACKAGE="${BASE_DIR}/debomatic-webui/package.json"
+CURRENT="`grep '"version":' ${PACKAGE} | awk -F'"' '{print $4}'`"
+
 if [ $# == 0 ] ; then
-	echo "Please specify a version number."
+	echo "Please specify a new version number."
+	echo "Current verion is ${CURRENT}"
 	exit
 fi
 
-VERSION=$1
-BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
-CONFIG=${BASE_DIR}/debomatic-webui/lib/config.js
-
-CURRENT="`grep "^config.version" ${CONFIG} | awk -F"'" '{print $2}'`"
 y='n'
 echo -n "Current version is ${CURRENT}. Bump to ${VERSION} ? [y/N] "
 read y
 if [ "$y" == "y" -o "$y" == "Y" ] ; then
-	sed -r "s/^config.version = '(.*)'/config.version = '${VERSION}'/" -i $CONFIG || exit 1
+	sed -r "s/\"version\": \"(.*)\"/\"version\": \"${VERSION}\"/" -i $PACKAGE || exit 1
 	y='n'
 	echo -n "Do git-commit? [y/N] "
 	read y
 	if [ "$y" == "y" -o "$y" == "Y" ] ; then
-		git commit -m "Bumped version ${VERSION}" ${CONFIG}
+		git commit -m "Bumped version ${VERSION}" ${PACKAGE}
 		y='n'
 		echo -n "Do git-tag? [y/N] "
 		read y

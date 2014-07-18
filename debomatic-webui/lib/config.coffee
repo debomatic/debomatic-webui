@@ -80,7 +80,7 @@ config.web.preferences.debug = 0  # debug level - 0 means disabled
 ###
 The version
 ###
-config.version = "0.6.0"
+config.version = require("../package").version
 
 ###
 List of files to not show in webui
