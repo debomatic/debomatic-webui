@@ -88,10 +88,13 @@ describe 'client', ->
         done()
     )
 
-    it 'on getting distributions', (done) ->
-        client.on events.broadcast.distributions, (data) ->
-            data.should.be.eql(['trusty', 'unstable'])
-            done()
+    it 'on connecting', (done) ->
+        client.on 'connect', () ->
+            client.on events.broadcast.distributions, (data) ->
+                data.should.be.eql(['trusty', 'unstable'])
+                client.on events.broadcast.status_debomatic, (data) ->
+                    data.running.should.be.false
+                    done()
 
     it 'on getting distribution packages', (done) ->
         helper.make_package('unstable', 'test_1.2.3')
@@ -137,8 +140,9 @@ describe 'client', ->
             done()
         helper.append_file('unstable', 'test_1.2.3', 'buildlog', 'this is an appending test')
 
-    after( () ->
+    after( (done) ->
         helper.clean_all()
+        done()
     )
 
 # process.on 'exit', () ->
