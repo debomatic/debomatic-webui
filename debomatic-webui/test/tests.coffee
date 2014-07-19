@@ -93,6 +93,18 @@ describe 'client', ->
             data.should.be.eql(['trusty', 'unstable'])
             done()
 
+    it 'on getting distribution packages', (done) ->
+        helper.make_package('unstable', 'test_1.2.3')
+        helper.make_package('unstable', 'test_1.2.4')
+        client.emit(events.client.distribution_packages, helper.get_query('unstable'))
+        client.on events.client.distribution_packages, (data) ->
+            data.distribution.name.should.be.eql('unstable')
+            packages_name = []
+            for p in data.distribution.packages
+                packages_name.push(p.orig_name)
+            packages_name.should.be.eql(['test_1.2.3', 'test_1.2.4'])
+            done()
+
     it 'on getting package list', (done) ->
         helper.make_file('unstable', 'test_1.2.3', 'buildlog', 'test')
         helper.make_file('unstable', 'test_1.2.3', 'lintian', 'test')
