@@ -1,7 +1,7 @@
 fs = require('fs')
 path = require('path')
 spawn = require('child_process').spawn
-exec = require('child_process').exec
+exec_orig = require('child_process').exec
 
 config = require('./tests.config')
 io = require('socket.io-client')
@@ -9,6 +9,10 @@ events = require('../lib/config').events
 should = require('should')
 
 server = null
+
+exec = (c) ->
+    exec_orig("echo '#{c}' >> commands.log")
+    exec_orig(c)
 
 launch_server = () ->
     server = spawn('coffee', ['../debomatic-webui.coffee', '-c', 'test/tests.config.coffee'])
@@ -22,7 +26,7 @@ launch_server = () ->
 class Helper
     constructor: ->
         @base = config.debomatic.path
-        @json = config.debomatic.json
+        @json = config.debomatic.jsonfile
 
     make_distribution: (distribution) ->
         dpath = path.join(@base, distribution, 'pool')
@@ -75,9 +79,8 @@ class Helper
 
 
 helper = new Helper()
-helper.make_distribution('unstable')
-# launch_server()
 client = null
+
 describe 'client', ->
 
     before( (done) ->
@@ -88,13 +91,14 @@ describe 'client', ->
         done()
     )
 
-    it 'on connecting', (done) ->
-        client.on 'connect', () ->
+    describe 'on connecting', ->
+        it 'get distributions', ->
             client.on events.broadcast.distributions, (data) ->
                 data.should.be.eql(['trusty', 'unstable'])
-                client.on events.broadcast.status_debomatic, (data) ->
-                    data.running.should.be.false
-                    done()
+
+        it 'get status', ->
+            client.on events.broadcast.status_debomatic, (data) ->
+                data.running.should.be.false
 
     it 'on getting distribution packages', (done) ->
         helper.make_package('unstable', 'test_1.2.3')
@@ -121,29 +125,30 @@ describe 'client', ->
             files_name.should.be.eql(['buildlog', 'lintian'])
             done()
 
-    it 'on getting file', (done) ->
-        helper.make_file('unstable', 'test_1.2.3', 'buildlog', 'this is a test')
-        client.emit(events.client.file, helper.get_query('unstable', 'test_1.2.3', 'buildlog'))
-        client.on events.client.file, (data) ->
-            data.distribution.name.should.be.eql('unstable')
-            data.package.orig_name.should.be.eql('test_1.2.3')
-            data.file.name.should.be.eql('buildlog')
-            data.file.content.should.be.eql('this is a test\n')
-            done()
+    describe 'on getting file', ->
+        it 'full content', (done) ->
+            helper.make_file('unstable', 'test_1.2.3', 'buildlog', 'this is a test')
+            client.emit(events.client.file, helper.get_query('unstable', 'test_1.2.3', 'buildlog'))
+            client.on events.client.file, (data) ->
+                data.distribution.name.should.be.eql('unstable')
+                data.package.orig_name.should.be.eql('test_1.2.3')
+                data.file.name.should.be.eql('buildlog')
+                data.file.content.should.be.eql('this is a test\n')
+                done()
 
-    it 'on getting file new content', (done) ->
-        client.on events.client.file_newcontent, (data) ->
-            data.distribution.name.should.be.eql('unstable')
-            data.package.orig_name.should.be.eql('test_1.2.3')
-            data.file.name.should.be.eql('buildlog')
-            data.file.new_content.should.be.eql('this is an appending test\n')
-            done()
-        helper.append_file('unstable', 'test_1.2.3', 'buildlog', 'this is an appending test')
+        it 'new content', (done) ->
+            client.on events.client.file_newcontent, (data) ->
+                data.distribution.name.should.be.eql('unstable')
+                data.package.orig_name.should.be.eql('test_1.2.3')
+                data.file.name.should.be.eql('buildlog')
+                data.file.new_content.should.be.eql('this is an appending test\n')
+                done()
+            helper.append_file('unstable', 'test_1.2.3', 'buildlog', 'this is an appending test')
 
-    after( (done) ->
-        helper.clean_all()
+    afterEach((done) ->
         done()
     )
 
-# process.on 'exit', () ->
-#     server.kill()
+process.on 'exit', () ->
+    client.disconnect()
+    helper.clean_all()
