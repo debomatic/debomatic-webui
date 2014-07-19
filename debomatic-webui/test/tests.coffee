@@ -83,12 +83,11 @@ client = null
 
 describe 'client', ->
 
-    before( (done) ->
+    before( ->
         helper.make_distribution('trusty')
         helper.make_distribution('unstable')
         helper.append_json("")
         client = io.connect("http://#{config.host}:#{config.port}")
-        done()
     )
 
     describe 'on connecting', ->
@@ -100,7 +99,7 @@ describe 'client', ->
             client.on events.broadcast.status_debomatic, (data) ->
                 data.running.should.be.false
 
-    it 'on getting distribution packages', (done) ->
+    it 'on getting distribution packages', ->
         helper.make_package('unstable', 'test_1.2.3')
         helper.make_package('unstable', 'test_1.2.4')
         client.emit(events.client.distribution_packages, helper.get_query('unstable'))
@@ -110,9 +109,8 @@ describe 'client', ->
             for p in data.distribution.packages
                 packages_name.push(p.orig_name)
             packages_name.should.be.eql(['test_1.2.3', 'test_1.2.4'])
-            done()
 
-    it 'on getting package list', (done) ->
+    it 'on getting package list', ->
         helper.make_file('unstable', 'test_1.2.3', 'buildlog', 'test')
         helper.make_file('unstable', 'test_1.2.3', 'lintian', 'test')
         client.emit(events.client.package_files_list, helper.get_query('unstable', 'test_1.2.3'))
@@ -123,10 +121,9 @@ describe 'client', ->
             for f in data.package.files
                 files_name.push(f.name)
             files_name.should.be.eql(['buildlog', 'lintian'])
-            done()
 
     describe 'on getting file', ->
-        it 'full content', (done) ->
+        it 'full content', ->
             helper.make_file('unstable', 'test_1.2.3', 'buildlog', 'this is a test')
             client.emit(events.client.file, helper.get_query('unstable', 'test_1.2.3', 'buildlog'))
             client.on events.client.file, (data) ->
@@ -134,20 +131,15 @@ describe 'client', ->
                 data.package.orig_name.should.be.eql('test_1.2.3')
                 data.file.name.should.be.eql('buildlog')
                 data.file.content.should.be.eql('this is a test\n')
-                done()
 
-        it 'new content', (done) ->
+        it 'new content', ->
             client.on events.client.file_newcontent, (data) ->
                 data.distribution.name.should.be.eql('unstable')
                 data.package.orig_name.should.be.eql('test_1.2.3')
                 data.file.name.should.be.eql('buildlog')
                 data.file.new_content.should.be.eql('this is an appending test\n')
-                done()
-            helper.append_file('unstable', 'test_1.2.3', 'buildlog', 'this is an appending test')
 
-    afterEach((done) ->
-        done()
-    )
+            helper.append_file('unstable', 'test_1.2.3', 'buildlog', 'this is an appending test')
 
 process.on 'exit', () ->
     client.disconnect()
