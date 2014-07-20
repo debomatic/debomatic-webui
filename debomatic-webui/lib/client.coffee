@@ -91,16 +91,19 @@ class Client
             @socket.emit e.file, data
 
     send_status: (status) ->
-        @socket.emit e.status, status
+        data = status
+        if status instanceof Array == false
+            data = []
+            data.push v for k, v of status
+        @socket.emit e.status, data
 
-    send_status_debomatic: ->
-        fs.exists config.debomatic.pidfile, (exists) =>
-            @socket.emit config.events.broadcast.status_debomatic,
-                running: exists
+    send_status_debomatic: (running) ->
+        @socket.emit config.events.broadcast.status_debomatic, running: running
+
+    send_distributions: (distributions) ->
+        @socket.emit config.events.broadcast.distributions, distributions
 
     start: ->
-        # init send distributions
-        utils.send_distributions @socket
 
         # init events
         @socket.on e.distribution_packages, (data) =>

@@ -12,7 +12,7 @@ routes = require("./routes")
 config = require("./lib/config")
 utils = require("./lib/utils")
 Client = require("./lib/client")
-Broadcaster = require("./lib/broadcaster")
+Debomatic = require("./lib/broadcaster")
 app = module.exports = express()
 server = http.createServer(app)
 io = require("socket.io")(server)
@@ -83,14 +83,15 @@ server.listen config.port, config.host, null, (err) ->
         process.setgid uid
         process.setuid uid
 
-    # statuses
-    status = []
-    broadcast = new Broadcaster(io.sockets, status)
+    debomatic = new Debomatic(io.sockets)
+    debomatic.start()
+
     io.sockets.on "connection", (socket) ->
         client = new Client(socket)
         client.start()
-        client.send_status status if status.length > 0
-        client.send_status_debomatic()
+        client.send_status debomatic.status
+        client.send_status_debomatic(debomatic.running)
+        client.send_distributions(debomatic.distributions)
         return
 
     console.log "Debomatic-webui listening on %s:%d in %s mode",

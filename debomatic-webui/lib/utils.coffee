@@ -59,6 +59,9 @@ get_files_list = (dir, onlyDirectories, callback) ->
         callback(result)
 
 
+arrayEqual = (a, b) ->
+    a.length is b.length and a.every (elem, i) -> elem is b[i]
+
 watch_path_onsocket = (event_name, socket, data, watch_path, callback) ->
     socket_watchers = socket.watchers or {}
     try
@@ -95,18 +98,6 @@ watch_path_onsocket = (event_name, socket, data, watch_path, callback) ->
                        err, socket)
         return
 
-send_distributions = (socket) ->
-    get_files_list config.debomatic.path, true, (directories) ->
-        distributions = []
-        for dir in directories
-            data = {}
-            data.distribution = {}
-            data.distribution.name = dir
-            pool_path = get_distribution_pool_path(data)
-            distributions.push dir if fs.existsSync(pool_path)
-
-        socket.emit config.events.broadcast.distributions, distributions
-
 errors_handler = (from, err, socket) ->
     from = "NO SOCKET: " + from unless socket
     console.error from, err.message
@@ -122,5 +113,5 @@ module.exports.get_package_path = get_package_path
 module.exports.get_file_path = get_file_path
 module.exports.get_files_list = get_files_list
 module.exports.watch_path_onsocket = watch_path_onsocket
-module.exports.send_distributions = send_distributions
 module.exports.errors_handler = errors_handler
+module.exports.arrayEqual = arrayEqual

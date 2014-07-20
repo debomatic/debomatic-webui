@@ -1,92 +1,85 @@
-config = require("./config")
 fs = require("fs")
+config = require("./config")
 utils = require("./utils")
 Tail = require("./tail")
+e = config.events.broadcast
 
-__watch_status_check_same_obj = (obj1, obj2) ->
-    if obj1.status is obj2.status
-        if obj1.distribution is obj2.distribution
-            if obj1.hasOwnProperty("package") and obj2.hasOwnProperty("package")
-                return true if obj1.package is obj2.package
-                return false
-            return true
-    false
+_get_distributions = (callback) ->
+    utils.get_files_list config.debomatic.path, true, (directories) ->
+            distributions = []
+            for dir in directories
+                data = {}
+                data.distribution = {}
+                data.distribution.name = dir
+                pool_path = utils.get_distribution_pool_path(data)
+                distributions.push dir if fs.existsSync(pool_path)
+            callback(distributions)
 
-# watcher on build_status
-__watch_status = (socket, status) ->
-    watcher = new Tail(config.debomatic.jsonfile)
-    watcher.on "line", (new_content) ->
-        data = null
-        try
-            data = JSON.parse(new_content)
-        catch err
-            utils.errors_handler "Broadcaster:" +
-                                 "__watch_status:JSON.parse(new_content) - ",
-                                 err, socket
-            return
 
-        # looking for same status already in statuses lists
-        if data.hasOwnProperty("success")
-            i = 0
+class Debomatic
 
-            while i < status.length
-                if __watch_status_check_same_obj(data, status[i])
-                    status.splice i, 1
-                    break
-                else
-                    continue
-                i++
+    constructor: (@sockets) ->
+        @status = {}
+        @distributions = []
+        @running = fs.existsSync (config.debomatic.pidfile)
+        _get_distributions (distributions) => @distributions = distributions
+
+    # watcher on new distributions
+    watch_distributions: ->
+        fs.watch config.debomatic.path, (event, fileName) =>
+            check = =>
+                _get_distributions (new_distributions) =>
+                    if not utils.arrayEqual(@distributions, new_distributions)
+                        @distributions = new_distributions
+                        @sockets.emit(e.distributions, @distributions)
+            # wait half a second to get pool subdir created
+            setTimeout(check, 500)
+
+    watch_pidfile: ->
+        fs.watchFile config.debomatic.pidfile, (curr, prev) =>
+            # if === 0 means pidfile does not exists
+            @running = curr.ino isnt 0
+            @sockets.emit e.status_debomatic, running: @running
+
+    # watcher on build_status
+    watch_status: ->
+        watcher = new Tail(config.debomatic.jsonfile)
+        watcher.on "line", (new_content) =>
+            data = null
+            try
+                data = JSON.parse(new_content)
+            catch err
+                utils.errors_handler "Debomatoci:" +
+                                     "watch_status:JSON.parse(new_content) - ",
+                                     err, @sockets
+                return
+            # get a id rapresentation of status
+            get_key = (status) ->
+                key = status.distribution
+                key += "/#{status.package}" if status.package?
+                key += "/#{status.status}" if status.status?
+                return key
+            key = get_key(data)
+            if data.hasOwnProperty("success") and @status.key?
+                delete @status[key]
+            else
+                @status[key] = data
+            @sockets.emit e.status_update, data
+
+        watcher.on "error", (msg) ->
+            @sockets.emit config.events.error, msg
+
+    start: ->
+        # if json file does not still exist wait for its creation
+        if not fs.existsSync(config.debomatic.jsonfile)
+            fs.watchFile config.debomatic.jsonfile, (curr, prev) ->
+                if curr.ino isnt 0
+                    fs.unwatchFile(config.debomatic.jsonfile)
+                    @watch_status()
         else
-            status.push data
-        socket.emit config.events.broadcast.status_update, data
-        return
+            @watch_status()
 
-    watcher.on "error", (msg) ->
-        socket.emit config.events.error, msg
-        return
+        @watch_pidfile()
+        @watch_distributions()
 
-    return
-
-# watcher on new distributions
-__watch_distributions = (socket) ->
-    fs.watch config.debomatic.path,
-        persistent: true
-    , (event, fileName) ->
-
-        # wait half a second to get pool subdir created
-        setTimeout (->
-            utils.send_distributions socket
-            return
-        ), 500
-        return
-
-    return
-__watch_pidfile = (socket) ->
-    fs.watchFile config.debomatic.pidfile, {
-        persistent: false
-        interval: 1007
-    }
-    , (curr, prev) ->
-        # if === 0 means pidfile does not exists
-        status_debomatic = running: curr.ino isnt 0
-        try
-            socket.emit socket.emit(
-                config.events.broadcast.status_debomatic,
-                status_debomatic)
-        return
-
-    return
-
-Broadcaster = (sockets, status) ->
-    if not fs.existsSync(config.debomatic.jsonfile)
-        # watch until json log file is created
-        fs.watchFile config.debomatic.jsonfile, (curr, prev) ->
-            if curr.ino isnt 0
-                fs.unwatchFile(config.debomatic.jsonfile)
-                __watch_status(sockets, status)
-    else
-        __watch_status(sockets, status)
-    __watch_distributions(sockets)
-    __watch_pidfile(sockets)
-
-module.exports = Broadcaster
+module.exports = Debomatic
