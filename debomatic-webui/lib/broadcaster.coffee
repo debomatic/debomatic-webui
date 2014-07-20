@@ -1,3 +1,8 @@
+config = require("./config")
+fs = require("fs")
+utils = require("./utils")
+Tail = require("./tail")
+
 __watch_status_check_same_obj = (obj1, obj2) ->
     if obj1.status is obj2.status
         if obj1.distribution is obj2.distribution
@@ -84,9 +89,4 @@ Broadcaster = (sockets, status) ->
     __watch_distributions(sockets)
     __watch_pidfile(sockets)
 
-"use strict"
-config = require("./config")
-fs = require("fs")
-utils = require("./utils")
-Tail = require("./tail")
 module.exports = Broadcaster

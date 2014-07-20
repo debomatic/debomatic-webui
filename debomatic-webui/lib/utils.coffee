@@ -75,13 +75,13 @@ watch_path_onsocket = (event_name, socket, data, watch_path, callback) ->
                     persistent: true,
                     (event, fileName) ->
                         if event is "rename"
-                            callback(event_name, socket, data))
+                            callback(data))
 
             else if stats.isFile()
                 watcher = new Tail(watch_path)
                 watcher.on "line", (new_content, tailInfo) ->
                     data.file.new_content = new_content + "\n"
-                    callback(event_name, socket, data)
+                    callback(data)
 
                 watcher.on "error", (msg) ->
                     socket.emit config.events.error, msg
@@ -94,12 +94,6 @@ watch_path_onsocket = (event_name, socket, data, watch_path, callback) ->
                        arguments.callee.caller.name,
                        err, socket)
         return
-
-
-generic_handler_watcher = (event_name, socket, data, watch_path, callback) ->
-    callback event_name, socket, data
-    watch_path_onsocket event_name, socket, data, watch_path, callback
-
 
 send_distributions = (socket) ->
     get_files_list config.debomatic.path, true, (directories) ->
@@ -128,6 +122,5 @@ module.exports.get_package_path = get_package_path
 module.exports.get_file_path = get_file_path
 module.exports.get_files_list = get_files_list
 module.exports.watch_path_onsocket = watch_path_onsocket
-module.exports.generic_handler_watcher = generic_handler_watcher
 module.exports.send_distributions = send_distributions
 module.exports.errors_handler = errors_handler
