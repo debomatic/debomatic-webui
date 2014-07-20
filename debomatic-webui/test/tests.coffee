@@ -15,7 +15,7 @@ exec = (c) ->
     exec_orig(c)
 
 launch_server = () ->
-    server = spawn('coffee', ['../debomatic-webui.coffee', '-c', 'test/tests.config.coffee'])
+    server = spawn('coffee', ['../debomatic-webui.coffee', '-c', 'tests.config.coffee'])
     server.stdout.on 'data', (data) -> console.log('\nSERVER OUT: ', data.toString('utf-8'))
     server.stderr.on 'data', (data) -> console.error('\nSERVER ERR', data.toString('utf-8'))
     server.on 'exit', (code) ->
@@ -79,7 +79,7 @@ class Helper
 
 
 helper = new Helper()
-launch_server()
+launch_server() if process.env.SERVER
 client = null
 
 describe 'client', ->
@@ -88,23 +88,32 @@ describe 'client', ->
         helper.make_distribution('trusty')
         helper.make_distribution('unstable')
         helper.append_json('{"status": "build", "package": "test_1.2.3", "uploader": "", "distribution": "unstable"}')
+    )
+
+    beforeEach( ->
         client = io.connect("http://#{config.host}:#{config.port}")
     )
 
-    describe 'on connecting', ->
-        it 'get distributions', ->
-            client.on events.broadcast.distributions, (data) ->
-                data.should.be.eql(['trusty', 'unstable'])
+    afterEach( ->
+        client.disconnect()
+    )
 
-        it 'get debomatic status', ->
-            client.on events.broadcast.status_debomatic, (data) ->
-                data.running.should.be.false
+    it 'get distributions', (done)->
+        client.on events.broadcast.distributions, (data) ->
+            data.should.be.eql(['trusty', 'unstable'])
+            done()
 
-        it 'get package status', ->
-            client.on events.broadcast.status, (data) ->
-                data.status.should.be.eql('build')
-                data.distribution.should.be.eql('unstable')
-                data.package.should.be.eql('test_1.2.3')
+    it 'get debomatic status', (done) ->
+        client.on events.broadcast.status_debomatic, (data) ->
+            data.running.should.be.false
+            done()
+
+    it 'get package status', (done) ->
+        client.on events.broadcast.status, (data) ->
+            data.status.should.be.eql('build')
+            data.distribution.should.be.eql('unstable')
+            data.package.should.be.eql('test_1.2.3')
+            done()
 
     it 'on getting distribution packages', ->
         helper.make_package('unstable', 'test_1.2.3')
@@ -139,7 +148,7 @@ describe 'client', ->
                 data.file.name.should.be.eql('buildlog')
                 data.file.content.should.be.eql('this is a test\n')
 
-        it 'new content', ->
+        it 'new content', (done) ->
             client.on events.client.file_newcontent, (data) ->
                 data.distribution.name.should.be.eql('unstable')
                 data.package.orig_name.should.be.eql('test_1.2.3')
@@ -149,13 +158,14 @@ describe 'client', ->
             helper.append_file('unstable', 'test_1.2.3', 'buildlog', 'this is an appending test')
 
     describe 'on build package ends', ->
-        it 'should receive a status update', ->
+        it 'should receive a status update', (done) ->
             str = '{"status": "build", "success": true, "package": "test_1.2.3", "uploader": "", "distribution": "unstable"}'
             helper.append_json(str)
             client.on events.broadcast.status_update, (data) ->
                 data.success.should.not.be.ok
+                done()
 
 process.on 'exit', () ->
     client.disconnect()
     helper.clean_all()
-    server.kill()
+    server.kill() if process.env.SERVER
