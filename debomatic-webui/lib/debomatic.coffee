@@ -60,7 +60,7 @@ class Debomatic
                 key += "/#{status.status}" if status.status?
                 return key
             key = get_key(data)
-            if data.hasOwnProperty("success") and @status.key?
+            if data.hasOwnProperty("success") and @status[key]?
                 delete @status[key]
             else
                 @status[key] = data
