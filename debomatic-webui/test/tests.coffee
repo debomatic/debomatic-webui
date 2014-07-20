@@ -1,7 +1,7 @@
 fs = require('fs')
 path = require('path')
 spawn = require('child_process').spawn
-exec_orig = require('child_process').exec
+sh = require('execSync')
 
 config = require('./tests.config')
 io = require('socket.io-client')
@@ -12,16 +12,8 @@ server = null
 
 exec = (c) ->
     c = c.replace('"', '\"')
-    exec_orig("echo '#{c}' >> commands.log")
-    exec_orig(c)
-
-launch_server = () ->
-    server = spawn('coffee', ['../debomatic-webui.coffee', '-c', 'tests.config.coffee'])
-    server.stdout.on 'data', (data) -> console.log('\nSERVER OUT: ', data.toString('utf-8'))
-    server.stderr.on 'data', (data) -> console.error('\nSERVER ERR', data.toString('utf-8'))
-    server.on 'exit', (code) ->
-        console.error('Server exit with code ' + code);
-        process.exit(code)
+    sh.run("echo '#{c}' >> commands.log")
+    sh.run(c)
 
 
 class Helper
@@ -81,18 +73,36 @@ class Helper
 
 helper = new Helper()
 client = null
+server = null
 
 options =
     transports: ['websocket'],
     'force new connection': true
 
+describe 'start server', ->
+    before( (done) ->
+        helper.append_json('')
+        helper.make_distribution('trusty')
+        helper.make_distribution('unstable')
+        server = spawn('coffee', ['../debomatic-webui.coffee', '-c', 'tests.config.coffee'])
+        server.stdout.on 'data', (data) -> console.log('SERVER OUT: ', data.toString('utf-8'))
+        server.stderr.on 'data', (data) -> console.error('SERVER ERR', data.toString('utf-8'))
+        server.on 'exit', (code) ->
+            console.error('Server exit with code ' + code);
+            process.exit(code)
+        this.timeout(7000);
+        setTimeout(done, 500);
+    )
+
+    it 'server started', (done) ->
+        server.should.be.ok
+        done()
+
 describe 'client', ->
 
     before( (done) ->
-        launch_server() if process.env.SERVER
         helper.append_json('{"status": "build", "package": "test_1.2.3", "distribution": "unstable"}')
-        helper.make_distribution('trusty')
-        helper.make_distribution('unstable')
+        #launch_server() if process.env.SERVER
         done()
     )
 
@@ -173,13 +183,22 @@ describe 'client', ->
 
     describe 'on build package ends', ->
         it 'should receive a status update', (done) ->
-            str = '{"status": "build", "success": true, "package": "test_1.2.3", "uploader": "", "distribution": "unstable"}'
-            helper.append_json(str)
             client.once events.broadcast.status_update, (data) ->
                 data.success.should.be.ok
                 done()
+            str = '{"status": "build", "success": true, "package": "test_1.2.3", "uploader": "", "distribution": "unstable"}'
+            helper.append_json(str)
+
+        it 'should no longer receive status of same package', (done) ->
+            client1 = io.connect("http://#{config.host}:#{config.port}", options)
+            client1.once events.client.status, (data) ->
+                data.length.should.be.eql(1)
+                data[0].package.should.be.eql('test_1.2.4')
+                done()
+            str = '{"status": "build", "package": "test_1.2.4", "distribution": "unstable"}'
+            helper.append_json(str)
 
 process.on 'exit', () ->
     client.disconnect()
-    #helper.clean_all()# if process.env.SERVER
-    server.kill() if process.env.SERVER
+    helper.clean_all()# if process.env.SERVER
+    server.kill() if server?
