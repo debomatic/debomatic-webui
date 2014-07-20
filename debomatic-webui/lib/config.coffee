@@ -135,7 +135,7 @@ try
     user_config = parser.getUserConfig()
     if user_config
         console.log "Reading user configutation ..."
-        config = extend(true, {}, config, require(user_config))
+        config = extend(true, config, require(user_config))
     else
         console.log "No user config specified. Using global settings."
 
@@ -158,4 +158,4 @@ catch err
         console.log "File %s not found.", user_config
     else
         console.error "Error reading user configutation", err
-    process.exit 1
+    process.exit 2

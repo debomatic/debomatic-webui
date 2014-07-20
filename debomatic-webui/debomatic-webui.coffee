@@ -93,7 +93,7 @@ server.listen config.port, config.host, null, (err) ->
 server.on "error", (e) ->
     if e.code is "EADDRINUSE"
         console.log "Address in use %s:%d. Exit.", config.host, config.port
-        process.exit 1
+        process.exit 3
     else
         console.error e
     return

@@ -9,7 +9,7 @@ Parser = ->
                        -h print this help
                        -c set user configuration file
                     """, process.argv[1].split("/").pop()
-        process.exit 0
+        process.exit 1
         return
 
     @getUserConfig = ->
