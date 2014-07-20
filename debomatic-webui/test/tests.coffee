@@ -19,7 +19,7 @@ launch_server = () ->
     server.stdout.on 'data', (data) -> console.log('\nSERVER OUT: ', data.toString('utf-8'))
     server.stderr.on 'data', (data) -> console.error('\nSERVER ERR', data.toString('utf-8'))
     server.on 'exit', (code) ->
-        console.error('child process exited with code ' + code);
+        console.error('Server exit with code ' + code);
         process.exit(code)
 
 
@@ -79,6 +79,7 @@ class Helper
 
 
 helper = new Helper()
+launch_server()
 client = null
 
 describe 'client', ->
@@ -86,7 +87,7 @@ describe 'client', ->
     before( ->
         helper.make_distribution('trusty')
         helper.make_distribution('unstable')
-        helper.append_json("")
+        helper.append_json('{"status": "build", "package": "test_1.2.3", "uploader": "", "distribution": "unstable"}')
         client = io.connect("http://#{config.host}:#{config.port}")
     )
 
@@ -95,9 +96,15 @@ describe 'client', ->
             client.on events.broadcast.distributions, (data) ->
                 data.should.be.eql(['trusty', 'unstable'])
 
-        it 'get status', ->
+        it 'get debomatic status', ->
             client.on events.broadcast.status_debomatic, (data) ->
                 data.running.should.be.false
+
+        it 'get package status', ->
+            client.on events.broadcast.status, (data) ->
+                data.status.should.be.eql('build')
+                data.distribution.should.be.eql('unstable')
+                data.package.should.be.eql('test_1.2.3')
 
     it 'on getting distribution packages', ->
         helper.make_package('unstable', 'test_1.2.3')
@@ -141,6 +148,14 @@ describe 'client', ->
 
             helper.append_file('unstable', 'test_1.2.3', 'buildlog', 'this is an appending test')
 
+    describe 'on build package ends', ->
+        it 'should receive a status update', ->
+            str = '{"status": "build", "success": true, "package": "test_1.2.3", "uploader": "", "distribution": "unstable"}'
+            helper.append_json(str)
+            client.on events.broadcast.status_update, (data) ->
+                data.success.should.not.be.ok
+
 process.on 'exit', () ->
     client.disconnect()
     helper.clean_all()
+    server.kill()
