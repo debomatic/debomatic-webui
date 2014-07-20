@@ -14,7 +14,8 @@
     },
     "scripts": {
         "install": "bash scripts/install.sh",
-        "start": "coffee debomatic-webui"
+        "start": "coffee debomatic-webui",
+        "test": "cd test; mocha -b -R spec --compilers coffee:coffee-script/register --require should tests.coffee"
     },
     "bin": {
         "debomatic-webui": "./debomatic-webui"
