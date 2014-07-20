@@ -45,8 +45,8 @@ class Helper
     clean: (distribution, debpack, file_extension) ->
         b_path = @base
         b_path = path.join(b_path, distribution, 'pool') if distribution?
-        b_path = path.join(@base, debpack) if debpack?
-        b_path = path.join(@base, debpack) + '.' + file_extension if file_extension?
+        b_path = path.join(b_path, debpack) if debpack?
+        b_path += path.join(b_path, debpack) + '.' + file_extension if file_extension?
         exec("rm -r #{b_path}")
 
     clean_all: () ->
@@ -197,6 +197,19 @@ describe 'client', ->
                 done()
             str = '{"status": "build", "package": "test_1.2.4", "distribution": "unstable"}'
             helper.append_json(str)
+
+    describe 'should get error on removing', ->
+        it 'package', (done) ->
+            helper.make_file('unstable', 'test_1.2.5', 'buildlog', 'test on error')
+            client.emit(events.client.file, helper.get_query('unstable', 'test_1.2.5', 'buildlog'))
+            client.once events.error, (data) ->
+                data.indexOf('buildlog').should.be.ok
+                data.indexOf('test_1.2.5').should.be.ok
+                data.indexOf('unstable').should.be.ok
+                data.indexOf('deleted').should.be.ok
+                done()
+            helper.clean('unstable', 'test_1.2.5')
+
 
 process.on 'exit', () ->
     client.disconnect()
