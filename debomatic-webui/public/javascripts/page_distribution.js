@@ -579,10 +579,10 @@ function Page_Distrubion(socket) {
         set: function (socket_error) {
             if ($('#error').is(':visible'))
                 return;
-            socket_error = socket_error.replace(/File (.*) deleted./,
-                '<b>File removed</b>&nbsp;&nbsp;$1');
+            socket_error = socket_error.replace(/File (.*) deleted(.*)/,
+                '<b>File removed</b>&nbsp;&nbsp;<em>$1</em>');
             socket_error = socket_error.replace(/ENOENT, [a-z]+ '(.*)'/,
-                '<b>No such file or directory</b>&nbsp;&nbsp;$1');
+                '<b>No such file or directory</b>&nbsp;&nbsp;<em>$1</em>');
             $('#error .message').html(socket_error);
             error.view();
         },

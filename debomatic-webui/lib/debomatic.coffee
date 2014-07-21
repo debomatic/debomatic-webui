@@ -1,7 +1,7 @@
 fs = require("fs")
 config = require("./config")
 utils = require("./utils")
-Tail = require("./tail")
+Tail = utils.Tail
 e = config.events.broadcast
 
 _get_distributions = (callback) ->

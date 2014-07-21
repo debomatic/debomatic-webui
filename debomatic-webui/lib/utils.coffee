@@ -1,7 +1,7 @@
 path = require("path")
 fs = require("fs")
 config = require("./config")
-Tail = require("./tail")
+Tail = require("tail").Tail
 
 _check_no_backward = (backward_path) ->
     if typeof backward_path is 'string'
@@ -104,6 +104,22 @@ errors_handler = (from, err, socket) ->
     socket.emit config.events.error, err.message if socket
     return
 
+Tail::watchEvent = (e) ->
+    if e is 'change'
+      fs.stat @filename, (err, stats) =>
+        @emit 'error', err if err
+        @pos = stats.size if stats.size < @pos #scenario where texts is not appended but it's actually a w+
+        if stats.size > @pos
+          @queue.push({start: @pos, end: stats.size})
+          @pos = stats.size
+          @internalDispatcher.emit("next") if @queue.length is 1
+    else if e is 'rename'
+      @unwatch()
+      @emit "error", "File #{@filename} deleted"
+
+Tail::close = ->
+    @unwatch()
+    return
 
 module.exports.check_data_distribution = check_data_distribution
 module.exports.check_data_package = check_data_package
@@ -115,3 +131,4 @@ module.exports.get_files_list = get_files_list
 module.exports.watch_path_onsocket = watch_path_onsocket
 module.exports.errors_handler = errors_handler
 module.exports.arrayEqual = arrayEqual
+module.exports.Tail = Tail
