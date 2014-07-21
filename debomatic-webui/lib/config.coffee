@@ -35,9 +35,7 @@ Web template configuration
 Title and description for the header
 ###
 config.web.debomatic.architecture = "amd64"
-config.web.title = "Deb-o-Matic web.ui"
-config.web.description = "This is a web interface for debomatic over " +
-                         config.web.debomatic.architecture
+config.web.title = "Deb-o-Matic " + config.web.debomatic.architecture
 
 ###
 Admin email and name to show in the home page.
@@ -68,7 +66,6 @@ The default user preferences.
 See /preferences page for more info
 ###
 config.web.preferences.autoscroll = true
-config.web.preferences.header = true
 config.web.preferences.sidebar = true
 config.web.preferences.glossy_theme = true
 config.web.preferences.file_background = true
