@@ -187,4 +187,14 @@ function Page_Generic() {
     // update html according with preferences
     this.preferences();
 
+    // show the smile face
+    $('#footer .copyright').mouseenter(function () {
+        $('#smile').animate({
+            'background-position-y': '-50px'
+        }, 200);
+    }).mouseleave(function () {
+        $('#smile').animate({
+            'background-position-y': '20px'
+        }, 150);
+    });
 }

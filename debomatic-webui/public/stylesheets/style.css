@@ -213,3 +213,19 @@ footer .info {
   border-radius: 4px;
   font-size: 75%;
 }
+
+#smile {
+  background: transparent url(../images/smile-code.png) right 20px no-repeat;
+  width: 125px;
+  height: 125px;
+  position: fixed;
+  right: 5px;
+  bottom:0;
+}
+
+#footer .copyright {
+  height: 40px;
+  margin-top: -10px;
+  padding-top: 10px;
+  cursor: pointer;
+}
