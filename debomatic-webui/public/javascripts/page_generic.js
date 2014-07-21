@@ -134,15 +134,6 @@ function Page_Generic() {
     };
 
     this.preferences = function () {
-        if (config.preferences.header) {
-            $('#pageheader').show();
-            $('footer .info').hide();
-            $('.navbar .home-link').hide();
-        } else {
-            $('#pageheader').hide();
-            $('footer .info').show();
-            $('.navbar .home-link').show();
-        }
         var bootstrap_theme_css = '/external_libs/bootstrap-3.2.0-dist/css/bootstrap-theme.min.css';
         if (config.preferences.glossy_theme) {
             if ($('head').find('link[href="' + bootstrap_theme_css + '"]').length === 0)

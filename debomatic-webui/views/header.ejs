@@ -11,15 +11,10 @@
 
   <body>
     <div id="wrapper" class="container-fluid">
-
-      <header id="pageheader" onclick="window.location.href='/'">
-        <h1><%= web.title %> <small><%= version %></small></h1>
-        <p class="lead"><%= web.description %></p>
-      </header>
-
       <nav class="navbar navbar-inverse" role="navigation">
-        <div class="navbar-header">
-            <span class="navbar-brand">Distributions</span>
+        <div onclick="window.location.href='/'" class="navbar-header home-link">
+            <span class="pull-left icon"></span>
+            <span class="navbar-brand">Deb-o-Matic <small><%= web.debomatic.architecture %></small></span>
         </div>
         <div class="collapse navbar-collapse">
           <div id="distributions">
@@ -33,10 +28,6 @@
               <% if (web.paths.preferences) { %>
               <li><a href="<%= web.paths.preferences %>">Preferences</a></li>
               <% } %>
-              <li class="home-link">
-                <a class="pull-left" href="/">Home</a>
-                <span class="pull-right icon"></span>
-              </li>
             </ul>
           </div>
         </div>
