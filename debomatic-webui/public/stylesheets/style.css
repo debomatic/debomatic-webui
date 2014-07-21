@@ -15,7 +15,9 @@
   cursor: pointer;
   text-shadow: 0 1px 1px black;
 }
-
+.home-link .navbar-brand {
+  color: #eee;
+}
 .navbar .home-link .icon {
   background: url('../images/debian-logo-small.png') right no-repeat;
   width: 17px;
