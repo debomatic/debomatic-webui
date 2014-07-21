@@ -520,7 +520,7 @@ function Page_Distrubion(socket) {
             $(window).scroll(sticky.init);
         },
         stop: function () {
-            $(window).off('scroll');
+            $(window).off('scroll', sticky.init);
         },
         reset: function () {
             sticky.stop();
