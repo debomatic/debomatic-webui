@@ -6,14 +6,14 @@ e = config.events.broadcast
 
 _get_distributions = (callback) ->
     utils.get_files_list config.debomatic.path, true, (directories) ->
-            distributions = []
-            for dir in directories
-                data = {}
-                data.distribution = {}
-                data.distribution.name = dir
-                pool_path = utils.get_distribution_pool_path(data)
-                distributions.push dir if fs.existsSync(pool_path)
-            callback(distributions)
+        distributions = []
+        for dir in directories
+            data = {}
+            data.distribution = {}
+            data.distribution.name = dir
+            pool_path = utils.get_distribution_pool_path(data)
+            distributions.push dir if fs.existsSync(pool_path)
+        callback(distributions)
 
 
 class Debomatic
@@ -66,13 +66,13 @@ class Debomatic
                 @status[key] = data
             @sockets.emit e.status_update, data
 
-        watcher.on "error", (msg) ->
+        watcher.on "error", (msg) =>
             @sockets.emit config.events.error, msg
 
     start: ->
         # if json file does not still exist wait for its creation
         if not fs.existsSync(config.debomatic.jsonfile)
-            fs.watchFile config.debomatic.jsonfile, (curr, prev) ->
+            fs.watchFile config.debomatic.jsonfile, (curr, prev) =>
                 if curr.ino isnt 0
                     fs.unwatchFile(config.debomatic.jsonfile)
                     @watch_status()
