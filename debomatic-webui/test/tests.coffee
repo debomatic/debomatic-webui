@@ -80,18 +80,18 @@ options =
     'force new connection': true
 
 describe 'start server', ->
-    before( (done) ->
+    before( (done) =>
         helper.append_json('')
         helper.make_distribution('trusty')
         helper.make_distribution('unstable')
-        server = spawn('coffee', ['../debomatic-webui.coffee', '-c', 'tests.config.coffee'])
+        server = spawn('coffee', ['../debomatic-webui', '-c', 'tests.config.coffee'])
         server.stdout.on 'data', (data) -> console.log('SERVER OUT: ', data.toString('utf-8'))
         server.stderr.on 'data', (data) -> console.error('SERVER ERR', data.toString('utf-8'))
         server.on 'exit', (code) ->
-            console.error('Server exit with code ' + code);
+            console.error('Server exit with code ' + code)
             process.exit(code)
-        this.timeout(7000);
-        setTimeout(done, 500);
+        this.timeout(7000)
+        setTimeout(done, 500)
     )
 
     it 'server started', (done) ->
@@ -117,7 +117,7 @@ describe 'client', ->
         done()
     )
 
-    it 'get distributions', (done)->
+    it 'get distributions', (done) ->
         client.once events.broadcast.distributions, (data) ->
             data.should.be.eql(['trusty', 'unstable'])
             done()
