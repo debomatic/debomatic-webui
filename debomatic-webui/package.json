@@ -19,5 +19,6 @@
     },
     "bin": {
         "debomatic-webui": "./debomatic-webui"
-    }
+    },
+    "coffeelintConfig": ".coffeelintrc"
 }
