@@ -1,5 +1,5 @@
-# unreleased
- * Migration to coffee-script, code refactored
+# 1.0.0 (2014-07-23)
+ * Migrate to coffee-script, code refactory
  * [new] style - more focus on files content
  * [new] removed useless header, save space
  * [new] move git repo to debomatic organization in github
