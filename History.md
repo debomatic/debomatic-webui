@@ -1,5 +1,8 @@
 # unreleased
- * Migration to coffeescript, code refactored
+ * Migration to coffee-script, code refactored
+ * [new] style - more focus on files content
+ * [new] removed useless header, save space
+ * [new] move git repo to debomatic organization in github
  * [fix] merge correctly user configuration - closes #1
  * [fix] read correctly user configuration with absolute path - closes #2
  * [fix] wait for the creation of the json log if does not exists - #closes 3
