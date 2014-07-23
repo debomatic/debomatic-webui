@@ -57,7 +57,9 @@ if config.routes.debomatic
         if match.length >= 2 and
         ((match[0] is match[1]) or # case unstable/unstable
         (match[1] is "build" and match.length > 2)) # case unstable/build/*
-            res.status(403).send "<h1>403 Forbidden</h1>"
+            res.status(403).send """<h1>403 Forbidden</h1>
+                                 <h2>You cannot see the chroot internals</h2>
+                                 """
         else # call next() here to move on to next middleware/router
             next()
         return
