@@ -1,5 +1,3 @@
-#/usr/bin/env coffee
-
 ###
 Module dependencies.
 ###
@@ -11,12 +9,12 @@ serve_static = require("serve-static")
 serve_index = require("serve-index")
 errorhandler = require("errorhandler")
 
-routes = require("./routes")
-config = require("./lib/config")
-utils = require("./lib/utils")
+routes = require("../routes")
+config = require("./config")
+utils = require("./utils")
 
-Client = require("./lib/client")
-Debomatic = require("./lib/debomatic")
+Client = require("./client")
+Debomatic = require("./debomatic")
 
 
 # error handler setup
@@ -27,7 +25,7 @@ else
     app.use(errorhandler())
 
 # the views
-app.set("views", __dirname + "/views")
+app.set("views", __dirname + "/../views")
 app.set("view engine", "ejs")
 
 # index page
@@ -71,7 +69,7 @@ if config.routes.debomatic
                                                  {view: "details", icons: true}))
 
 # serve stylesheet-javascript
-app.use(serve_static(__dirname + "/public"))
+app.use(serve_static(__dirname + "/../public"))
 
 # serve dsc files as octet-stream
 serve_static.mime.define("application/octet-stream": ["dsc"])
