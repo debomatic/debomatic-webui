@@ -40,7 +40,7 @@ sudo npm install -g coffee-script
 
 Take a look at auto-generated **user.config.coffee**.  Edit as you wish and then run service with:
 ```
-coffee debomatic-webui -c user.config.coffee
+coffee debomatic-webui -c user.config
 ```
 
 That's all.
