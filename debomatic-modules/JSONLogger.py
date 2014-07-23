@@ -116,7 +116,7 @@ class DebomaticModule_JSONLogger:
                 info[key] = status[key]
 
         with open(package_json, 'w') as infofd:
-            json = toJSON(info, indent=4)
+            json = toJSON(info, indent=4, sort_keys=True)
             infofd.write(json + '\n')
 
     def pre_chroot(self, args):
@@ -204,7 +204,14 @@ class LogParser():
 
     def parse_piuparts(self):
         with open(self.file, 'r') as fd:
-            last_line = fd.readlines()[-1]
+            offs = -1024
+            while True:
+                fd.seek(offs, 2)
+                lines = fd.readlines()
+                if len(lines) > 1:
+                    last_line = lines[-1]
+                    break
+                offs *= 2
             if last_line.find('ERROR:') >= 0:
                 return 'E'
         return None

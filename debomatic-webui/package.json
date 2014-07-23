@@ -1,20 +1,24 @@
 {
     "name": "debomatic-webui",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "private": true,
     "dependencies": {
         "express": "4.x",
         "serve-index": "*",
         "serve-static": "*",
         "errorhandler ": "*",
-        "ejs": ">= 0.0.1",
+        "ejs": "1.*",
         "socket.io": "1.*",
-        "tail": "*"
+        "tail": "*",
+        "extend": "*"
     },
     "scripts": {
-        "install": "bash scripts/install.sh"
+        "install": "bash scripts/install.sh",
+        "start": "coffee debomatic-webui",
+        "test": "cd test; mocha -b -R spec --compilers coffee:coffee-script/register --require should tests.coffee"
     },
     "bin": {
         "debomatic-webui": "./debomatic-webui"
-    }
+    },
+    "coffeelintConfig": ".coffeelintrc"
 }

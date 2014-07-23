@@ -520,7 +520,7 @@ function Page_Distrubion(socket) {
             $(window).scroll(sticky.init);
         },
         stop: function () {
-            $(window).off('scroll');
+            $(window).off('scroll', sticky.init);
         },
         reset: function () {
             sticky.stop();
@@ -579,12 +579,16 @@ function Page_Distrubion(socket) {
         set: function (socket_error) {
             if ($('#error').is(':visible'))
                 return;
-            $('#error span').html(socket_error);
+            socket_error = socket_error.replace(/File (.*) deleted(.*)/,
+                '<b>File removed</b>&nbsp;&nbsp;<em>$1</em>');
+            socket_error = socket_error.replace(/ENOENT, [a-z]+ '(.*)'/,
+                '<b>No such file or directory</b>&nbsp;&nbsp;<em>$1</em>');
+            $('#error .message').html(socket_error);
             error.view();
         },
         clean: function () {
             $('#error').hide();
-            $('#error span').html('');
+            $('#error .message').html('');
         },
         view: function () {
             $('#error').fadeIn(100);

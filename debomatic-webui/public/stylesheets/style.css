@@ -1,25 +1,39 @@
-#pageheader {
-  background: url('../images/debian-logo.png') right no-repeat;
-  cursor: pointer;
-}
-
-#pageheader .lead {
-  padding-bottom: 0;
+body {
+  background: url("../images/image-background-paper.png") repeat-y center top #f7f7f7
 }
 
 .navbar {
   margin-top: 20px;
 }
 
+.home-link {
+  cursor: pointer;
+  text-shadow: 0 1px 1px black;
+}
+.home-link .navbar-brand {
+  color: #eee;
+}
 .navbar .home-link .icon {
   background: url('../images/debian-logo-small.png') right no-repeat;
   width: 17px;
   height: 50px;
-  margin-left: 10px;
+  margin-left: 14px;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: white;
+  border-color: #d6d6d6;
 }
 
 .breadcrumb {
-  margin-bottom:10px;
+  margin-bottom: 0px;
+  background: none;
+}
+
+.nav>li>a:hover, .nav>li>a:focus {
+  background-color: rgba(0,0,0,0.05);
 }
 
 #error {
@@ -110,7 +124,7 @@ footer {
   width: 100%;
   bottom: 0;
   background: #fafafa;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid #eaeaea;
 }
 
 footer .info {
@@ -174,11 +188,6 @@ footer .info {
   line-height: 35px;
 }
 
-#file .content {
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
 #file .no-background {
   background: none;
   border: none;
@@ -200,9 +209,25 @@ footer .info {
 
 #package_info {
   display: inline-block;
-  background: #f4f4f4;
+  background: none;
   padding: 4px 10px;
   margin-bottom: 10px;
   border-radius: 4px;
   font-size: 75%;
+}
+
+#smile {
+  background: transparent url(../images/smile-code.png) right 20px no-repeat;
+  width: 125px;
+  height: 125px;
+  position: fixed;
+  right: 5px;
+  bottom:0;
+}
+
+#footer .copyright {
+  height: 40px;
+  margin-top: -10px;
+  padding-top: 10px;
+  cursor: pointer;
 }

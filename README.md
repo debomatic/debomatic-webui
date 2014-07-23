@@ -24,23 +24,23 @@ Restart debomatic service.
 
 Install **npm** and **nodejs** on your system. On debian like systems type this in a command line:
 ```
-sudo apt-get install npm nodejs
+sudo apt-get install npm nodejs nodejs-legacy
 ```
 
 ## Installation
 
-Move to **debomatic-webui/** directory and type:
+You have to install node dependencies locally, creates automatically the user configuration file and install **coffee-script** globally. Move to **debomatic-webui/** directory and type:
 ```
 npm install
+sudo npm install -g coffee-script
 ```
-That command downloads node dependences locally and creates automatically user configuration file.
 
 
 ## Usage
 
-Take a look at auto-generated **user.config.js**.  Edit as you wish and then run service with:
+Take a look at auto-generated **user.config.coffee**.  Edit as you wish and then run service with:
 ```
-nodejs debomatic-webui -c user.config.js
+coffee debomatic-webui -c user.config
 ```
 
 That's all.

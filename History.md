@@ -1,3 +1,12 @@
+# 1.0.0 (2014-07-23)
+ * Migrate to coffee-script, code refactory
+ * [new] style - more focus on files content
+ * [new] removed useless header, save space
+ * [new] move git repo to debomatic organization in github
+ * [fix] merge correctly user configuration - closes #1
+ * [fix] read correctly user configuration with absolute path - closes #2
+ * [fix] wait for the creation of the json log if does not exists - #closes 3
+
 # 0.6.0 (2014-07-10)
  * [new] [module] write a JSON file about package status in its own directory
  * [new] update to socket.io 1.x
