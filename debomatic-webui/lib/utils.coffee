@@ -105,17 +105,25 @@ errors_handler = (from, err, socket) ->
     return
 
 Tail::watchEvent = (e) ->
-    if e is 'change'
-      fs.stat @filename, (err, stats) =>
-        @emit 'error', err if err
-        @pos = stats.size if stats.size < @pos #scenario where texts is not appended but it's actually a w+
-        if stats.size > @pos
-          @queue.push({start: @pos, end: stats.size})
-          @pos = stats.size
-          @internalDispatcher.emit("next") if @queue.length is 1
-    else if e is 'rename'
-      @unwatch()
-      @emit "error", "File #{@filename} deleted"
+    _this = this
+    if e is "change"
+        fs.stat @filename, (err, stats) ->
+            if err
+                _this.emit "error", err
+                return
+            _this.pos = stats.size if stats.size < _this.pos
+            if stats.size > _this.pos
+                _this.queue.push
+                    start: _this.pos
+                    end: stats.size
+
+                _this.pos = stats.size
+                _this.internalDispatcher.emit "next" if _this.queue.length is 1
+
+    else if e is "rename"
+        @unwatch()
+        _this.emit "error", "File " + @filename + " deleted."
+    return
 
 Tail::close = ->
     @unwatch()
