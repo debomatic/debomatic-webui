@@ -1,5 +1,5 @@
 body {
-  background: #f4f5f6;
+  background: url("../images/image-background-paper.png") repeat-y center top #f7f7f7
 }
 
 .navbar {
@@ -20,9 +20,20 @@ body {
   margin-left: 14px;
 }
 
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: white;
+  border-color: #d6d6d6;
+}
+
 .breadcrumb {
   margin-bottom:10px;
   background: none;
+}
+
+.nav>li>a:hover, .nav>li>a:focus {
+  background-color: rgba(0,0,0,0.05);
 }
 
 #error {
@@ -177,13 +188,6 @@ footer .info {
   line-height: 35px;
 }
 
-#file .content {
-  white-space: pre-wrap;
-  word-break: break-word;
-  background: white;
-  border-color: #d6d6d6;
-}
-
 #file .no-background {
   background: none;
   border: none;
@@ -205,7 +209,7 @@ footer .info {
 
 #package_info {
   display: inline-block;
-  background: #f4f4f4;
+  background: none;
   padding: 4px 10px;
   margin-bottom: 10px;
   border-radius: 4px;
