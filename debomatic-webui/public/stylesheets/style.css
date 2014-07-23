@@ -1,12 +1,3 @@
-#pageheader {
-  background: url('../images/debian-logo.png') right no-repeat;
-  cursor: pointer;
-}
-
-#pageheader .lead {
-  padding-bottom: 0;
-}
-
 .navbar {
   margin-top: 20px;
 }
