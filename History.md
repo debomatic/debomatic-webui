@@ -3,9 +3,9 @@
  * [new] style - more focus on files content
  * [new] removed useless header, save space
  * [new] move git repo to debomatic organization in github
- * [fix] merge correctly user configuration - closes #1
- * [fix] read correctly user configuration with absolute path - closes #2
- * [fix] wait for the creation of the json log if does not exists - #closes 3
+ * [fix] merge correctly user configuration - closes #2
+ * [fix] read correctly user configuration with absolute path - closes #3
+ * [fix] wait for the creation of the json log if does not exists - closes #4
 
 # 0.6.0 (2014-07-10)
  * [new] [module] write a JSON file about package status in its own directory
@@ -16,7 +16,7 @@
  * [new] double click on a package in the list make an automatic search
  * [new] add slide up and down effect while searching packages
  * [new] set files list to not send to client as configurable
- * [fix] prevent crashes filtering out request to chroots - send back 403 HTTP status
+ * [fix] prevent crashes filtering out request to chroots - send back 403 HTTP status - closes #1
  * [fix] escape correctly HTML in file content
  * [fix] auto-populate page on socket connect instead of on page loads
  * [fix] preferences does not set correctly if value is false
