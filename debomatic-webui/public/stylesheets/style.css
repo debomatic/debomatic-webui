@@ -1,5 +1,5 @@
 body {
-  background: url("../images/image-background-paper.png") repeat-y center top #f7f7f7
+  background: url("../images/image-background-paper.png") repeat-y center top #f7f7f7 fixed;
 }
 
 .navbar {
