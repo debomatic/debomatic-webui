@@ -142,10 +142,13 @@ footer .info {
 }
 
 #files .size {
-  margin: 0 8px;
+  margin: 0 8px 0 0;
   font-size: 70%;
   color: rgba(0,0,0,0.3);
   float: right;
+  min-width: 60px;
+  text-align: right;
+  display: inline-block;
 }
 
 #logs .size {
