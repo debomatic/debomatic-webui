@@ -150,11 +150,16 @@ footer .info {
   text-align: right;
   display: inline-block;
   line-height: 20px;
+  text-shadow: 0 1px 1px white;
 }
 
 #logs .size {
   float: none;
   line-height: inherit;
+}
+
+#logs .active .size {
+  text-shadow: none;
 }
 
 #logs .name {
