@@ -141,6 +141,22 @@ footer .info {
   margin-top: -3px;
 }
 
+#files .size {
+  margin: 0 8px;
+  font-size: 70%;
+  color: rgba(0,0,0,0.3);
+  float: right;
+}
+
+#logs .size {
+  float: none;
+}
+
+#logs .name {
+  min-width: 75px;
+  display: inline-block;
+}
+
 #status span {
   font-weight: bold;
   font-size: small;
