@@ -149,10 +149,12 @@ footer .info {
   min-width: 60px;
   text-align: right;
   display: inline-block;
+  line-height: 20px;
 }
 
 #logs .size {
   float: none;
+  line-height: inherit;
 }
 
 #logs .name {
