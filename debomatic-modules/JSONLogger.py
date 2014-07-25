@@ -139,17 +139,14 @@ class DebomaticModule_JSONLogger:
     def post_build(self, args):
         status = self._get_package_status(args)
         status['status'] = 'build'
-        status['success'] = False
+        status['success'] = args['success']
         status['tags'] = {}
         resultdir = os.path.join(args['directory'], 'pool', args['package'])
         for filename in os.listdir(resultdir):
-            if filename.endswith('.dsc'):
-                status['success'] = True
-            else:
-                full_path = os.path.join(resultdir, filename)
-                tag = LogParser(full_path).parse()
-                if tag:
-                    status['tags'][filename] = tag
+            full_path = os.path.join(resultdir, filename)
+            tag = LogParser(full_path).parse()
+            if tag:
+                status['tags'][filename] = tag
         self._write_package_json(args, status)
         self._append_json_logfile(args, status)
 
