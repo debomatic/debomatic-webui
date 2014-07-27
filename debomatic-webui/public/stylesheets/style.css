@@ -155,7 +155,7 @@ footer .info {
 
 #logs .size {
   float: none;
-  line-height: inherit;
+  line-height: 0px;
 }
 
 #logs .active .size {
