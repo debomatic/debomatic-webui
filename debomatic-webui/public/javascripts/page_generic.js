@@ -188,12 +188,12 @@ function Page_Generic() {
     this.preferences();
 
     // show the smile face
-    $('#footer .copyright').mouseenter(function () {
-        $('#smile').animate({
+    $('#footer .copyright a').mouseenter(function () {
+        $('#smile').delay(250).animate({
             'background-position-y': '-50px'
         }, 200);
     }).mouseleave(function () {
-        $('#smile').animate({
+        $('#smile').stop().stop().animate({
             'background-position-y': '20px'
         }, 150);
     });
