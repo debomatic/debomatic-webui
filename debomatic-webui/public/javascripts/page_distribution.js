@@ -340,11 +340,11 @@ function Page_Distrubion(socket) {
             $('#files').show();
         },
         set_tags: function (file, tags) {
-            console.log(file, tags);
+            // debug(2, "setting tag", file, tags);
             $('li[id="file-' + file + '"] .tags').html(tags);
         },
         set_size: function (file, size) {
-            //console.log(file, size);
+            // debug(2, "setting size", file, size);
             $('[id="file-' + file + '"] a').append('<span class="size">' + size + '</span>');
         }
     };
