@@ -73,6 +73,7 @@ function Page_Distrubion(socket) {
     var sidebarOffset = 0;
     var new_lines = [];
     var current_file_in_preview = false;
+    var back_on_top_pressed = false;
 
     function __check_hash_makes_sense() {
         if (window.location.hash.indexOf('..') >= 0) {
@@ -416,6 +417,7 @@ function Page_Distrubion(socket) {
 
     var file = {
         set: function (socket_data) {
+            back_on_top_pressed = false;
             var new_content = Utils.escape_html(socket_data.file.content);
             var file_content = $('#file .content');
             view.file = Utils.clone(socket_data.file);
@@ -433,7 +435,7 @@ function Page_Distrubion(socket) {
             new_content = Utils.escape_html(new_content);
             if (!current_file_in_preview) {
                 file_content.append(new_content);
-                if (config.preferences.autoscroll) {
+                if (config.preferences.autoscroll && !back_on_top_pressed) {
                     // scroll down if file is covering footer
                     var file_height = $('#fileOffset').offset().top;
                     var footerOffset = $('footer').offset().top;
@@ -802,6 +804,8 @@ function Page_Distrubion(socket) {
 
         // Init sticky-package back_on_top on click
         $('#sticky-package').on('click', function () {
+            back_on_top_pressed = true;
+            debug(1, 'back on top pressed, disabling autoscroll')
             page.go.up(100);
         });
 
