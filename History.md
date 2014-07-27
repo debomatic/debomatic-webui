@@ -1,3 +1,7 @@
+# unreleased
+ * [new] show file size for package files
+ * [new] disable autoscroll pressing on "back on top" panel
+
 # 1.0.0 (2014-07-23)
  * Migrate to coffee-script, code refactory
  * [new] style - more focus on files content
