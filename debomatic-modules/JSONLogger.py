@@ -180,6 +180,8 @@ class LogParser():
             result = self.parse_autopkgtest()
         elif self.extension == 'piuparts':
             result = self.parse_piuparts()
+        elif self.extension == 'blhc':
+            result = self.parse_blhc()
         return result
 
     def parse_lintian(self):
@@ -217,6 +219,17 @@ class LogParser():
             if len(lines) == 0 or lines[-1].find('ERROR:') >= 0:
                 return 'E'
         return None
+
+    def parse_blhc(self):
+        tags = defaultdict(int)
+        with open(self.file, 'r') as fd:
+            for line in fd:
+                info = line.split()
+                if info[1] != 'missing':
+                    continue
+                tag = info[0].replace('FLAGS', '')
+                tags[tag] += 1
+        return sorted(list(tags.keys()))
 
     def _from_tags_to_result(self, tags):
         keys = sorted(list(tags.keys()))
