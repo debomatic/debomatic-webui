@@ -120,7 +120,7 @@ class DebomaticModule_JSONLogger:
             infofd.write(json + '\n')
 
     def _get_human_size(self, num):
-        for x in ['b', 'KB', 'MB', 'GB', 'TB']:
+        for x in ['B ', 'KB', 'MB', 'GB', 'TB']:
             if num < 1024.0:
                 return "%3.1f %s" % (num, x)
             num /= 1024.0
