@@ -24,7 +24,7 @@ get_files_list_from_package = (data, callback) ->
             else if file.extension in ["changes", "dsc"] or f.indexOf('.tar') > 0
                 file.name = f.replace(data.package.orig_name + ".", "")
                 if file.extension is "changes"
-                    file.name = file.extension
+                    file.name = f.split('_').pop()
                 else if f.indexOf('.orig.tar') > 0
                     file.name = "orig." + f.split(".orig.").pop()
                 data.package.sources.push(file)
