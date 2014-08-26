@@ -21,12 +21,14 @@ get_files_list_from_package = (data, callback) ->
             file.name = f.split("_")[0]
             if file.extension in ["deb", "ddeb", "udeb"]
                 data.package.debs.push(file)
-            else if file.extension in ["changes", "dsc"] or f.indexOf('.tar') > 0
+            else if file.extension in ["changes", "dsc"] or f.indexOf('.tar.') > 0 or f.indexOf('.diff.') > 0
                 file.name = f.replace(data.package.orig_name + ".", "")
                 if file.extension is "changes"
                     file.name = f.split('_').pop()
                 else if f.indexOf('.orig.tar') > 0
                     file.name = "orig." + f.split(".orig.").pop()
+                else if f.indexOf('.diff.') > 0
+                    file.name = "diff." + f.split(".diff.").pop()
                 data.package.sources.push(file)
             else
                 file.name = file.extension

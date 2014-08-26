@@ -1,9 +1,10 @@
 # unreleased
+ * [new] [module] add parser for blhc log file
  * [new] show file size for package files
  * [new] disable autoscroll pressing on "back on top" panel
- * [new] [module] add parser for blhc log file
- * [fix] add support to sourceupload.changes
  * [fix] [module] use readline while parsing piuparts log file
+ * [fix] add support to sourceupload.changes
+ * [fix] add support to source format 1.0 - closes #6
 
 # 1.0.0 (2014-07-23)
  * Migrate to coffee-script, code refactory
