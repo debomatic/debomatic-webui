@@ -229,7 +229,7 @@ class LogParser():
                     continue
                 tag = info[0].replace('FLAGS', '')
                 tags[tag] += 1
-        return sorted(list(tags.keys()))
+        return ' '.join(sorted(list(tags.keys())))
 
     def _from_tags_to_result(self, tags):
         keys = sorted(list(tags.keys()))
