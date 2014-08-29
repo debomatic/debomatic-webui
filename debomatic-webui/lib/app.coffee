@@ -5,7 +5,6 @@ app = module.exports = require("express")()
 server = require("http").createServer(app)
 io = require("socket.io")(server)
 
-path = require("path")
 serve_static = require("serve-static")
 serve_index = require("serve-index")
 errorhandler = require("errorhandler")
@@ -58,13 +57,10 @@ if config.routes.debomatic
     app.get config.routes.debomatic + '/:distribution/build/:subdir', (req, res) ->
         chroot_forbidden(res)
 
-    app.get config.routes.debomatic + '/:distribution/logs/:file', (req, res) ->
-        distribution = req.params.distribution
-        file = req.params.file
-        full_path = path.join(config.debomatic.path, distribution, 'logs', file)
-
+    # set the right content-type for log files
+    app.get config.routes.debomatic + '/:distribution/logs/:file', (req, res, next) ->
         res.set('Content-Type', 'text/plain')
-        res.sendFile(full_path)
+        next()
 
     app.use(config.routes.debomatic, serve_static(config.debomatic.path))
     app.use(config.routes.debomatic, serve_index(config.debomatic.path,
