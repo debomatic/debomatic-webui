@@ -45,25 +45,18 @@ if config.routes.commands
 
 # debomatic static page
 if config.routes.debomatic
-    app.all config.routes.debomatic + "*", (req, res, next) ->
-        # send 403 status when users want to browse the chroots:
-        # - unstable/unstable
-        # - unstable/build/*
-        # this prevents system crashes
-        base = config.routes.debomatic
-        base += "/" if base[base.length - 1] isnt "/" # append /
-        match = req.url.replace(base, "").split("/")
-        match.pop() if match[match.length - 1] is ""
+    chroot_forbidden = (res) ->
+        res.status(403).send """<h1>403 Forbidden</h1>
+                                 <h2>You cannot see the chroot internals</h2>"""
 
-        if match.length >= 2 and
-        ((match[0] is match[1]) or # case unstable/unstable
-        (match[1] is "build" and match.length > 2)) # case unstable/build/*
-            res.status(403).send """<h1>403 Forbidden</h1>
-                                 <h2>You cannot see the chroot internals</h2>
-                                 """
-        else # call next() here to move on to next middleware/router
+    app.get config.routes.debomatic + '/:distribution/:subdir', (req, res, next) ->
+        if req.params.distribution == req.params.subdir
+            chroot_forbidden(res)
+        else
             next()
-        return
+
+    app.get config.routes.debomatic + '/:distribution/build/:subdir', (req, res) ->
+        chroot_forbidden(res)
 
     app.get config.routes.debomatic + '/:distribution/logs/:file', (req, res) ->
         distribution = req.params.distribution
