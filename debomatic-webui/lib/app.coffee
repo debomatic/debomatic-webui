@@ -5,6 +5,7 @@ app = module.exports = require("express")()
 server = require("http").createServer(app)
 io = require("socket.io")(server)
 
+path = require("path")
 serve_static = require("serve-static")
 serve_index = require("serve-index")
 errorhandler = require("errorhandler")
@@ -63,6 +64,14 @@ if config.routes.debomatic
         else # call next() here to move on to next middleware/router
             next()
         return
+
+    app.get config.routes.debomatic + '/:distribution/logs/:file', (req, res) ->
+        distribution = req.params.distribution
+        file = req.params.file
+        full_path = path.join(config.debomatic.path, distribution, 'logs', file)
+
+        res.set('Content-Type', 'text/plain')
+        res.sendFile(full_path)
 
     app.use(config.routes.debomatic, serve_static(config.debomatic.path))
     app.use(config.routes.debomatic, serve_index(config.debomatic.path,

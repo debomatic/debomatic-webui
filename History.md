@@ -2,6 +2,7 @@
  * [new] [module] add parser for blhc log file
  * [new] show file size for package files
  * [new] disable autoscroll pressing on "back on top" panel
+ * [new] log files can be now showed directly in the browsers
  * [fix] [module] use readline while parsing piuparts log file
  * [fix] add support to sourceupload.changes
  * [fix] add support to source format 1.0 - closes #6
