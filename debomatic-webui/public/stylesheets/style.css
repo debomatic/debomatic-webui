@@ -65,15 +65,15 @@ pre {
   margin: 10px;
 }
 
-aside .nav-pills li {
+aside#sidebar .nav-pills li {
   line-height: 10px;
 }
 
-#sidebar {
+aside#sidebar {
   position: relative;
 }
 
-#sidebar .fixed {
+aside#sidebar .fixed {
   position: fixed;
   min-width: 220px !important;
   top: 0;
