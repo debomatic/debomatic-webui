@@ -21,9 +21,7 @@ class Parser
             if @args.length < 2
                 @help()
             user_config = @args[@args.indexOf('-c') + 1]
-            if user_config[0] isnt '/'
-                user_config = process.cwd() + "/" + user_config
-            return path.normalize(user_config)
+            return path.resolve(user_config)
         return null
 
 module.exports = Parser
