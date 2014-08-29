@@ -60,9 +60,9 @@ class Debomatic
                 key += "/#{status.status}" if status.status?
                 return key
             key = get_key(data)
-            if data.hasOwnProperty("success") and @status[key]?
+            if @status[key]? and data["success"]?
                 delete @status[key]
-            else
+            else if not @status[key]? and not data["success"]?
                 @status[key] = data
             @sockets.emit e.status_update, data
 
