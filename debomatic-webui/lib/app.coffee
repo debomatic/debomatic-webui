@@ -48,13 +48,13 @@ if config.routes.debomatic
         res.status(403).send """<h1>403 Forbidden</h1>
                                  <h2>You cannot see the chroot internals</h2>"""
 
-    app.get config.routes.debomatic + '/:distribution/:subdir', (req, res, next) ->
+    app.all config.routes.debomatic + '/:distribution/:subdir/*', (req, res, next) ->
         if req.params.distribution == req.params.subdir
             chroot_forbidden(res)
         else
             next()
 
-    app.get config.routes.debomatic + '/:distribution/build/:subdir', (req, res) ->
+    app.all config.routes.debomatic + '/:distribution/build/*/*', (req, res) ->
         chroot_forbidden(res)
 
     # set the right content-type for log files
