@@ -42,6 +42,10 @@ if config.routes.preferences
 if config.routes.commands
     app.get(config.routes.commands, routes.commands)
 
+# history page
+if config.routes.history
+    app.get(config.routes.history, routes.history)
+
 # debomatic static page
 if config.routes.debomatic
     chroot_forbidden = (res) ->

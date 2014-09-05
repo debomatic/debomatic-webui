@@ -1,0 +1,34 @@
+<% include header.ejs %>
+
+<article class="page">
+    <header><h2>History</h2></header>
+    <p class="lead text-muted">
+        The log of packages
+    </p>
+    <table class="table table-bordered table-striped">
+    <% console.log(history) %>
+    <thead>
+        <tr>
+            <th>Distribution</th>
+            <th>Package</th>
+            <th>Uploader</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+    <% for (var i=0; i < history.length; i++) { %>
+        <tr>
+            <td><%= history[i].distribution %> </td>
+            <td><%= history[i].package %></td>
+            <td><%= history[i].ploader %></td>
+            <td><%= history[i].start %></td>
+            <td><%= history[i].end %></td>
+            <td><%= history[i].success %></td>
+        </tr>
+    <% } %>
+    </tbody>
+    </table>
+</article>
+<% include footer.ejs %>
