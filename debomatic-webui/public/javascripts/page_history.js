@@ -20,11 +20,36 @@ function Page_History() {
         var package_url = Utils.get_url_to_package(p);
         row += '<td><a href="' + distribution_url + '">' + p.distribution + '</a></td>';
         row += '<td><a href="' + package_url + '">' + p.package + '</td>';
+        row += '<td>' + Utils.format_time(p.start, false, true) + '</td>';
+        row += '<td>' + Utils.format_time(p.end, false, true) + '</td>';
         row += '<td>' + p.uploader + '</td>';
-        row += '<td>' + Utils.format_time(p.start) + '</td>';
-        row += '<td>' + Utils.format_time(p.end) + '</td>';
         row += '<td class="' + info.className + ' text-' + info.className + '">' + label + '</td>';
         row += '</tr>';
-        $('.table tbody').append(row);
+        $('table tbody').append(row);
     }
+
+    // create the theme for tablesorter
+    $.extend($.tablesorter.themes.bootstrap, {
+        table: 'table table-condensed table-bordered table-striped',
+        caption: 'caption',
+        header: 'bootstrap-header',
+        sortNone: 'bootstrap-icon-unsorted',
+        sortAsc: 'glyphicon glyphicon-chevron-up',
+        sortDesc: 'glyphicon glyphicon-chevron-down',
+    });
+
+    // call the tablesorter plugin and apply the uitheme widget
+    $("table").tablesorter({
+        theme: "bootstrap",
+        widthFixed: true,
+        headerTemplate: '{content} {icon}',
+        widgets: ["uitheme", "filter"],
+        sortList: [
+            [3, 1]
+        ]
+    });
+
+    // add some funcy class to inputs field
+    $("table input").addClass('form-control');
+    $("table select").addClass('form-control');
 }

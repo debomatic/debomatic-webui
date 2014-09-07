@@ -117,15 +117,23 @@ var Utils = {
     },
 
     // format time from a timestamp
-    format_time: function (timestamp, time_in_bold) {
+    format_time: function (timestamp, time_in_bold, short) {
         var date = new Date(timestamp * 1000);
         var locale = navigator.language || 'en-US';
-        var options = {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        };
+        var options = null;
+        if (short)
+            options = {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+            };
+        else
+            options = {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            };
         var result_date = date.toLocaleDateString(locale, options);
         var result_time = Utils.num_two_digits(date.getHours()) + ':' + Utils.num_two_digits(date.getMinutes());
         if (time_in_bold) result_time = '<b>' + result_time + '</b>';
