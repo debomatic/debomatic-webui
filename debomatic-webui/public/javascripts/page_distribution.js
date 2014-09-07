@@ -355,24 +355,6 @@ function Page_Distrubion(socket) {
                 return;
             }
 
-            function _get_two_digits(num) {
-                return ("0" + num).slice(-2);
-            }
-
-            function _get_time(timestamp) {
-                var date = new Date(timestamp * 1000);
-                var locale = navigator.language || 'en-US';
-                var options = {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                };
-                var result = date.toLocaleDateString(locale, options);
-                result += ' <b>' + _get_two_digits(date.getHours()) + ':' + _get_two_digits(date.getMinutes()) + '</b>';
-                return result;
-            }
-
             if (socket_data.hasOwnProperty('files')) {
                 var s_files = socket_data.files;
                 for (var file in s_files) {
@@ -390,15 +372,15 @@ function Page_Distrubion(socket) {
             if (socket_data.uploader)
                 info += "Uploaded by " + socket_data.uploader + ' - ';
 
-            info += "Build started " + _get_time(socket_data.start);
+            info += "Build started " + Utils.format_time(socket_data.start, true);
 
             if (socket_data.end) {
-                info += ' - finished ' + _get_time(socket_data.end);
+                info += ' - finished ' + Utils.format_time(socket_data.end, true);
                 info += ' - elapsed time: <b>';
                 var elapsed = new Date((socket_data.end - socket_data.start) * 1000);
-                info += _get_two_digits(elapsed.getUTCHours()) + ':';
-                info += _get_two_digits(elapsed.getUTCMinutes()) + ':';
-                info += _get_two_digits(elapsed.getUTCSeconds());
+                info += Utils.num_two_digits(elapsed.getUTCHours()) + ':';
+                info += Utils.num_two_digits(elapsed.getUTCMinutes()) + ':';
+                info += Utils.num_two_digits(elapsed.getUTCSeconds());
             }
             $("#package_info").html(info);
 

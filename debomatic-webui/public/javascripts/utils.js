@@ -105,5 +105,27 @@ var Utils = {
                 "/": "&#x2F;"
             }[s];
         });
+    },
+
+    // returns a two digits num
+    num_two_digits: function (num) {
+        return ("0" + num).slice(-2);
+    },
+
+    // format time from a timestamp
+    format_time: function (timestamp, time_in_bold) {
+        var date = new Date(timestamp * 1000);
+        var locale = navigator.language || 'en-US';
+        var options = {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        };
+        var result_date = date.toLocaleDateString(locale, options);
+        var result_time = Utils.num_two_digits(date.getHours()) + ':' + Utils.num_two_digits(date.getMinutes());
+        if (time_in_bold) result_time = '<b>' + result_time + '</b>';
+        return result_date + ' ' + result_time;
     }
+
 };
