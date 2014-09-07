@@ -13,13 +13,6 @@ function Page_Generic() {
         return result;
     }
 
-    function __get_status_html_href(status_data) {
-        var result = config.paths.distribution + '#' + status_data.distribution;
-        if (status_data.hasOwnProperty('package'))
-            result += '/' + status_data.package.replace('_', '/') + '/buildlog';
-        return result;
-    }
-
     function __get_status_html_title(status_data) {
         var result = status_data.status + ': ' + status_data.distribution;
         if (status_data.hasOwnProperty('package'))
@@ -43,7 +36,7 @@ function Page_Generic() {
         button.addClass('btn btn-xs');
         button.addClass(_s.status);
         button.attr('title', __get_status_html_title(_s));
-        button.attr('href', __get_status_html_href(_s));
+        button.attr('href', Utils.get_url_to_package(_s));
         button.html(__get_status_html_inner(_s));
         var info = Utils.get_status_icon_and_class(_s);
         button.addClass('btn-' + info.className);
