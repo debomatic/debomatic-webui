@@ -118,6 +118,8 @@ var Utils = {
 
     // format time from a timestamp
     format_time: function (timestamp, time_in_bold, short) {
+        if (!timestamp)
+            return '';
         var date = new Date(timestamp * 1000);
         var locale = navigator.language || 'en-US';
         var options = null;
