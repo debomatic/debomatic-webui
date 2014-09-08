@@ -23,6 +23,11 @@ function Page_History() {
         return date.toLocaleDateString(locale, options);
     }
 
+    function _get_id(package_status) {
+        var p = package_status;
+        return "package/" + p.distribution + "/" + p.package;
+    }
+
     function _add_row(package_status) {
         var p = package_status;
         var info = Utils.get_status_icon_and_class(p);
@@ -30,7 +35,7 @@ function Page_History() {
         var distribution_url = Utils.get_url_to_package({
             'distribution': p.distribution
         });
-        var row = '<tr>';
+        var row = '<tr id="' + _get_id(package_status) + '">';
         var package_url = Utils.get_url_to_package(p);
         row += '<td><a href="' + distribution_url + '">' + p.distribution + '</a></td>';
         row += '<td><a href="' + package_url + '">' + p.package + '</td>';
