@@ -71,6 +71,9 @@ class Client
                 pack.version = info[1]
                 pack.orig_name = p
                 read_package_status {distribution: data.distribution, package: pack}, (content) =>
+                    for attr of content
+                        if attr not in ['distribution', 'package', 'status', 'success']
+                            delete content[attr]
                     @socket.emit e.distribution_packages_status, content
                 data.distribution.packages.push pack
             @socket.emit e.distribution_packages, data
