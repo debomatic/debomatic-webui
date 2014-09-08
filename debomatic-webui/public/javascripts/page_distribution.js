@@ -378,7 +378,8 @@ function Page_Distrubion(socket) {
                 info += ' - finished ' + Utils.format_time(socket_data.end, true);
                 info += ' - elapsed time: <b>';
                 var elapsed = new Date((socket_data.end - socket_data.start) * 1000);
-                info += Utils.num_two_digits(elapsed.getUTCHours()) + ':';
+                var tot_hours = (elapsed.getUTCDate() - 1) * 24 + elapsed.getUTCHours();
+                info += Utils.num_two_digits(tot_hours) + ':';
                 info += Utils.num_two_digits(elapsed.getUTCMinutes()) + ':';
                 info += Utils.num_two_digits(elapsed.getUTCSeconds());
             }
