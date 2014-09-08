@@ -787,7 +787,7 @@ function Page_Distrubion(socket) {
         // Init sticky-package back_on_top on click
         $('#sticky-package').on('click', function () {
             back_on_top_pressed = true;
-            debug(1, 'back on top pressed, disabling autoscroll')
+            debug(1, 'back on top pressed, disabling autoscroll');
             page.go.up(100);
         });
 
