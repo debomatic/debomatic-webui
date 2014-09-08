@@ -28,14 +28,13 @@ if (window.location.pathname == config.paths.preferences) {
         real_email = '<a href="mailto:' + real_email + subject + '">' + label + '</a>';
         $(this).html(real_email);
     });
-} else if (window.location.pathname == config.paths.history) {
-    new Page_History();
 }
-
 var socket = io.connect('/');
 
 page_generic.start(socket);
 
 if (window.location.pathname == config.paths.distribution) {
     new Page_Distrubion(socket).start();
+} else if (window.location.pathname == config.paths.history) {
+    new Page_History().start(socket);
 }

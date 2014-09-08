@@ -30,6 +30,8 @@ function Page_History() {
 
     function _add_row(package_status) {
         var p = package_status;
+        if (!p.hasOwnProperty('success'))
+            return;
         var info = Utils.get_status_icon_and_class(p);
         var label = info.label || 'building';
         var distribution_url = Utils.get_url_to_package({
@@ -138,6 +140,12 @@ function Page_History() {
         }
         Chartist.Line('#days-chart', days_data);
     }
+
+    this.start = function (socket) {
+        socket.on(config.events.broadcast.status_update, function (socket_data) {
+            // TODO - implements _update_table
+        });
+    };
 
 
     // init table and some objects
