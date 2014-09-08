@@ -117,8 +117,6 @@ function Page_History() {
         Chartist.Pie('#distributions-chart', distributions_data, {
             donut: true,
             donutWidth: 15,
-            labelOffset: 15,
-            labelDirection: 'explode'
         });
     }
 
