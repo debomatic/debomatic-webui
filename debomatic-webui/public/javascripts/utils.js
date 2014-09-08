@@ -58,13 +58,16 @@ var Utils = {
         var _s = status_data;
         var className = null;
         var icon = null;
+        var label = null;
         if (_s.hasOwnProperty('success')) {
             if (_s.success === true) {
                 className = _c.success;
                 icon = _i.success;
+                label = 'success';
             } else {
                 className = _c.fail;
                 icon = _i.fail;
+                label = 'fail';
             }
         } else {
             className = _c[_s.status];
@@ -79,7 +82,8 @@ var Utils = {
 
         return {
             className: className,
-            icon: icon
+            icon: icon,
+            label: label
         };
     },
 
@@ -105,5 +109,45 @@ var Utils = {
                 "/": "&#x2F;"
             }[s];
         });
+    },
+
+    // returns a two digits num
+    num_two_digits: function (num) {
+        return ("0" + num).slice(-2);
+    },
+
+    // format time from a timestamp
+    format_time: function (timestamp, time_in_bold, short) {
+        if (!timestamp)
+            return '';
+        var date = new Date(timestamp * 1000);
+        var locale = navigator.language || 'en-US';
+        var options = null;
+        if (short)
+            options = {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+            };
+        else
+            options = {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            };
+        var result_date = date.toLocaleDateString(locale, options);
+        var result_time = Utils.num_two_digits(date.getHours()) + ':' + Utils.num_two_digits(date.getMinutes());
+        if (time_in_bold) result_time = '<b>' + result_time + '</b>';
+        return result_date + ' ' + result_time;
+    },
+
+    // get href url from status object
+    get_url_to_package: function (status_data) {
+        var result = config.paths.distribution + '#' + status_data.distribution;
+        if (status_data.hasOwnProperty('package'))
+            result += '/' + status_data.package.replace('_', '/') + '/buildlog';
+        return result;
     }
+
 };

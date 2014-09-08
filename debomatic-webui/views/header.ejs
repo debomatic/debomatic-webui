@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/external_libs/bootstrap-3.2.0-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/external_libs/bootstrap-3.2.0-dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/external_libs/chartist-js-0.1.11/libdist/chartist.min.css">
+    <link rel="stylesheet" href="/external_libs/tablesorter/theme.bootstrap.css">
     <link rel="stylesheet" href="/stylesheets/style.css?<%= version %>">
   </head>
 
@@ -22,6 +24,9 @@
           </div>
           <div id="pages">
             <ul class="nav navbar-nav pull-right">
+              <% if (web.paths.history) { %>
+              <li><a href="<%= web.paths.history %>">History</a></li>
+              <% } %>
               <% if (web.paths.commands) { %>
               <li><a href="<%= web.paths.commands %>">Commands</a></li>
               <% } %>

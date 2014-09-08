@@ -1,0 +1,27 @@
+<% include header.ejs %>
+
+<article class="page">
+    <header><h2>History</h2></header>
+    <p class="lead text-muted">
+        The log of packages
+    </p>
+    <script> var dom_history = <%- JSON.stringify(history) %> </script>
+    <div id="charts">
+        <div id="days-chart" class="ct-chart"></div>
+        <div id="distributions-chart" class="ct-chart"></div>
+    </div>
+    <table id="history" class="tablesorter">
+        <thead>
+            <tr>
+                <th class="filter-select filter-exact" data-placeholder="All">Distribution</th>
+                <th>Package</th>
+                <th data-empty="top" data-placeholder=">= 01/01/1990">Start</th>
+                <th data-empty="top" data-placeholder=">= 01/01/1990">End</th>
+                <th>Uploader</th>
+                <th class="filter-select filter-exact" data-placeholder="All">Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</article>
+<% include footer.ejs %>

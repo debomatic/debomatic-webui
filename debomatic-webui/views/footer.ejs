@@ -3,7 +3,7 @@
     <div id="smile"></div>
     <footer id="footer" class="container-fluid">
       <small onclick="window.open('https://github.com/debomatic/debomatic-webui','_blank');" class="copyright pull-right text-muted">
-        Fork me on <a href="https://github.com/debomatic/debomatic-webui">github</a>
+        Fork me on <a>github</a>
       </small>
       <small class="info pull-right text-muted">v<%= version %> &bull;</small>
       <div id="status" class="clearfix">
@@ -14,9 +14,12 @@
       </div>
     </footer>
 
-    <script src='/socket.io/socket.io.js?<%= version %>'></script>
-    <script src='/external_libs/jquery/jquery-1.11.0.min.js'></script>
+    <script src="/socket.io/socket.io.js?<%= version %>"></script>
+    <script src="/external_libs/jquery/jquery-1.11.0.min.js"></script>
+    <script src="/external_libs/tablesorter/jquery.tablesorter.min.js"></script>
+    <script src="/external_libs/tablesorter/jquery.tablesorter.widgets.min.js"></script>
     <script src="/external_libs/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+    <script src="/external_libs/chartist-js-0.1.11/libdist/chartist.min.js"></script>
 
     <script>
     var config = <%- JSON.stringify(web) %>
@@ -46,6 +49,7 @@
     <script src='/javascripts/preferences.js?<%= version %>'></script>
     <script src='/javascripts/page_generic.js?<%= version %>'></script>
     <script src='/javascripts/page_distribution.js?<%= version %>'></script>
+    <script src='/javascripts/page_history.js?<%= version %>'></script>
     <script src='/javascripts/main.js?<%= version %>'></script>
 
   </body>

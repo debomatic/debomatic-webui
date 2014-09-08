@@ -98,6 +98,7 @@ config.routes.debomatic = "/debomatic"
 config.routes.distribution = "/distribution"
 config.routes.preferences = "/preferences"
 config.routes.commands = "/commands"
+config.routes.history = "/history"
 
 ###
 The events

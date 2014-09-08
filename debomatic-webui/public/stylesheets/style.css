@@ -257,3 +257,14 @@ footer .info {
   padding-top: 10px;
   cursor: pointer;
 }
+
+.ct-chart {
+  height: 180px;
+  width: 50%;
+  float: left;
+  margin-bottom: 30px;
+}
+
+.ct-chart .ct-label {
+  font-size: 0.9em;
+}

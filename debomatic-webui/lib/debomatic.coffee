@@ -1,18 +1,16 @@
 fs = require("fs")
+glob = require("glob")
 config = require("./config")
 utils = require("./utils")
 Tail = utils.Tail
 e = config.events.broadcast
 
 _get_distributions = (callback) ->
-    utils.get_files_list config.debomatic.path, true, (directories) ->
+    glob "#{config.debomatic.path}/*/pool", {}, (err, directories) ->
         distributions = []
         for dir in directories
-            data = {}
-            data.distribution = {}
-            data.distribution.name = dir
-            pool_path = utils.get_distribution_pool_path(data)
-            distributions.push dir if fs.existsSync(pool_path)
+            name = dir.split('/')[-2..][0]
+            distributions.push name
         callback(distributions)
 
 

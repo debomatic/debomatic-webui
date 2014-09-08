@@ -4,18 +4,16 @@
 /* global Preferences: false */
 /* global Page_Generic: false */
 /* global Page_Distrubion: false */
+/* global Page_History: false */
 
 'use strict';
 
-var preferences = new Preferences();
-
-var page_generic = new Page_Generic();
+var preferences = new Preferences(),
+    page_generic = new Page_Generic();
 
 if (window.location.pathname == config.paths.preferences) {
     preferences.initPage();
-}
-
-if (window.location.pathname == '/') {
+} else if (window.location.pathname == '/') {
     // convert email addresses in the right format
     var emails = $('.email');
     $.each(emails, function () {
@@ -31,11 +29,12 @@ if (window.location.pathname == '/') {
         $(this).html(real_email);
     });
 }
-
 var socket = io.connect('/');
 
 page_generic.start(socket);
 
 if (window.location.pathname == config.paths.distribution) {
     new Page_Distrubion(socket).start();
+} else if (window.location.pathname == config.paths.history) {
+    new Page_History().start(socket);
 }

@@ -10,6 +10,7 @@
         "ejs": "1.*",
         "socket.io": "1.*",
         "tail": "*",
+        "glob": "*",
         "extend": "*"
     },
     "scripts": {
