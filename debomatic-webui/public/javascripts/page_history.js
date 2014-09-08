@@ -11,7 +11,7 @@ function Page_History() {
     var distributions_counter = {};
     var days_counter = {};
     var all_distributions = [];
-    var all_days = {};
+    var all_days = [];
 
     function _get_short_day(timestamp) {
         var date = new Date(timestamp * 1000);
@@ -52,6 +52,8 @@ function Page_History() {
         if (distributions_counter.hasOwnProperty(p.distribution))
             distributions_counter[p.distribution]++;
         else distributions_counter[p.distribution] = 1;
+        if (all_distributions.indexOf(p.distribution) < 0)
+            all_distributions.push(p.distribution);
     }
 
     function _count_days(package_status) {
@@ -66,7 +68,8 @@ function Page_History() {
             days_counter[p.distribution] = {};
             days_counter[p.distribution][day] = 1;
         }
-        all_days[day] = 0;
+        if (all_days.indexOf(day) < 0)
+            all_days.push(day);
     }
 
     function _sort_table() {
@@ -107,10 +110,8 @@ function Page_History() {
             if (distributions_counter.hasOwnProperty(distro)) {
                 distributions_data.series.push(distributions_counter[distro]);
                 distributions_data.labels.push(distro + " (" + distributions_counter[distro] + ")");
-                all_distributions.push(distro);
             }
         }
-
         Chartist.Pie('#distributions-chart', distributions_data, {
             donut: true,
             donutWidth: 15,
@@ -121,18 +122,13 @@ function Page_History() {
         // build the days Line graph
         var days_data = {
             series: [],
-            labels: []
+            labels: all_days
         };
-        for (var day in all_days) {
-            if (all_days.hasOwnProperty(day))
-                days_data.labels.push(day);
-        }
         for (var i = 0; i < all_distributions.length; i++) {
             var info = [];
             var distro = all_distributions[i];
-            for (var day in all_days) {
-                if (!all_days.hasOwnProperty(day))
-                    continue;
+            for (var j = 0; j < all_days.length; j++) {
+                var day = all_days[j];
                 if (days_counter[distro].hasOwnProperty(day))
                     info.push(days_counter[distro][day]);
                 else
@@ -142,7 +138,6 @@ function Page_History() {
         }
         Chartist.Line('#days-chart', days_data);
     }
-
 
 
     // init table and some objects
