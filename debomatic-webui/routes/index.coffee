@@ -25,9 +25,9 @@ exports.history = (req, res) ->
             delete json.files
             return json
         compare = (a,b) ->
-            if a.end < b.end
+            if a.start < b.start
                 return -1
-            if a.end > b.end
+            if a.start > b.start
                 return 1
             return 0
 
