@@ -34,6 +34,7 @@ from collections import defaultdict
 class DebomaticModule_JSONLoggerStart:
     def __init__(self):
         self.logger = DebomaticModule_JSONLogger()
+        self.first = True
 
     def pre_chroot(self, args):
         self.logger.pre_chroot(args)
@@ -45,6 +46,7 @@ class DebomaticModule_JSONLoggerStart:
 class DebomaticModule_JSONLoggerStop:
     def __init__(self):
         self.logger = DebomaticModule_JSONLogger()
+        self.last = True
 
     def post_chroot(self, args):
         self.logger.post_chroot(args)
