@@ -265,6 +265,11 @@ footer .info {
   margin-bottom: 30px;
 }
 
+#distributions-chart.ct-chart {
+  height: 200px;
+  margin-top: -20px;
+}
+
 .ct-chart .ct-label {
   font-size: 0.9em;
 }
