@@ -17,8 +17,8 @@ Some **debomatic-webui** instances are already running over:
 
 You need **JSONLogger** debomatic module (provided along with this interface) to get installed in debomatic, type this in a command line:
 ```
-sudo ln -s `pwd`/debomatic-modules/JSONLogger.py /usr/share/debomatic/modules/00_JSONLogger.py
-sudo ln -s `pwd`/debomatic-modules/JSONLogger.py /usr/share/debomatic/modules/ZZ_JSONLogger.py
+sudo ln -s `pwd`/debomatic-modules/JSONLogger.py /usr/share/debomatic/modules/JSONLoggerStart.py
+sudo ln -s `pwd`/debomatic-modules/JSONLogger.py /usr/share/debomatic/modules/JSONLoggerStop.py
 ```
 Restart debomatic service.
 
