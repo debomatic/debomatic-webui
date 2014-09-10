@@ -1,5 +1,7 @@
 # unreleased
+ * [new] [module] change names to Start and Stop
  * [new] [module] add parser for blhc log file
+ * [new] history page
  * [new] show file size for package files
  * [new] disable autoscroll pressing on "back on top" panel
  * [new] log files can be now showed directly in the browsers
