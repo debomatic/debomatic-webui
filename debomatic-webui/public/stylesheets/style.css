@@ -273,3 +273,39 @@ footer .info {
 .ct-chart .ct-label {
   font-size: 0.85em;
 }
+
+/* add more colors to graphs */
+.ct-series-e .ct-bar,
+.ct-chart .ct-series.ct-series-e .ct-line,
+.ct-chart .ct-series.ct-series-e .ct-point,
+.ct-chart .ct-series.ct-series-e .ct-slice.ct-donut {
+  stroke: #E6E3BB;
+}
+
+.ct-chart .ct-series.ct-series-f .ct-bar,
+.ct-chart .ct-series.ct-series-f .ct-line,
+.ct-chart .ct-series.ct-series-f .ct-point,
+.ct-chart .ct-series.ct-series-f .ct-slice.ct-donut {
+  stroke: #D3741C;
+}
+
+.ct-chart .ct-series.ct-series-g .ct-bar,
+.ct-chart .ct-series.ct-series-g .ct-line,
+.ct-chart .ct-series.ct-series-g .ct-point,
+.ct-chart .ct-series.ct-series-g .ct-slice.ct-donut {
+  stroke: #C6491A;
+}
+
+.ct-chart .ct-series.ct-series-h .ct-bar,
+.ct-chart .ct-series.ct-series-h .ct-line,
+.ct-chart .ct-series.ct-series-h .ct-point,
+.ct-chart .ct-series.ct-series-h .ct-slice.ct-donut {
+  stroke: #8E4423;
+}
+
+.ct-chart .ct-series.ct-series-i .ct-bar,
+.ct-chart .ct-series.ct-series-i .ct-line,
+.ct-chart .ct-series.ct-series-i .ct-point,
+.ct-chart .ct-series.ct-series-i .ct-slice.ct-donut {
+  stroke: #242729;
+}
