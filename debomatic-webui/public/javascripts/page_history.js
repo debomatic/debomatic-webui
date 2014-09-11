@@ -108,11 +108,10 @@ function Page_History() {
             series: [],
             labels: []
         };
-        for (var distro in distributions_counter) {
-            if (distributions_counter.hasOwnProperty(distro)) {
-                distributions_data.series.push(distributions_counter[distro]);
-                distributions_data.labels.push(distro + " (" + distributions_counter[distro] + ")");
-            }
+        for (var i = 0; i < all_distributions.length; i++) {
+            var distro = all_distributions[i];
+            distributions_data.series.push(distributions_counter[distro]);
+            distributions_data.labels.push(distro + " (" + distributions_counter[distro] + ")");
         }
         Chartist.Pie('#distributions-chart', distributions_data, {
             donut: true,
@@ -159,6 +158,7 @@ function Page_History() {
         _count_distributions(p);
         _count_days(p);
     }
+    all_distributions.sort();
     _sort_table();
     _create_graph_distributions();
     _create_graph_days();
