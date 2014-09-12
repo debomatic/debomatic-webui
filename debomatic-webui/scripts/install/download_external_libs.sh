@@ -38,7 +38,7 @@ get_tablesorter() {
 }
 
 get_chartist() {
-  VERSION="0.1.11"
+  VERSION="0.1.12"
   NAME="chartist-js-${VERSION}"
   if [ -d ${EXT_LIBS_DIR}/${NAME} ] ; then return ; fi
   ARCHIVE=v${VERSION}.zip
