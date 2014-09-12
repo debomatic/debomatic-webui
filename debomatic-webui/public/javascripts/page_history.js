@@ -141,9 +141,50 @@ function Page_History() {
                 else
                     info.push(0);
             }
-            days_data.series.push(info);
+            days_data.series.push({
+                name: distro,
+                data: info
+            });
         }
         Chartist.Line('#days-chart', days_data);
+        var effect = function (x, t, b, c, d) {
+            return -c * (t /= d) * (t - 2) + b;
+        };
+        var $chart = $('#days-chart');
+        var $toolTip = $chart
+            .append('<div class="tooltip fade top in" role="tooltip">' +
+                '<div class="tooltip-arrow"></div> ' +
+                '<div class="tooltip-inner"></div>' +
+                '</div>').find('.tooltip').hide();
+
+        $chart.on('mouseenter', '.ct-point', function () {
+            var $point = $(this),
+                value = $point.attr('ct:value'),
+                seriesName = $point.parent().attr('ct:series-name');
+
+            $point.animate({
+                'stroke-width': '20px'
+            }, 300, effect);
+            $toolTip.find('.tooltip-inner').html(seriesName + ' (' + value + ')');
+            $toolTip.show();
+        });
+
+        $chart.on('mouseleave', '.ct-point', function () {
+            var $point = $(this);
+
+            $point.animate({
+                'stroke-width': '10px'
+            }, 300, effect);
+            $toolTip.hide();
+        });
+
+        $chart.on('mousemove', function (event) {
+            $toolTip.css({
+                left: event.offsetX - $toolTip.width() / 2,
+                top: event.offsetY - $toolTip.height() - 20
+            });
+
+        });
     }
 
     function _exportTableToCSV($table, filename) {
