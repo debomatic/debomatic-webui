@@ -162,9 +162,9 @@ function Page_History() {
                 value = $point.attr('ct:value'),
                 seriesName = $point.parent().attr('ct:series-name');
 
-            $point.animate({
+            $point.stop().animate({
                 'stroke-width': '20px'
-            }, 300, effect);
+            }, 200, effect);
             $toolTip.find('.tooltip-inner').html(seriesName + ' (' + value + ')');
             $toolTip.show();
         });
@@ -172,9 +172,9 @@ function Page_History() {
         $chart.on('mouseleave', '.ct-point', function () {
             var $point = $(this);
 
-            $point.animate({
+            $point.stop().animate({
                 'stroke-width': '10px'
-            }, 300, effect);
+            }, 150, effect);
             $toolTip.hide();
         });
 
