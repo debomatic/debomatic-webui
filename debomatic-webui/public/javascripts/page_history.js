@@ -77,7 +77,7 @@ function Page_History() {
     function _sort_table() {
         // create the theme for tablesorter
         $.extend($.tablesorter.themes.bootstrap, {
-            table: 'table table-condensed table-bordered table-striped',
+            table: 'table table-condensed table-bordered',
             caption: 'caption',
             header: 'bootstrap-header',
             sortNone: 'bootstrap-icon-unsorted',
@@ -90,10 +90,13 @@ function Page_History() {
             theme: "bootstrap",
             widthFixed: true,
             headerTemplate: '{content} {icon}',
-            widgets: ["uitheme", "filter"],
             sortList: [
                 [3, 1]
-            ]
+            ],
+            widgets: ["uitheme", "filter", "zebra"],
+            widgetOptions: {
+                zebra: ["normal-row", "alt-row"],
+            }
         });
 
         // add some fancy class to input fields

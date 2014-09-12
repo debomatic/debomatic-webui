@@ -280,6 +280,10 @@ footer .info {
   margin-top: 15px;
 }
 
+#history .alt-row {
+  background: #F9F9F9;
+}
+
 /* add more colors to graphs */
 .ct-series-e .ct-bar,
 .ct-chart .ct-series.ct-series-e .ct-line,
