@@ -258,6 +258,8 @@ footer .info {
   cursor: pointer;
 }
 
+
+/* History page */
 .ct-chart {
   height: 180px;
   width: 50%;
@@ -265,13 +267,17 @@ footer .info {
   margin-bottom: 30px;
 }
 
+.ct-chart .ct-label {
+  font-size: 0.85em;
+}
+
 #distributions-chart.ct-chart {
   height: 200px;
   margin-top: -20px;
 }
 
-.ct-chart .ct-label {
-  font-size: 0.85em;
+#history {
+  margin-top: 15px;
 }
 
 /* add more colors to graphs */
