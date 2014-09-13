@@ -6,7 +6,7 @@ body {
   margin-top: 20px;
 }
 
-.home-link {
+.home-link > span {
   cursor: pointer;
   text-shadow: 0 1px 1px black;
 }
