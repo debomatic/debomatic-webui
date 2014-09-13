@@ -1,6 +1,7 @@
 path = require("path")
 fs = require("fs")
 config = require("./config")
+glob = require("glob")
 Tail = require("tail").Tail
 
 _check_no_backward = (backward_path) ->
@@ -26,6 +27,17 @@ check_data_file = (data) ->
     _check_no_backward(data.file) and
     _check_no_backward(data.file.name)
 
+
+get_distributions = (callback) ->
+    glob "#{config.debomatic.path}/*/pool", {}, (err, directories) ->
+        if err
+            errors_handler "get_distributions", err
+            return
+        distributions = []
+        for dir in directories
+            name = dir.split('/')[-2..][0]
+            distributions.push name
+        callback(distributions)
 
 get_distribution_pool_path = (data) ->
     path.join(config.debomatic.path, data.distribution.name, "pool")
@@ -132,6 +144,7 @@ Tail::close = ->
 module.exports.check_data_distribution = check_data_distribution
 module.exports.check_data_package = check_data_package
 module.exports.check_data_file = check_data_file
+module.exports.get_distributions = get_distributions
 module.exports.get_distribution_pool_path = get_distribution_pool_path
 module.exports.get_package_path = get_package_path
 module.exports.get_file_path = get_file_path

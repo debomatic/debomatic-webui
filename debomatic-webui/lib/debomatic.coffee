@@ -1,17 +1,8 @@
 fs = require("fs")
-glob = require("glob")
 config = require("./config")
 utils = require("./utils")
 Tail = utils.Tail
 e = config.events.broadcast
-
-_get_distributions = (callback) ->
-    glob "#{config.debomatic.path}/*/pool", {}, (err, directories) ->
-        distributions = []
-        for dir in directories
-            name = dir.split('/')[-2..][0]
-            distributions.push name
-        callback(distributions)
 
 
 class Debomatic
@@ -20,13 +11,13 @@ class Debomatic
         @status = {}
         @distributions = []
         @running = fs.existsSync (config.debomatic.pidfile)
-        _get_distributions (distributions) => @distributions = distributions
+        utils.get_distributions (distributions) => @distributions = distributions
 
     # watcher on new distributions
     watch_distributions: ->
         fs.watch config.debomatic.path, (event, fileName) =>
             check = =>
-                _get_distributions (new_distributions) =>
+                utils.get_distributions (new_distributions) =>
                     if not utils.arrayEqual(@distributions, new_distributions)
                         @distributions = new_distributions
                         @sockets.emit(e.distributions, @distributions)
