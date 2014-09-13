@@ -33,10 +33,7 @@ get_distributions = (callback) ->
         if err
             errors_handler "get_distributions", err
             return
-        distributions = []
-        for dir in directories
-            name = dir.split('/')[-2..][0]
-            distributions.push name
+        distributions = (dir.split(path.sep)[-2...-1] for dir in directories)
         callback(distributions)
 
 get_distribution_pool_path = (data) ->
