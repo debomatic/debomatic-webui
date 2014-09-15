@@ -285,6 +285,10 @@ footer .info {
   background: #F9F9F9;
 }
 
+#history .package {
+  white-space: nowrap;
+}
+
 /* add more colors to graphs */
 .ct-series-e .ct-bar,
 .ct-chart .ct-series.ct-series-e .ct-line,
