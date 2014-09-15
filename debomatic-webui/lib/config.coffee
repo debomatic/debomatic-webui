@@ -117,6 +117,7 @@ config.events.client.package_info = "c.package_info"
 config.events.client.file = "c.file"
 config.events.client.file_newcontent = "c.file_newcontent"
 config.events.client.status = "c.status"
+config.events.client.history = "c.history"
 
 ###
 The status according with JSONLogger.py module

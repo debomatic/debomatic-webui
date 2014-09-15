@@ -2,6 +2,7 @@ fs = require("fs")
 path = require("path")
 config = require("./config")
 utils = require("./utils")
+stats = require("./stats")
 e = config.events.client
 
 get_files_list_from_package = (data, callback) ->
@@ -137,6 +138,10 @@ class Client
             return unless utils.check_data_package(data)
             read_package_status data, (content) =>
                 @socket.emit e.package_info, content
+
+        @socket.on e.history, () =>
+            stats.get_all_packages (packages) =>
+                @socket.emit e.history, packages
 
         # on client disconnection close all watchers
         @socket.on "disconnect", =>

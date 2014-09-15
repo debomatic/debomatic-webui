@@ -4,7 +4,7 @@
 /* global Chartist: false */
 /* global debug: false */
 /* global debug_socket: false */
-/* global dom_history: false */
+/* global socket: false */
 
 function Page_History() {
 
@@ -234,21 +234,31 @@ function Page_History() {
         socket.on(config.events.broadcast.status_update, function (socket_data) {
             // TODO - implements _update_table
         });
+
+        socket.on(config.events.client.history, function (socket_data) {
+            debug_socket('received', config.events.client.history, socket_data);
+            distributions_counter = {};
+            days_counter = {};
+            all_distributions = [];
+            all_days = [];
+            $('#history .tbody').html('');
+            // init table and some objects
+            for (var i = 0; i < socket_data.length; i++) {
+                var p = socket_data[i];
+                _add_row(p);
+                // count stats
+                _count_distributions(p);
+                _count_days(p);
+            }
+            all_distributions.sort();
+            _sort_table();
+            _create_graph_distributions();
+            _create_graph_days();
+        });
+
+        debug_socket('emit', config.events.client.history, '');
+        socket.emit(config.events.client.history);
     };
-
-
-    // init table and some objects
-    for (var i = 0; i < dom_history.length; i++) {
-        var p = dom_history[i];
-        _add_row(p);
-        // count stats
-        _count_distributions(p);
-        _count_days(p);
-    }
-    all_distributions.sort();
-    _sort_table();
-    _create_graph_distributions();
-    _create_graph_days();
 
     $('#download').on('click', function () {
         _exportTableToCSV.apply(this, [$('#history'), 'history.csv']);
