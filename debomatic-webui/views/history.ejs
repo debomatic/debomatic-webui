@@ -9,19 +9,21 @@
         <div id="days-chart" class="ct-chart"></div>
         <div id="distributions-chart" class="ct-chart"></div>
     </div>
-    <a id="download" class="btn btn-primary">Download current view</a>
-    <table id="history" class="tablesorter">
-        <thead>
-            <tr>
-                <th class="filter-select filter-exact" data-placeholder="All">Distribution</th>
-                <th>Package</th>
-                <th data-empty="top" data-placeholder=">= 01/01/1990">Start</th>
-                <th data-empty="top" data-placeholder=">= 01/01/1990">End</th>
-                <th class="filter-select filter-exact" data-placeholder="All">Uploader</th>
-                <th class="filter-select filter-exact" data-placeholder="All">Status</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div class="body" style="display: none">
+        <a id="download" class="btn btn-primary">Download current view</a>
+        <table id="history" class="tablesorter">
+            <thead>
+                <tr>
+                    <th class="filter-select filter-exact" data-placeholder="All">Distribution</th>
+                    <th>Package</th>
+                    <th data-empty="top" data-placeholder=">= 01/01/1990">Start</th>
+                    <th data-empty="top" data-placeholder=">= 01/01/1990">End</th>
+                    <th class="filter-select filter-exact" data-placeholder="All">Uploader</th>
+                    <th class="filter-select filter-exact" data-placeholder="All">Status</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 </article>
 <% include footer.ejs %>

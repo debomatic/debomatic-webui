@@ -254,6 +254,7 @@ function Page_History() {
             _sort_table();
             _create_graph_distributions();
             _create_graph_days();
+            $('.body').fadeIn("fast");
         });
 
         debug_socket('emit', config.events.client.history, '');
