@@ -123,12 +123,12 @@ function Page_Distrubion(socket) {
             label = '';
             var window_title = null;
             if (Utils.check_view_file(view)) {
-                var complete_name = view.package.orig_name + '.' + view.file.name;
+                var complete_name = view.file.orig_name;
                 window_title = complete_name;
                 label = complete_name;
                 if (!view.file.path)
                     view.file.path = config.paths.debomatic + '/' + view.distribution.name + '/pool/' + view.package.orig_name + '/' + complete_name;
-                label += ' <a class="btn btn-link btn-lg" data-toggle="tooltip" title="Download" href="' + view.file.path + '"> ' +
+                label += ' <a id="download-file" class="btn btn-link btn-lg" data-toggle="tooltip" title="Download"> ' +
                     '<span class="glyphicon glyphicon-download-alt"></span></a>';
                 if (current_file_in_preview) {
                     var view_all = $('<a id="get-whole-file" data-toggle="tooltip" class="btn btn-link btn-lg" title="View the whole file"></a>');
@@ -151,6 +151,21 @@ function Page_Distrubion(socket) {
                 file.get(true);
                 $(this).fadeOut('fast');
             });
+
+            // set onclick downlaod file
+            $('#download-file').on('click', function (event) {
+                var url = view.file.path;
+                if (!current_file_in_preview) {
+                    url = 'data:text/plain;charset=utf-8,' + encodeURIComponent($('#file .content').text());
+                }
+                $(this)
+                    .attr({
+                        'download': view.file.orig_name,
+                        'href': url,
+                        'target': '_blank'
+                    });
+            });
+
         },
         clean: function () {
             $('#title').html('');
