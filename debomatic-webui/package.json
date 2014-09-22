@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "dependencies": {
+        "coffee-script": "*",
         "express": "4.x",
         "serve-index": "*",
         "serve-static": "*",
@@ -15,7 +16,7 @@
     },
     "scripts": {
         "install": "bash scripts/install.sh",
-        "start": "coffee debomatic-webui",
+        "start": "./node_modules/coffee-script/bin/coffee debomatic-webui",
         "test": "cd test; mocha -b -R spec --compilers coffee:coffee-script/register --require should tests.coffee"
     },
     "bin": {
