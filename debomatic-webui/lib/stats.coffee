@@ -1,5 +1,6 @@
 fs = require('fs')
 glob = require('glob')
+exec = require('child_process').exec
 config = require('./config')
 utils = require('./utils')
 
@@ -13,7 +14,7 @@ get_all_packages = (cb) ->
 
     glob "#{config.debomatic.path}/*/pool/*/*.json", {}, (err, files) ->
         if err?
-            utils.errors_handler "history:get_all_packages", err
+            utils.errors_handler "stats:get_all_packages", err
             return
         packages = []
         for f in files
@@ -30,4 +31,41 @@ get_all_packages = (cb) ->
                     cb(packages)
 
 
+get_disk_usage = (cb) ->
+    exec "du -d 2 #{config.debomatic.path}", (error, stdout, stderr) ->
+        if error?
+            utils.errors_handler "stats:get_disk_usage", err
+            return
+        if stderr?
+            utils.errors_handler "disk usage error: ", stderr
+        result = {}
+        for line in stdout.split('\n')
+            continue if line == ''
+            info = line.replace(/\t+/g,' ').split(' ')
+            size = info[0]
+            dirs = info[1].replace("#{config.debomatic.path}", '').split('/')
+
+            # case total size for debomatic incoming
+            if dirs.length <= 1
+                result['size'] = size
+                continue
+            distribution = dirs[1]
+
+            if not result[distribution]?
+                result[distribution] = {}
+
+            # case total size for distribution
+            if dirs.length == 2
+                result[distribution]['size'] = size
+                continue
+
+            # case size for distribution/subdir
+            subdir = dirs[2]
+            subdir = "chroot" if distribution == subdir
+            if subdir in config.debomatic.disk_usage_subdirs
+                result[distribution][subdir] = size
+
+        cb(result)
+
 module.exports.get_all_packages = get_all_packages
+module.exports.get_disk_usage = get_disk_usage
