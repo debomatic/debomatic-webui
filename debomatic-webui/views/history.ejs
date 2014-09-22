@@ -1,13 +1,25 @@
 <% include header.ejs %>
 
-<article class="page">
+<article class="">
     <header><h2>History</h2></header>
-    <p class="lead text-muted">
-        The log of packages
-    </p>
-    <div id="charts">
-        <div id="days-chart" class="ct-chart"></div>
-        <div id="distributions-chart" class="ct-chart"></div>
+    <div class="row" id="charts">
+        <div class="col-md-4">
+            <p class="lead text-muted">
+                The log of builds
+            </p>
+            <div id="days-chart" class="ct-chart"></div>
+        </div>
+        <div class="col-md-4">
+            <p class="lead text-muted">
+                Total packages
+            </p>
+            <div id="distributions-chart" class="ct-chart"></div>
+        </div>
+        <div class="col-md-4">
+            <p class="lead text-muted">
+                Disk usage
+            </p>
+        </div>
     </div>
     <div class="body" style="display: none">
         <a id="download" class="btn btn-primary">Download current view</a>
