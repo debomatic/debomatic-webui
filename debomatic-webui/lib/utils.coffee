@@ -109,8 +109,12 @@ watch_path_onsocket = (event_name, socket, data, watch_path, callback) ->
 
 errors_handler = (from, err, socket) ->
     from = "NO SOCKET: " + from unless socket
-    console.error from, err.message
-    socket.emit config.events.error, err.message if socket
+    if err.message?
+        msg = err.message
+    else
+        msg = err
+    console.error from, msg
+    socket.emit config.events.error, message if socket
     return
 
 Tail::watchEvent = (e) ->
