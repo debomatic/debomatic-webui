@@ -37,12 +37,13 @@ get_disk_usage = (cb) ->
             utils.errors_handler "stats:get_disk_usage", err
             return
         if stderr?
-            utils.errors_handler "disk usage error: ", stderr
+            utils.errors_handler "disk usage error:", stderr
         result = {}
+        others = 0
         for line in stdout.split('\n')
             continue if line == ''
             info = line.replace(/\t+/g,' ').split(' ')
-            size = info[0]
+            size = parseInt(info[0])
             dirs = info[1].replace("#{config.debomatic.path}", '').split('/')
 
             # case total size for debomatic incoming
@@ -57,6 +58,8 @@ get_disk_usage = (cb) ->
             # case total size for distribution
             if dirs.length == 2
                 result[distribution]['size'] = size
+                result[distribution]['others'] = others
+                others = 0
                 continue
 
             # case size for distribution/subdir
@@ -64,6 +67,8 @@ get_disk_usage = (cb) ->
             subdir = "chroot" if distribution == subdir
             if subdir in config.debomatic.disk_usage_subdirs
                 result[distribution][subdir] = size
+            else
+                others += size
 
         cb(result)
 
