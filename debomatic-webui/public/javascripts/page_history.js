@@ -187,6 +187,55 @@ function Page_History() {
         });
     }
 
+    function _create_graph_disk(socket_data) {
+        var distributions = [];
+        var subdirs = [];
+        var data = {};
+        var total_sizes = {};
+        var series = [];
+        var labels = [];
+        for (var distribution in socket_data) {
+            if (distribution == 'size') {
+                total_sizes.size = socket_data[distribution];
+                continue;
+            }
+            distributions.push(distribution);
+            for (var subdir in socket_data[distribution]) {
+                if (subdir == 'size') {
+                    total_sizes[distribution] = socket_data[distribution].size;
+                    continue;
+                }
+                if (!data.hasOwnProperty(subdir)) {
+                    subdirs.push(subdir);
+                    data[subdir] = [];
+                }
+                data[subdir].push(socket_data[distribution][subdir]);
+
+            }
+        }
+
+        for (var i = 0; i < subdirs.length; i++) {
+            series.push({
+                name: subdirs[i],
+                data: data[subdirs[i]]
+            });
+        }
+
+        for (i = 0; i < distributions.length; i++) {
+            labels.push(distributions[i] + ' (' + total_sizes[distributions[i]] + ')');
+        }
+
+        var options = {
+            seriesBarDistance: 12
+        };
+
+        Chartist.Bar('#disk-chart', {
+            labels: labels,
+            series: series
+        }, options);
+
+    }
+
     function _exportTableToCSV($table, filename) {
         // code from http://jsfiddle.net/terryyounghk/KPEGU/
         var $rows = $table.find('tr.package:visible:has(td)'),
@@ -257,8 +306,16 @@ function Page_History() {
             $('.body').fadeIn("fast");
         });
 
+        socket.on(config.events.client.disk_usage, function (socket_data) {
+            debug_socket('received', config.events.client.disk_usage, socket_data);
+            _create_graph_disk(socket_data);
+        });
+
         debug_socket('emit', config.events.client.history, '');
         socket.emit(config.events.client.history);
+
+        debug_socket('emit', config.events.client.disk_usage, '');
+        socket.emit(config.events.client.disk_usage);
     };
 
     $('#download').on('click', function () {

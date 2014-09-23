@@ -127,6 +127,7 @@ config.events.client.file = "c.file"
 config.events.client.file_newcontent = "c.file_newcontent"
 config.events.client.status = "c.status"
 config.events.client.history = "c.history"
+config.events.client.disk_usage = "c.disk_usage"
 
 ###
 The status according with JSONLogger.py module

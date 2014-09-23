@@ -143,6 +143,10 @@ class Client
             stats.get_all_packages (packages) =>
                 @socket.emit e.history, packages
 
+        @socket.on e.disk_usage, () =>
+            stats.get_disk_usage (result) =>
+                @socket.emit e.disk_usage, result
+
         # on client disconnection close all watchers
         @socket.on "disconnect", =>
             socket_watchers = @socket.watchers
