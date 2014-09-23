@@ -37,7 +37,8 @@ get_disk_usage = (cb) ->
             if stderr?
                 error = '\n\t' + stderr.replace(/\n/g, '\n\t')
             utils.errors_handler "disk usage error:", error
-            return
+            if not stdout?
+                return
         result = {}
         others = 0
         for line in stdout.split('\n')
