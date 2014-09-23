@@ -34,10 +34,10 @@ get_all_packages = (cb) ->
 get_disk_usage = (cb) ->
     exec "du -d 2 #{config.debomatic.path}", (error, stdout, stderr) ->
         if error?
-            utils.errors_handler "stats:get_disk_usage", err
+            if stderr?
+                error = '\n\t' + stderr.replace(/\n/g, '\n\t')
+            utils.errors_handler "disk usage error:", error
             return
-        if stderr?
-            utils.errors_handler "disk usage error:", stderr
         result = {}
         others = 0
         for line in stdout.split('\n')
