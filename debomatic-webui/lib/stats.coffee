@@ -42,7 +42,7 @@ get_disk_usage = (cb) ->
         others = 0
         for line in stdout.split('\n')
             continue if line == ''
-            info = line.replace(/\t+/g,' ').split(' ')
+            info = line.split(/\t+/g)
             size = parseInt(info[0])
             dirs = info[1].replace("#{config.debomatic.path}", '').split('/')
 
