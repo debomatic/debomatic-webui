@@ -105,6 +105,34 @@ function Page_History() {
 
     }
 
+    // add tooltip to graphs
+    function _create_graph_tooltip(graph, element) {
+        var $chart = $(graph);
+        var $toolTip = $chart
+            .append('<div class="tooltip fade top in" role="tooltip">' +
+                '<div class="tooltip-arrow"></div> ' +
+                '<div class="tooltip-inner"></div>' +
+                '</div>').find('.tooltip').hide();
+
+        $chart.on('mousemove', function (event) {
+            $toolTip.css({
+                left: event.offsetX - $toolTip.width() / 2,
+                top: event.offsetY - $toolTip.height() - 20
+            });
+        });
+        $chart.on('mouseenter', element, function () {
+            var $point = $(this),
+                value = $point.attr('ct:value'),
+                seriesName = $point.parent().attr('ct:series-name');
+            $toolTip.find('.tooltip-inner').html(seriesName + ' (' + value + ')');
+            $toolTip.show();
+        });
+
+        $chart.on('mouseleave', element, function () {
+            $toolTip.hide();
+        });
+    }
+
     function _create_graph_distributions() {
         // build the distribution Pie graph
         var distributions_data = {
@@ -147,43 +175,23 @@ function Page_History() {
             });
         }
         Chartist.Line('#days-chart', days_data);
+        _create_graph_tooltip("#days-chart", '.ct-point');
+
+        var $chart = $('#days-chart');
         var effect = function (x, t, b, c, d) {
             return -c * (t /= d) * (t - 2) + b;
         };
-        var $chart = $('#days-chart');
-        var $toolTip = $chart
-            .append('<div class="tooltip fade top in" role="tooltip">' +
-                '<div class="tooltip-arrow"></div> ' +
-                '<div class="tooltip-inner"></div>' +
-                '</div>').find('.tooltip').hide();
 
         $chart.on('mouseenter', '.ct-point', function () {
-            var $point = $(this),
-                value = $point.attr('ct:value'),
-                seriesName = $point.parent().attr('ct:series-name');
-
-            $point.stop().animate({
+            $(this).stop().animate({
                 'stroke-width': '20px'
             }, 200, effect);
-            $toolTip.find('.tooltip-inner').html(seriesName + ' (' + value + ')');
-            $toolTip.show();
         });
 
         $chart.on('mouseleave', '.ct-point', function () {
-            var $point = $(this);
-
-            $point.stop().animate({
+            $(this).stop().animate({
                 'stroke-width': '10px'
             }, 150, effect);
-            $toolTip.hide();
-        });
-
-        $chart.on('mousemove', function (event) {
-            $toolTip.css({
-                left: event.offsetX - $toolTip.width() / 2,
-                top: event.offsetY - $toolTip.height() - 20
-            });
-
         });
     }
 
