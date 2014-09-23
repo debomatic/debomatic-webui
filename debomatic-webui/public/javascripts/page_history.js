@@ -211,6 +211,10 @@ function Page_History() {
                 continue;
             }
             distributions.push(distribution);
+        }
+        distributions.sort();
+        for (var i = 0; i < distributions.length; i++) {
+            distribution = distributions[i];
             for (var subdir in socket_data[distribution]) {
                 if (subdir == 'size') {
                     total_sizes[distribution] = socket_data[distribution].size;
@@ -221,13 +225,9 @@ function Page_History() {
                     data[subdir] = [];
                 }
                 data[subdir].push(socket_data[distribution][subdir]);
-
             }
         }
-
-        distributions.sort();
-
-        for (var i = 0; i < subdirs.length; i++) {
+        for (i = 0; i < subdirs.length; i++) {
             series.push({
                 name: subdirs[i],
                 data: data[subdirs[i]]
