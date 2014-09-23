@@ -215,6 +215,8 @@ function Page_History() {
             }
         }
 
+        distributions.sort();
+
         for (var i = 0; i < subdirs.length; i++) {
             series.push({
                 name: subdirs[i],
@@ -222,16 +224,12 @@ function Page_History() {
             });
         }
 
-        for (i = 0; i < distributions.length; i++) {
-            labels.push(distributions[i] + ' (' + total_sizes[distributions[i]] + ' MB)');
-        }
-
         var options = {
             seriesBarDistance: 12
         };
 
         Chartist.Bar('#disk-chart', {
-            labels: labels,
+            labels: distributions,
             series: series
         }, options);
 
