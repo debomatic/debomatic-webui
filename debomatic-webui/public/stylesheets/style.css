@@ -279,6 +279,7 @@ footer .info {
 
 #history {
   margin-top: 15px;
+  max-width: 1000px;
 }
 
 #history .alt-row {
