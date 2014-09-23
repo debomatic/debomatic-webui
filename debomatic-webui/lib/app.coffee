@@ -31,7 +31,7 @@ app.set("view engine", "ejs")
 # index page
 app.get("/", routes.index)
 
-# distibution page
+# distribution page
 app.get(config.routes.distribution, routes.distribution)
 
 # preferences page
