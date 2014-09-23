@@ -222,7 +222,7 @@ function Page_History() {
         }
 
         for (i = 0; i < distributions.length; i++) {
-            labels.push(distributions[i] + ' (' + total_sizes[distributions[i]] + ')');
+            labels.push(distributions[i] + ' (' + total_sizes[distributions[i]] + ' MB)');
         }
 
         var options = {

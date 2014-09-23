@@ -32,7 +32,7 @@ get_all_packages = (cb) ->
 
 
 get_disk_usage = (cb) ->
-    exec "du -d 2 #{config.debomatic.path}", (error, stdout, stderr) ->
+    exec "du -BM -d 2 #{config.debomatic.path}", (error, stdout, stderr) ->
         if error?
             if stderr?
                 error = '\n\t' + stderr.replace(/\n/g, '\n\t')
