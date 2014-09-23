@@ -196,7 +196,8 @@ function Page_History() {
         var labels = [];
         for (var distribution in socket_data) {
             if (distribution == 'size') {
-                total_sizes.size = socket_data[distribution];
+                var total_size_in_gb = Number(socket_data.size / 1000).toFixed(1);
+                $("#disk-usage .total-size").text(total_size_in_gb + ' GB');
                 continue;
             }
             distributions.push(distribution);
