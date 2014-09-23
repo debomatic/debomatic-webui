@@ -114,7 +114,7 @@ errors_handler = (from, err, socket) ->
     else
         msg = err
     console.error from, msg
-    socket.emit config.events.error, message if socket
+    socket.emit config.events.error, msg if socket
     return
 
 Tail::watchEvent = (e) ->
