@@ -290,6 +290,10 @@ footer .info {
   white-space: nowrap;
 }
 
+#disk-usage .ct-label.ct-size {
+  font-size: 0.72em;
+}
+
 /* add more colors to graphs */
 .ct-series-e .ct-bar,
 .ct-chart .ct-series.ct-series-e .ct-line,
