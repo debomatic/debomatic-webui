@@ -106,7 +106,7 @@ function Page_History() {
     }
 
     // add tooltip to graphs
-    function _create_graph_tooltip(graph, element) {
+    function _create_graph_tooltip(graph, element, suffix_value) {
         var $chart = $(graph);
         var $toolTip = $chart
             .append('<div class="tooltip fade top in" role="tooltip">' +
@@ -124,6 +124,8 @@ function Page_History() {
             var $point = $(this),
                 value = $point.attr('ct:value'),
                 seriesName = $point.parent().attr('ct:series-name');
+            if (suffix_value)
+                value = value + " " + suffix_value;
             $toolTip.find('.tooltip-inner').html(seriesName + ' (' + value + ')');
             $toolTip.show();
         });
@@ -240,6 +242,7 @@ function Page_History() {
             labels: distributions,
             series: series
         }, options);
+        _create_graph_tooltip("#disk-chart", '.ct-bar', "MB");
 
     }
 
