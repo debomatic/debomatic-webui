@@ -342,6 +342,8 @@ function Page_History() {
         socket.emit(config.events.client.disk_usage);
     };
 
+    // active downlaod tooltip
+    $("[data-toggle='popover']").popover();
     $('#download').on('click', function () {
         _exportTableToCSV.apply(this, [$('#history'), 'history.csv']);
     });
