@@ -8,6 +8,7 @@ Whenever you want to leave a suggestion or file a bug report, please open a [new
 Some **debomatic-webui** instances are already running over:
  * http://debomatic-amd64.debian.net
  * http://debomatic-i386.debian.net
+ * http://debomatic-arm64.debian.net
  * http://debomatic-armel.debian.net
  * http://debomatic-armhf.debian.net
  * http://debomatic-powerpc.debian.net
