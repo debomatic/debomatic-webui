@@ -2,6 +2,25 @@
 
 EXT_LIBS_DIR="${SCRIPTS_DIR}/../public/external_libs"
 
+get_github() {
+  USER=$1
+  NAME=$2
+  VERSION=$3
+  DIST=$4
+  ARCHIVE=v${VERSION}.zip
+  URL="https://github.com/${USER}/${NAME}/archive/${ARCHIVE}"
+  LIB_NAME="${NAME}-${VERSION}"
+  if [ -d ${EXT_LIBS_DIR}/${LIB_NAME} ] ; then return ; fi
+  echo "Downloading ${NAME} ${VERSION} ..."
+  curl -s -O -L ${URL} && \
+  unzip -q ${ARCHIVE} && rm ${ARCHIVE}
+  if [ "$DIST" != "" ] ; then
+    mv ${LIB_NAME} tmp
+    mv tmp/${DIST} ${LIB_NAME}
+    rm -r tmp
+  fi
+}
+
 get_bootstrap() {
   VERSION="3.2.0"
   NAME="bootstrap-${VERSION}-dist"
@@ -37,27 +56,19 @@ get_tablesorter() {
   cd ..
 }
 
-get_chartist() {
-  VERSION="0.1.12"
-  NAME="chartist-js-${VERSION}"
-  if [ -d ${EXT_LIBS_DIR}/${NAME} ] ; then return ; fi
-  ARCHIVE=v${VERSION}.zip
-  URL="https://github.com/gionkunz/chartist-js/archive/${ARCHIVE}"
-  echo "Downloading chartist-js ${VERSION} ..."
-  curl -s -O -L ${URL} && \
-  unzip -q ${ARCHIVE} && rm ${ARCHIVE}
-}
-
-
 if [ ! -d ${EXT_LIBS_DIR} ] ; then mkdir -p ${EXT_LIBS_DIR} ; fi
 
 TMP_DIR="`mktemp -d`"
 cd ${TMP_DIR}
 
 get_jquery
-get_bootstrap
 get_tablesorter
-get_chartist
+
+# get boostrap
+get_github "twbs" "bootstrap" "3.2.0" "dist"
+
+# get chartist
+get_github "gionkunz" "chartist-js" "0.2.1" "libdist"
 
 if [ "`ls -1`" != "" ] ; then mv * ${EXT_LIBS_DIR} ; fi
 cd && rm -r ${TMP_DIR}

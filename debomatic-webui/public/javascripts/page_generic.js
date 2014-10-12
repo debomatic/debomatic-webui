@@ -127,7 +127,7 @@ function Page_Generic() {
     };
 
     this.preferences = function () {
-        var bootstrap_theme_css = '/external_libs/bootstrap-3.2.0-dist/css/bootstrap-theme.min.css';
+        var bootstrap_theme_css = '/external_libs/bootstrap-3.2.0/css/bootstrap-theme.min.css';
         if (config.preferences.glossy_theme) {
             if ($('head').find('link[href="' + bootstrap_theme_css + '"]').length === 0)
                 $('head').append('<link rel="stylesheet" href="' + bootstrap_theme_css + '">');
