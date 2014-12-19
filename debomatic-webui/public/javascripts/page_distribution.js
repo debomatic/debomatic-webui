@@ -503,7 +503,7 @@ function Page_Distrubion(socket) {
         init: function () {
             if (sidebarOffset === 0)
                 return;
-            if ($(window).scrollTop() > sidebarOffset) {
+            if ($(window).scrollTop() > sidebarOffset && $('#main').height() > $('#sticky').height()) {
                 sticky.show();
             } else {
                 sticky.hide();
@@ -523,11 +523,16 @@ function Page_Distrubion(socket) {
             sticky.start();
         },
         show: function () {
+            $('#sticky-package').fadeIn();
             if (config.preferences.sidebar) {
+                debug(2, 'showing sticky');
+                if ($(window).height() < $('#sticky').height()) {
+                    var size = $("#sticky-package").position().top;
+                    debug(2, 'sticky too tall - resizing', size);
+                    $('#sticky').height(size);
+                }
                 $('#sticky').addClass('fixed');
             }
-            debug(2, 'showing sticky');
-            $('#sticky-package').fadeIn();
         },
         hide: function () {
             $('#sticky').removeClass('fixed');
