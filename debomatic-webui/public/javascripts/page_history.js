@@ -235,7 +235,12 @@ function Page_History() {
         }
 
         var options = {
-            seriesBarDistance: 12
+            seriesBarDistance: 12,
+            axisX: {
+                labelInterpolationFnc: function (value) {
+                    return value + "<br /><span class='size'>" + total_sizes[value] + ' MB</span>';
+                }
+            }
         };
 
         Chartist.Bar('#disk-chart', {
@@ -243,21 +248,6 @@ function Page_History() {
             series: series
         }, options);
         _create_graph_tooltip("#disk-chart", '.ct-bar', "MB");
-
-        // WORKAROUND: add total spaces to label
-        // wating for support multilines for label in chartist-js
-        // https://github.com/gionkunz/chartist-js/issues/25
-        $('#disk-chart svg').height("+=20");
-        $('#disk-chart .ct-label.ct-horizontal').each(function (index, elem) {
-            var size = document.createElementNS("http://www.w3.org/2000/svg", 'text');
-            var currentY = Number(elem.getAttribute('dy'));
-            size.setAttribute('dx', Number(elem.getAttribute('dx')));
-            size.setAttribute('dy', currentY + 15);
-            size.setAttribute('class', 'ct-label ct-horizontal ct-size');
-            size.textContent = total_sizes[elem.textContent] + " MB";
-            elem.parentNode.appendChild(size);
-        });
-
     }
 
     function _exportTableToCSV($table, filename) {

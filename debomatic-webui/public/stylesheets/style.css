@@ -273,6 +273,11 @@ footer .info {
   font-size: 0.85em !important;
 }
 
+#disk-chart .size {
+  color: #aaa;
+  font-size: 0.75em;
+}
+
 #distributions-chart.ct-chart {
   height: 200px;
   margin-top: -20px;
