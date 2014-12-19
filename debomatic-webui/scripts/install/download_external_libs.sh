@@ -68,7 +68,7 @@ get_tablesorter
 get_github "twbs" "bootstrap" "3.2.0" "dist"
 
 # get chartist
-get_github "gionkunz" "chartist-js" "0.2.1" "libdist"
+get_github "gionkunz" "chartist-js" "0.4.0" "libdist"
 
 if [ "`ls -1`" != "" ] ; then mv * ${EXT_LIBS_DIR} ; fi
 cd && rm -r ${TMP_DIR}

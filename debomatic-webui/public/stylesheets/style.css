@@ -269,7 +269,7 @@ footer .info {
 }
 
 .ct-chart .ct-label {
-  font-size: 0.85em;
+  font-size: 0.85em !important;
 }
 
 #distributions-chart.ct-chart {
