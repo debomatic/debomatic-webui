@@ -84,6 +84,7 @@ aside#sidebar .fixed {
   display: none;
   position: fixed;
   bottom: 50px;
+  left: 14px;
   font-size: 22px;
   cursor: pointer;
 }
