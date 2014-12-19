@@ -77,7 +77,7 @@ aside#sidebar .fixed {
   position: fixed;
   min-width: 220px !important;
   top: 0;
-  overflow: auto;
+  overflow-y: auto;
 }
 
 #sticky-package {
