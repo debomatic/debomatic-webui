@@ -1,13 +1,15 @@
-# unreleased
+# 1.1.0 (2014-12-19)
  * [new] [module] change names to Start and Stop
  * [new] [module] add parser for blhc log file
  * [new] history page
  * [new] show file size for package files
  * [new] disable autoscroll pressing on "back on top" panel
  * [new] log files can be now showed directly in the browsers
+ * [new] update to chartist-js 0.4.0
  * [fix] [module] use readline while parsing piuparts log file
  * [fix] add support to sourceupload.changes
  * [fix] add support to source format 1.0 - closes #6
+ * [fix] do not mess up when there are too many deb pacakges - close #7
 
 # 1.0.0 (2014-07-23)
  * Migrate to coffee-script, code refactory
