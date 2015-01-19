@@ -64,30 +64,29 @@ class DebomaticModule_JSONLogger:
     def _set_json_logfile_name(self, args):
         """If debomatic config file has section [jsonlogger] try to get
         'jsonfile' option and override the default value."""
-        if 'opts' in args and \
-           args['opts'].has_section('jsonlogger') and \
-           args['opts'].has_option('jsonlogger', 'jsonfile'):
-            self.jsonfile = args['opts'].get('jsonlogger', 'jsonfile').strip()
+        if (args.opts.has_section('jsonlogger') and
+                args.opts.has_option('jsonlogger', 'jsonfile')):
+            self.jsonfile = args.opts.get('jsonlogger', 'jsonfile').strip()
 
     def _get_package_json_filename(self, args):
         """Get the path of package JSON file"""
-        return '%(directory)s/pool/%(package)s/%(package)s.json' % args
+        return ('%(directory)s/pool/%(package)s/%(package)s.json' %
+                {'directory': args.directory, 'package': args.package})
 
     def _get_distribution_status(self, args):
         """From args to distribution status"""
         status = {}
-        status['status'] = args['cmd']
-        status['distribution'] = args['distribution']
-        if 'success' in args:
-            status['success'] = args['success']
+        status['status'] = args.action
+        status['distribution'] = args.distribution
+        status['success'] = args.success
         return status
 
     def _get_package_status(self, args):
         """From args to package status"""
         status = {}
-        for k in ['package', 'distribution', 'uploader']:
-            if k in args:
-                status[k] = args[k]
+        status['package'] = args.package
+        status['distribution'] = args.distribution
+        status['uploader'] = args.uploader
         return status
 
     def _append_json_logfile(self, args, status):
@@ -145,9 +144,9 @@ class DebomaticModule_JSONLogger:
     def post_build(self, args):
         status = self._get_package_status(args)
         status['status'] = 'build'
-        status['success'] = args['success']
+        status['success'] = args.success
         status['files'] = {}
-        resultdir = os.path.join(args['directory'], 'pool', args['package'])
+        resultdir = os.path.join(args.directory, 'pool', args.package)
         for filename in os.listdir(resultdir):
             if filename.endswith('.json'):
                 continue
