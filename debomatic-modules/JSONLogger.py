@@ -32,6 +32,7 @@ from collections import defaultdict
 
 
 class DebomaticModule_JSONLoggerStart:
+
     def __init__(self):
         self.logger = DebomaticModule_JSONLogger()
         self.first = True
@@ -44,6 +45,7 @@ class DebomaticModule_JSONLoggerStart:
 
 
 class DebomaticModule_JSONLoggerStop:
+
     def __init__(self):
         self.logger = DebomaticModule_JSONLogger()
         self.last = True
@@ -73,12 +75,13 @@ class DebomaticModule_JSONLogger:
         return ('%(directory)s/pool/%(package)s/%(package)s.json' %
                 {'directory': args.directory, 'package': args.package})
 
-    def _get_distribution_status(self, args):
+    def _get_distribution_status(self, args, with_success=False):
         """From args to distribution status"""
         status = {}
         status['status'] = args.action
         status['distribution'] = args.distribution
-        status['success'] = args.success
+        if with_success:
+            status['success'] = args.success
         return status
 
     def _get_package_status(self, args):
@@ -129,7 +132,7 @@ class DebomaticModule_JSONLogger:
         self._append_json_logfile(args, distribution)
 
     def post_chroot(self, args):
-        distribution = self._get_distribution_status(args)
+        distribution = self._get_distribution_status(args, with_success=True)
         self._append_json_logfile(args, distribution)
 
     def pre_build(self, args):
@@ -164,6 +167,7 @@ class DebomaticModule_JSONLogger:
 
 # Parser for log files
 class LogParser():
+
     def __init__(self, file_path):
         self.file = file_path
         self.basename = os.path.basename(file_path)
