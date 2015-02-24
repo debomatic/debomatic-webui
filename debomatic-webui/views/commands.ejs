@@ -12,6 +12,7 @@
   <li><a href="#remove-packages" data-toggle="tab">Remove</a></li>
   <li><a href="#rebuild-packages" data-toggle="tab">Rebuild</a></li>
   <li><a href="#porter-uploads" data-toggle="tab">Porter</a></li>
+  <li><a href="#binary-nmu-uploads" data-toggle="tab">Binary NMU</a></li>
   <li><a href="#rebuild-packages-with-extra-build-dependencies" data-toggle="tab">Rebuild with extra</a></li>
 </ul>
 
@@ -79,15 +80,25 @@ upload.</p>
 cannot be downloaded and processed by Deb-o-Matic.
 </div>
 </div>
+<div class="tab-pane" id="binary-nmu-uploads">
+<h3>Binary NMU uploads</h3>
+<p>You could want to prepare a binary NMU (or binNMU) upload, a binary-only upload which generates architecture dependent binaries only, together with a changelog entry describing why the upload was needed. Additional information can be found in <a href="https://www.debian.org/doc/manuals/developers-reference/pkgs.html#porter-guidelines">Debian Developer's Reference</a>.</p>
+<p>In order to do so, you must use the <code>binnmu</code> command:</p>
+<pre>echo 'binnmu foo_version dist binNMU_version "changelog" John Doe &lt;jdoe@debian.org&gt;' &gt; foo.commands</pre>
+<p>where <code>foo</code> is the name of the source package you want to rebuild, <code>version</code> is the version of the package you want to rebuild, <code>dist</code> is the distribution which rebuild package for, <code>binNMU_version</code> is the progressive binNMU number, <code>changelog</code> is the reason why the upload was prepared (enclosed in quotation marks), and the rest of the string is the address to be used as maintainer field, which is usually the developer who is preparing the upload.</p>
+<div class="alert alert-warning">
+<b>Caution:</b> Make sure packages are available in the distribution mirrors, otherwise they cannot be downloaded and processed by Deb-o-Matic.
+</div>
+</div>
 <div class="tab-pane" id="rebuild-packages-with-extra-build-dependencies">
 <h3>Rebuild packages with extra build-dependencies</h3>
 <p>You could want to rebuild a package already in the mirrors also adding a
 specific build-dependency to see whether it compiles with a newer library
 version. In order to do so, you must use the <code>builddep</code> command:</p>
-<pre>echo "builddep foo_version dist extrapackage=packageversion" &gt; foo.commands</pre>
+<pre>echo "builddep foo_version dist extrapackage (>= packageversion)" &gt; foo.commands</pre>
 <p>where <code>extrapackage</code> is the name of the package you want to install before
 the compilation takes place, and <code>packageversion</code> is the optional version of
-the package you want to install.</p>
+the package you want to install. More than one package can be defined, separated by commas.</p>
 <div class="alert alert-warning">
 <b>Caution:</b> Make sure packages are available in the distribution mirrors, otherwise they
 cannot be downloaded and processed by Deb-o-Matic.
