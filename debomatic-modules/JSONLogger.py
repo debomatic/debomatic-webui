@@ -160,9 +160,10 @@ class DebomaticModule_JSONLogger:
             full_path = os.path.join(resultdir, filename)
             info = {}
             info['size'] = self._get_human_size(os.path.getsize(full_path))
-            tag = LogParser(full_path).parse()
+            tag, level = LogParser(full_path).parse()
             if tag:
                 info['tags'] = tag
+                info['level'] = level
             status['files'][filename] = info
         self._write_package_json(args, status)
         status.pop('files', None)
@@ -180,16 +181,18 @@ class LogParser():
     def parse(self):
         if not os.path.isfile(self.file):
             return None
-        result = None
+        tag = None
+        # level can be: info, warning, danger
+        level = "info"  # by default
         if self.extension == 'lintian':
-            result = self.parse_lintian()
+            tag, level = self.parse_lintian()
         elif self.extension == 'autopkgtest':
-            result = self.parse_autopkgtest()
+            tag, level = self.parse_autopkgtest()
         elif self.extension == 'piuparts':
-            result = self.parse_piuparts()
+            tag, level = self.parse_piuparts()
         elif self.extension == 'blhc':
-            result = self.parse_blhc()
-        return result
+            tag, level = self.parse_blhc()
+        return tag, level
 
     def parse_lintian(self):
         tags = defaultdict(int)
@@ -197,7 +200,13 @@ class LogParser():
             for line in fd:
                 if len(line) >= 2 and line[0] != 'N' and line[1] == ':':
                     tags[line[0]] += 1
-        return self._from_tags_to_result(tags)
+        tags = self._from_tags_to_result(tags)
+        level = "info"
+        if 'E' in tags:
+            level = "danger"
+        elif 'W' in tags:
+            level = "warning"
+        return tags, level
 
     def parse_autopkgtest(self):
         tags = defaultdict(int)
@@ -218,14 +227,14 @@ class LogParser():
                     tags[info[0]] += 1
                 elif found and line == '\n':
                     break
-        return self._from_tags_to_result(tags)
+        return self._from_tags_to_result(tags), 'danger'
 
     def parse_piuparts(self):
         with open(self.file, 'r') as fd:
             lines = fd.readlines()
             if len(lines) == 0 or lines[-1].find('ERROR:') >= 0:
-                return 'E'
-        return None
+                return 'E', 'danger'
+        return None, None
 
     def parse_blhc(self):
         tags = defaultdict(int)
@@ -236,7 +245,7 @@ class LogParser():
                     continue
                 tag = info[0].replace('FLAGS', '')
                 tags[tag] += 1
-        return ' '.join(sorted(list(tags.keys())))
+        return ' '.join(sorted(list(tags.keys()))), 'warning'
 
     def _from_tags_to_result(self, tags):
         keys = sorted(list(tags.keys()))

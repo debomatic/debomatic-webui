@@ -271,8 +271,9 @@ function Page_Distrubion(socket) {
                     var html_file = $('<li id="file-' + f.orig_name + '">' +
                         '<a title="' + f.orig_name + '" href="' +
                         Utils.from_view_to_hash(tmp) + '">' +
-                        '<span class="tags pull-right"></span>' +
-                        '<span class="name">' + f.name + '</span></a></li>');
+                        '<span class="name">' + f.name + '</span>' +
+                        '<span class="tags"></span>' +
+                        '</a></li>');
                     html_file.on('click', function () {
                         files.select(this);
                     });
@@ -339,13 +340,20 @@ function Page_Distrubion(socket) {
         show: function () {
             $('#files').show();
         },
-        set_tags: function (file, tags) {
+        set_tags: function (file, tags, level) {
             // debug(2, "setting tag", file, tags);
             $('li[id="file-' + file + '"] .tags').html(tags);
+            $('li[id="file-' + file + '"] .tags')[0].className = "pull-right tags label label-" + level;
         },
         set_size: function (file, size) {
             // debug(2, "setting size", file, size);
-            $('[id="file-' + file + '"] a').append('<span class="size">' + size + '</span>');
+            var $file = $('[id="file-' + file + '"]');
+            var $tags = $file.find(".tags");
+            var $size = $('<span class="size pull-right">' + size + '</span>');
+            if ($tags.length > 0)
+                $size.insertBefore($tags);
+            else
+                $file.append($size);
         }
     };
 
@@ -360,7 +368,7 @@ function Page_Distrubion(socket) {
                 for (var file in s_files) {
                     if (s_files.hasOwnProperty(file)) {
                         if (s_files[file].hasOwnProperty('tags'))
-                            files.set_tags(file, s_files[file].tags);
+                            files.set_tags(file, s_files[file].tags, s_files[file].level);
                         if (s_files[file].hasOwnProperty('size'))
                             files.set_size(file, s_files[file].size);
                     }

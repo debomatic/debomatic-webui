@@ -148,7 +148,7 @@ footer .info {
   font-size: 70%;
   color: rgba(0,0,0,0.25);
   float: right;
-  min-width: 60px;
+  min-width: 54px;
   text-align: right;
   display: inline-block;
   line-height: 20px;
@@ -157,7 +157,7 @@ footer .info {
 
 #logs .size {
   float: none;
-  line-height: 0px;
+  line-height: 12px;
 }
 
 #logs .active .size {
@@ -165,8 +165,13 @@ footer .info {
 }
 
 #logs .name {
-  min-width: 75px;
+  min-width: 95px;
   display: inline-block;
+}
+
+#logs .tags {
+  margin-top: -3px;
+  padding-top: 3px;
 }
 
 #status span {

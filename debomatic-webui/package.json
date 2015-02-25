@@ -9,7 +9,7 @@
         "serve-static": "*",
         "errorhandler ": "*",
         "ejs": "1.*",
-        "socket.io": "1.*",
+        "socket.io": "1.2.*",
         "tail": "*",
         "glob": "*",
         "extend": "*"
