@@ -88,6 +88,7 @@ List of files to not show in webui
 config.debomatic.excluded_files = [
     "datestamp"
     "json"
+    "build"
 ]
 
 ###
