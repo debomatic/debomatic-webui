@@ -128,10 +128,14 @@ class DebomaticModule_JSONLogger:
             num /= 1024.0
 
     def pre_chroot(self, args):
+        if args.action is None:
+            return
         distribution = self._get_distribution_status(args)
         self._append_json_logfile(args, distribution)
 
     def post_chroot(self, args):
+        if args.action is None:
+            return
         distribution = self._get_distribution_status(args, with_success=True)
         self._append_json_logfile(args, distribution)
 
