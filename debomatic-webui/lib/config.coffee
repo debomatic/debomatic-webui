@@ -37,8 +37,8 @@ config.debomatic.jsonfile = "/var/log/debomatic-json.log"
 Web template configuration
 Title and description for the header
 ###
-config.web.debomatic.architecture = "amd64"
-config.web.title = "Deb-o-Matic " + config.web.debomatic.architecture
+config.web.debomatic.architecture = "system"  # or amd64, i386, ...
+config.web.title = "Deb-o-Matic"
 
 ###
 Admin email and name to show in the home page.
@@ -164,6 +164,12 @@ try
                                crypto.createHash("sha256")
                                      .update(config.debomatic.path)
                                      .digest("hex")
+
+    if config.web.debomatic.architecture == "system"
+        check = "dpkg-architecture -qDEB_BUILD_ARCH"
+        require("child_process").exec check, (error, stdout, stderr) ->
+            config.web.debomatic.architecture = stdout.trim()
+
     module.exports = config
 
 catch err
