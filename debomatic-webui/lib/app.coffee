@@ -70,15 +70,21 @@ if config.routes.debomatic
         res.set('Content-Type', 'text/plain')
         next()
 
+    # always download log files and some source files, like .dsc and .changes ones
+    app.all config.routes.debomatic + '/:distribution/pool/:package/:file', (req, res, next) ->
+        type = utils.file_type(req.params.file)
+        ext = req.params.file.split('.').pop()
+        if type is "log" or ext in ["changes", "dsc"]
+            res.set('Content-Type', 'text/plain')
+            res.set('Content-Disposition', 'attachment; filename=' + req.params.file)
+        next()
+
     app.use(config.routes.debomatic, serve_static(config.debomatic.path))
     app.use(config.routes.debomatic, serve_index(config.debomatic.path,
                                                  {view: "details", icons: true}))
 
 # serve stylesheet-javascript
 app.use(serve_static(__dirname + "/../public"))
-
-# serve dsc files as octet-stream
-serve_static.mime.define("application/octet-stream": ["dsc"])
 
 # Listening
 server.listen config.port, config.host, null, (err) ->

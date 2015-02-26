@@ -117,6 +117,14 @@ errors_handler = (from, err, socket) ->
     socket.emit config.events.error, msg if socket
     return
 
+file_type = (filename) ->
+    extension = filename.split(".").pop()
+    if extension in ["deb", "ddeb", "udeb"]
+        return "deb"
+    if extension in ["changes", "dsc"] or filename.indexOf('.tar.') > 0 or filename.indexOf('.diff.') > 0
+        return "source"
+    return "log"
+
 Tail::watchEvent = (e) ->
     _this = this
     if e is "change"
@@ -152,5 +160,6 @@ module.exports.get_file_path = get_file_path
 module.exports.get_files_list = get_files_list
 module.exports.watch_path_onsocket = watch_path_onsocket
 module.exports.errors_handler = errors_handler
+module.exports.file_type = file_type
 module.exports.arrayEqual = arrayEqual
 module.exports.Tail = Tail
