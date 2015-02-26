@@ -5,6 +5,8 @@ glob = require("glob")
 Tail = require("tail").Tail
 
 _check_no_backward = (backward_path) ->
+    if backward_path is undefined
+        return false
     if typeof backward_path is 'string'
         return backward_path.indexOf("..") < 0
     return true
