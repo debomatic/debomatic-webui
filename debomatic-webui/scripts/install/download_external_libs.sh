@@ -22,7 +22,7 @@ get_github() {
 }
 
 get_bootstrap() {
-  VERSION="3.2.0"
+  VERSION="3.3.2"
   NAME="bootstrap-${VERSION}-dist"
   if [ -d "${EXT_LIBS_DIR}/${NAME}" ] ; then return ; fi
   ARCHIVE=${NAME}.zip
@@ -67,7 +67,7 @@ get_jquery
 get_tablesorter
 
 # get boostrap
-get_github "twbs" "bootstrap" "3.2.0" "dist"
+get_github "twbs" "bootstrap" "3.3.2" "dist"
 
 # get chartist
 get_github "gionkunz" "chartist-js" "0.7.2" "dist"
