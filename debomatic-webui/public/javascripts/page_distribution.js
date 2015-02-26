@@ -353,7 +353,7 @@ function Page_Distrubion(socket) {
             if ($tags.length > 0)
                 $size.insertBefore($tags);
             else
-                $file.append($size);
+                $file.find("a").append($size);
         }
     };
 
