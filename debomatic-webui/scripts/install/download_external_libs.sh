@@ -45,14 +45,16 @@ get_jquery() {
 }
 
 get_tablesorter() {
+  VERSION="2.17.8"
   DIR_TABLESORTER="tablesorter"
   if [ -d ${EXT_LIBS_DIR}/${DIR_TABLESORTER} ] ; then return ; fi
   mkdir ${DIR_TABLESORTER}
   cd ${DIR_TABLESORTER}
   echo "Downloading tablesorter ..."
-  curl -s -O -L "http://mottie.github.io/tablesorter/js/jquery.tablesorter.min.js"
-  curl -s -O -L "http://mottie.github.io/tablesorter/js/jquery.tablesorter.widgets.min.js"
-  curl -s -O -L "http://mottie.github.io/tablesorter/css/theme.bootstrap.css"
+  BASE="https://raw.githubusercontent.com/Mottie/tablesorter/v${VERSION}"
+  curl -s -O -L "${BASE}/js/jquery.tablesorter.min.js"
+  curl -s -O -L "${BASE}/js/jquery.tablesorter.widgets.min.js"
+  curl -s -O -L "${BASE}/css/theme.bootstrap.css"
   cd ..
 }
 
