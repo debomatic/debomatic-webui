@@ -7,6 +7,7 @@ io = require("socket.io")(server)
 
 serve_static = require("serve-static")
 serve_index = require("serve-index")
+compression = require("compression")
 errorhandler = require("errorhandler")
 
 routes = require("../routes")
@@ -23,6 +24,9 @@ if env is "development"
     app.use(errorhandler({dumpExceptions: true, showStack: true}))
 else
     app.use(errorhandler())
+
+# use compression by default
+app.use(compression())
 
 # the views
 app.set("views", __dirname + "/../views")

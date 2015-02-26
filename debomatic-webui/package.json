@@ -8,6 +8,7 @@
         "serve-index": "*",
         "serve-static": "*",
         "errorhandler ": "*",
+        "compression": "*",
         "ejs": "1.*",
         "socket.io": "1.2.*",
         "tail": "*",
