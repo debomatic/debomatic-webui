@@ -15,12 +15,11 @@ function Page_History() {
 
     function _get_short_day(timestamp) {
         var date = new Date(timestamp * 1000);
-        var locale = navigator.language || 'en-US';
         var options = {
             month: "numeric",
             day: "numeric",
         };
-        return date.toLocaleDateString(locale, options);
+        return date.toLocaleDateString(config.locale, options);
     }
 
     function _get_id(package_status) {
@@ -84,6 +83,17 @@ function Page_History() {
             sortAsc: 'glyphicon glyphicon-chevron-up',
             sortDesc: 'glyphicon glyphicon-chevron-down',
         });
+        $.tablesorter.addParser({
+            id: "datetime",
+            is: function (s) {
+                return false;
+            },
+            format: function (s, table) {
+                s = s.replace(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(.*)/, "$3/$2/$1$4");
+                return $.tablesorter.formatFloat(new Date(s).getTime());
+            },
+            type: "numeric"
+        });
 
         // call the tablesorter plugin and apply the uitheme widget
         $("table").tablesorter({
@@ -96,6 +106,14 @@ function Page_History() {
             widgets: ["uitheme", "filter", "zebra"],
             widgetOptions: {
                 zebra: ["normal-row", "alt-row"],
+            },
+            headers: {
+                2: {
+                    sorter: 'datetime'
+                },
+                3: {
+                    sorter: 'datetime'
+                }
             }
         });
 

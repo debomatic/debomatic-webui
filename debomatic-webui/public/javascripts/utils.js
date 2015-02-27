@@ -121,7 +121,6 @@ var Utils = {
         if (!timestamp)
             return '';
         var date = new Date(timestamp * 1000);
-        var locale = navigator.language || 'en-US';
         var options = null;
         if (short)
             options = {
@@ -136,7 +135,7 @@ var Utils = {
                 month: "long",
                 day: "numeric",
             };
-        var result_date = date.toLocaleDateString(locale, options);
+        var result_date = date.toLocaleDateString(config.locale, options);
         var result_time = Utils.num_two_digits(date.getHours()) + ':' + Utils.num_two_digits(date.getMinutes());
         if (time_in_bold) result_time = '<b>' + result_time + '</b>';
         return result_date + ' ' + result_time;
