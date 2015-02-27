@@ -29,6 +29,7 @@ from time import time
 from json import dumps as toJSON
 from json import load as fileToJSON
 from collections import defaultdict
+from hashlib import md5
 
 
 class DebomaticModule_JSONLoggerStart:
@@ -89,7 +90,10 @@ class DebomaticModule_JSONLogger:
         status = {}
         status['package'] = args.package
         status['distribution'] = args.distribution
-        status['uploader'] = args.uploader
+        status['uploader'] = ""
+        if args.uploader != "":
+            email = args.uploader.lower().encode('utf-8')
+            status['gravatar'] = md5(email).hexdigest()
         return status
 
     def _append_json_logfile(self, args, status):

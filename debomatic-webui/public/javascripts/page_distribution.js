@@ -225,6 +225,10 @@ function Page_Distrubion(socket) {
             var p_html = $('#packages li[id="package-' + status_data.package + '"] a');
             p_html.find('span.icon').remove();
             p_html.append(Utils.get_status_icon_html(status_data));
+            if (status_data.gravatar) {
+                var image = "http://gravatar.com/avatar/" + status_data.gravatar + "?d=mm&s=30";
+                p_html.css("background-image", "url(" + image + ")");
+            }
             if (Utils.check_view_package(view) && view.package.orig_name == status_data.package && view.distribution.name == status_data.distribution) {
                 // in case user is watching this package, update also view.package
                 view.package = Utils.clone(view.packages[status_data.package]);

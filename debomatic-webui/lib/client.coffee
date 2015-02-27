@@ -74,7 +74,7 @@ class Client
                 pack.orig_name = p
                 read_package_status {distribution: data.distribution, package: pack}, (content) =>
                     for attr of content
-                        if attr not in ['distribution', 'package', 'status', 'success']
+                        if attr not in ['distribution', 'package', 'status', 'success', 'gravatar']
                             delete content[attr]
                     @socket.emit e.distribution_packages_status, content
                 data.distribution.packages.push pack
