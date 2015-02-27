@@ -90,7 +90,7 @@ class DebomaticModule_JSONLogger:
         status = {}
         status['package'] = args.package
         status['distribution'] = args.distribution
-        status['uploader'] = ""
+        status['uploader'] = args.uploader
         if args.uploader != "":
             email = args.uploader.lower().encode('utf-8')
             status['gravatar'] = md5(email).hexdigest()
