@@ -1,0 +1,2 @@
+usr/share/debomatic-module-jsonlogger/JSONLogger.py usr/share/debomatic/modules/JSONLoggerStart.py
+usr/share/debomatic-module-jsonlogger/JSONLogger.py usr/share/debomatic/modules/JSONLoggerStop.py

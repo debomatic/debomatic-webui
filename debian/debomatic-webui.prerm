@@ -1,0 +1,6 @@
+#/bin/sh
+#DEBHELPER#
+
+rm -fr /usr/lib/nodejs/debomatic-webui/public/external_libs
+rm -fr /usr/lib/nodejs/debomatic-webui/node_modules
+

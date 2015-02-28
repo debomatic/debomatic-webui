@@ -1,0 +1,6 @@
+debomatic-webui/package.json usr/lib/nodejs/debomatic-webui/
+debomatic-webui/lib usr/lib/nodejs/debomatic-webui/
+debomatic-webui/public usr/lib/nodejs/debomatic-webui/
+debomatic-webui/routes usr/lib/nodejs/debomatic-webui/
+debomatic-webui/views usr/lib/nodejs/debomatic-webui/
+debomatic-webui/scripts/install* usr/lib/nodejs/debomatic-webui/scripts/

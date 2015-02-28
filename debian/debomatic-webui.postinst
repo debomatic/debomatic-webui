@@ -1,0 +1,5 @@
+#/bin/sh
+#DEBHELPER#
+cd /usr/lib/nodejs/debomatic-webui/
+npm --color false --spin false install
+exit $?

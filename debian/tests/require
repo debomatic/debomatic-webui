@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+nodejs -e "require('debug');"
+nodejs -e "require('debug').humanize;"

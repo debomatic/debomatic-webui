@@ -1,0 +1,46 @@
+Source: debomatic-webui
+Section: web
+Priority: extra
+Maintainer: Leo Iannacone <l3on@ubuntu.com>
+Build-Depends: debhelper (>= 8~)
+ , dh-buildinfo
+ , nodejs-legacy
+ , npm
+ , debomatic
+Standards-Version: 3.9.6
+Homepage: https://github.com/debomatic/debomatic-webui
+Vcs-Git: git://github.com/debomatic/debomatic-webui
+Vcs-Browser: https://github.com/debomatic/debomatic-webui
+XS-Testsuite: autopkgtest
+
+Package: debomatic-webui
+Architecture: all
+Depends:
+ ${misc:Depends}
+ , nodejs-legacy
+ , npm
+ , debomatic-module-jsonlogger
+Recommends: debomatic
+Description: web interface for Deb-O-Matic
+ debomatic-webui is a web interface for Deb-o-Matic aims to give to
+ users a simple way to browse logs and to know what's going on
+ debomatic build service providing a real-time packages status.
+ .
+ This interface is built up on Node.js platform and uses intensely
+ socket.io and jquery technologies.
+
+Package: debomatic-module-jsonlogger
+Architecture: all
+Depends:
+ ${misc:Depends}
+Recommends: debomatic
+Description: JSONLogger module for Deb-O-Matic
+ JSONLogger is a module for Deb-O-Matic which stores information
+ about packages and service status in the JSON format.
+ .
+ For each pakcage a JSON file is generated in its own directory
+ and contains information about the process success, the uploader,
+ and about the other files Deb-O-Matic creates during the build.
+ .
+ The module also creates a JSON log file in the system, where stores
+ the Deb-O-Matic status changes.
