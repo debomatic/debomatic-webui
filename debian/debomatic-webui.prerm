@@ -1,6 +1,13 @@
 #/bin/sh
+
+set -e
+
+case "$1" in
+    remove)
+	rm -fr /usr/lib/nodejs/debomatic-webui/public/external_libs
+	rm -fr /usr/lib/nodejs/debomatic-webui/node_modules
+esac
+
 #DEBHELPER#
 
-rm -fr /usr/lib/nodejs/debomatic-webui/public/external_libs
-rm -fr /usr/lib/nodejs/debomatic-webui/node_modules
-
+exit 0

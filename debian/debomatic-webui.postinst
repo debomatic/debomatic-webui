@@ -1,5 +1,14 @@
 #/bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+	cd /usr/lib/nodejs/debomatic-webui/
+	npm --color false --spin false install
+	exit $?
+esac
+
 #DEBHELPER#
-cd /usr/lib/nodejs/debomatic-webui/
-npm --color false --spin false install
-exit $?
+
+exit 0
