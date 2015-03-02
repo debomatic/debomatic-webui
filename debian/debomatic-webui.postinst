@@ -3,10 +3,13 @@
 set -e
 
 case "$1" in
-    configure)
-	cd /usr/lib/nodejs/debomatic-webui/
-	npm --color false --spin false install
-	exit $?
+    triggered)
+	case "$2" in
+	    *" update-ca-certificates "*)
+		cd /usr/lib/nodejs/debomatic-webui/
+		npm --color false --spin false install
+		exit $?
+	esac
 esac
 
 #DEBHELPER#
