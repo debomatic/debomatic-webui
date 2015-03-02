@@ -1,5 +1,5 @@
 Source: debomatic-webui
-Section: web
+Section: contrib/web
 Priority: extra
 Maintainer: Leo Iannacone <l3on@ubuntu.com>
 Build-Depends: debhelper (>= 8~)
