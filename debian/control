@@ -20,6 +20,7 @@ Depends:
  , nodejs-legacy
  , npm
  , debomatic-module-jsonlogger
+ , ca-certificates
 Recommends: debomatic
 Description: web interface for Deb-O-Matic
  debomatic-webui is a web interface for Deb-o-Matic aims to give to
