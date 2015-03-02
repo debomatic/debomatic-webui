@@ -139,9 +139,10 @@ footer .info {
 }
 
 #packages li .icon {
-  float: right;
   padding: 10px;
-  margin: -13px -17px;
+  position: absolute;
+  right: 0px;
+  top: -2px;
 }
 
 #packages li:not( .active) .icon {
@@ -159,13 +160,17 @@ footer .info {
   background-repeat: no-repeat;
   background-position: left;
   border: 1px solid rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+  height: 32px;
 }
 
 #packages li:not( .active) a {
   box-shadow: 0 0px 3px rgba(0, 0, 0, 0.2) inset;
   background-color: rgba(0, 0, 0, 0.05);
   border-color: rgba(255,255,255, 0.76);
-  overflow: hidden;
 }
 
 #packages li:not( .active) a:hover {
