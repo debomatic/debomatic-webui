@@ -1,3 +1,14 @@
+# 1.2.0 (2015-03-05)
+ * [new] align webui with sbuild debomatic codebase - closes #8
+ * [new] use compression by default for all request - save bandwith
+ * [new] add semating tags for log files
+ * [new] add support to gravatar
+ * [new] add support for "system" as debomatic.architecture
+ * [new] [libraries] update tablesort, chartist and bootstrap
+ * [fix] corecttly show too long package versions
+ * [fix] update debomatic URL homepage - closes #10
+ * [fix] commands: add binnmu and update buildep - closes #9
+
 # 1.1.0 (2014-12-19)
  * [new] [module] change names to Start and Stop
  * [new] [module] add parser for blhc log file
