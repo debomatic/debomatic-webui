@@ -20,7 +20,7 @@ if [ "$y" == "y" -o "$y" == "Y" ] ; then
 	echo -n "Do git-commit? [y/N] "
 	read y
 	if [ "$y" == "y" -o "$y" == "Y" ] ; then
-		git commit -m "Bumped version ${VERSION}" ${PACKAGE}
+		git commit -m "Bumped version ${VERSION}" ${PACKAGE} History.md
 		y='n'
 		echo -n "Do git-tag? [y/N] "
 		read y
