@@ -11,6 +11,7 @@
   <li class="active"><a href="#introduction" data-toggle="tab">Introduction</a></li>
   <li><a href="#remove-packages" data-toggle="tab">Remove</a></li>
   <li><a href="#rebuild-packages" data-toggle="tab">Rebuild</a></li>
+  <li><a href="#killing-builds" data-toggle="tab">Killing Builds</a></li>
   <li><a href="#porter-uploads" data-toggle="tab">Porter</a></li>
   <li><a href="#binary-nmu-uploads" data-toggle="tab">Binary NMU</a></li>
   <li><a href="#rebuild-packages-with-extra-build-dependencies" data-toggle="tab">Rebuild with extra</a></li>
@@ -62,6 +63,16 @@ packages from:</p>
 <b>Caution:</b> Make sure packages are available in the distribution mirrors, otherwise they
 cannot be downloaded and processed by Deb-o-Matic.
 </div>
+</div>
+<div class="tab-pane" id="killing-builds">
+<h3>Killing builds</h3>
+<p>You could want to terminate a build you erroneously uploaded, or you do not
+want it to complete to avoid wasting too many resources.
+In order to do so, you must use the <code>kill</code> command:</p>
+<pre>echo "kill foo_version dist" &gt; foo.commands</pre>
+<p>where <code>foo</code> is the name of the source package you want to terminate its build,
+<code>version</code> is its versiond, and <code>dist</code> is
+the distribution the package is being built for.</p>
 </div>
 <div class="tab-pane" id="porter-uploads">
 <h3>Porter uploads</h3>
