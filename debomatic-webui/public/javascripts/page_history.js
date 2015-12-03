@@ -83,17 +83,6 @@ function Page_History() {
             sortAsc: 'glyphicon glyphicon-chevron-up',
             sortDesc: 'glyphicon glyphicon-chevron-down',
         });
-        $.tablesorter.addParser({
-            id: "datetime",
-            is: function (s) {
-                return false;
-            },
-            format: function (s, table) {
-                s = s.replace(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(.*)/, "$3/$2/$1$4");
-                return $.tablesorter.formatFloat(new Date(s).getTime());
-            },
-            type: "numeric"
-        });
 
         // call the tablesorter plugin and apply the uitheme widget
         $("table").tablesorter({
@@ -109,10 +98,10 @@ function Page_History() {
             },
             headers: {
                 2: {
-                    sorter: 'datetime'
+                    sorter: 'shortDate'
                 },
                 3: {
-                    sorter: 'datetime'
+                    sorter: 'shortDate'
                 }
             }
         });
