@@ -413,10 +413,12 @@ function Page_Distrubion(socket) {
     var file = {
         set: function (socket_data) {
             back_on_top_pressed = false;
+            error.clean()
             var new_content = Utils.escape_html(socket_data.file.content);
             var file_content = $('#file .content');
             view.file = Utils.clone(socket_data.file);
             file_content.html(new_content);
+            $('#file').show();
             file_content.show();
             if (current_file_in_preview)
                 file_content.scrollTop(file_content[0].scrollHeight);
@@ -446,7 +448,7 @@ function Page_Distrubion(socket) {
                 file_content.scrollTop(file_content[0].scrollHeight);
             }
         },
-        get: function (force) {
+        get: function (force, noShowFeedback) {
             if (Utils.check_view_file(view)) {
                 if (force) {
                     file.set_preview(false);
@@ -459,9 +461,12 @@ function Page_Distrubion(socket) {
                 query_data.file = view.file;
                 query_data.file.content = null;
                 query_data.file.force = force;
-                // get a feedback to user while downloading file
-                $('#file .content').html('<div class="loading">Downloading file, please wait a while ... <img src="/images/loading.gif" /></div>');
-                $('#file').show();
+                if (!noShowFeedback) {
+                    // get a feedback to user while downloading file
+                    error.clean();
+                    $('#file .content').html('<div class="loading">Downloading file, please wait a while ... <img src="/images/loading.gif" /></div>');
+                    $('#file').show();
+                }
                 debug_socket('emit', _e.file, query_data);
                 socket.emit(_e.file, query_data);
             }
@@ -588,6 +593,12 @@ function Page_Distrubion(socket) {
 
     var error = {
         set: function (socket_error) {
+            // try to retrieve the file after 1s if it was deleted
+            if (socket_error.match(/File (.*) deleted(.*)/) || socket_error.match(/ENOENT, open /)) {
+                setTimeout(function () {
+                    file.get(null, true);
+                }, 1000);
+            }
             if ($('#error').is(':visible'))
                 return;
             socket_error = socket_error.replace(/File (.*) deleted(.*)/,

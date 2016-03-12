@@ -110,4 +110,5 @@ server.on "error", (e) ->
         process.exit 3
     else
         console.error e
+        console.error e.stack
     return
